@@ -1,0 +1,26 @@
+#+SETUPFILE: "~/.emacs.d/org-config.org"
+#+TITLE: My org-babel based emacs configuration
+#+LANGUAGE: en
+#+OPTIONS: H:5 toc:nil creator:nil email:nil author:t timestamp:t tags:nil tex:verbatim
+#+PROPERTY: header-args :noweb no-export
+
+Last update: call_last_modified()
+
+I'm creating a literate programming emacs configuration setup leveraging org-babel.  Partially, this is to create my own highly customized and modular emacs configuration.  However, I've been experimenting with literate programming style emacs configurations for a while and wanted to try my hand at creating my own.
+
+I've started from the configuration at 
+
+
+#+TOC: headlines 4
+
+
+#+NAME: last_modified
+#+BEGIN_SRC shell :results value raw output append
+  git log -1 --pretty="format:%ci" ~/.emacs.d/iain.org
+#+END_SRC
+
+
+#+begin_src emacs-lisp
+  (provide 'iain)
+  ;;; iain ends here
+#+end_src
