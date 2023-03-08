@@ -26,7 +26,8 @@
           "available"))
 
 ;; HACK: Disable Org-mode that was shipped with Emacs and add one I control
-;; (setq load-path (remove-if (lambda (x) (string-match-p "org$" x)) load-path))
+(setq load-path (remove-if (lambda (x) (string-match-p "org-20" x))
+			   (remove-if (lambda (x) (string-match-p "org$" x)) load-path)))
 (add-to-list 'load-path "~/.emacs.d/straight/repos/org-mode/lisp")
 
 ;; config-file var gets used in iain.el as well, not sure I like that
