@@ -8,10 +8,19 @@ Last update: call_last_modified()
 
 I'm creating a literate programming emacs configuration setup leveraging org-babel.  Partially, this is to create my own highly customized and modular emacs configuration.  However, I've been experimenting with literate programming style emacs configurations for a while and wanted to try my hand at creating my own.
 
-I've started from the configuration at 
-
+The first example of a literate emacs configuration, which I used as a basis initially, was [[https://github.com/mrvdb/emacs-config] [Marcel van der Boom's emacs-config]].  I forked that [[https://github.com] [GitHub]] repo and made a few modifications, but realized that in order to truly understand the way org-mode and its associated modules work, I needed to start from scratch with with a minimal literate emacs configuration and work my way up to a more full featured configuration incrementally.
 
 #+TOC: headlines 4
+
+* Guiding Principles
+In creating this configuration, I am attempting to leverage the following principles:
+
+1. The emacs configuration files should leverage literate programming style as much as possible.
+2. The various emacs features (including org-mode and associate) should be compartmentalized into separate files.
+3. The configuration sections that are system/context-specific (such as work/home or Linux/macOS) should be separately compartmentalized and able to be pulled from separate repository servers.
+
+* Bootstrapping A Literate Configuration
+
 
 
 #+NAME: last_modified
