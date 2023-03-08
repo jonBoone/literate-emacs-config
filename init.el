@@ -7,7 +7,7 @@
 
 ;;; Code:
 
-(require 'cl)                           ; for remove-if
+(require 'cl-lib)                           ; for remove-if
 
 ;; Set gc really large, especially when loading the config file
 ;; These two lines prevent a stuttering cursor for me, in most cases
