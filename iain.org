@@ -20,6 +20,8 @@ In creating this configuration, I am attempting to leverage the following princi
 3. The configuration sections that are system/context-specific (such as work/home or Linux/macOS) should be separately compartmentalized and able to be pulled from separate repository servers.
 
 * Bootstrapping A Literate Configuration
+To bootstrap the literate configuration, there are a few items to attend to first.  In =early-init.el=, we disable the use of the built-in /package.el/ so that we can leverage /straight.el/ as the backend for /use-packge/:
+#+INCLUDE: early-init.el src emacs-lisp
 
 
 
