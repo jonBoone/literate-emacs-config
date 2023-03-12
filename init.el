@@ -63,6 +63,8 @@ load-path
 ;; This produces iain.el which is then loaded. It checks datetime before tangling.
 (org-babel-load-file config-file)
 
+(provide 'init)
+
 ;; END init.el
 ;; Exception 1:
 ;; Apparently when disabled functions get enabled, Emacs puts them here
