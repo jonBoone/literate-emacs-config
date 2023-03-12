@@ -7,14 +7,23 @@
 
 ;;; Code:
 
-(require 'cl-lib)                           ; for cl-remove
+;; upon startup, do the following *after* =early-init.el= is loaded
+;; reset file-name-handler-alist
+(add-hook 'emacs-startup-hook
+	  (lambda ()
+	    (setq file-name-handler-alist file-name-handler-alias-original)
+	    (makunbound 'file-name-hanlder-alist-original)))
 
-;; Disable Org-mode that was shipped with Emacs
+;; pull in system-specific definitions
+(require 'system-specific)
+
+;; force custom into separate local file
+(setq custom-file (concat user-emacs-directory "custom.el"))
+(load custom-file 'noerror)
+
+;; ensure that we don't pick up the included version of org-mode
+(require 'cl-lib)                           ; for cl-remove
 (setq load-path (cl-remove "org$" load-path :test 'string-match-p))
-;;(setq load-path (remove-if (lambda (x) (string-match-p "org-20" x))
-;;			   (remove-if (lambda (x) (string-match-p "org$" x)) load-path)))
-load-path
-(length load-path)
 
 ;; setup straight.el for package management
   (defvar bootstrap-version)
@@ -39,11 +48,11 @@ load-path
     (use-package straight
       :custom
       (straight-host-usernames '((github . "jonBoone"))) ; TODO Move to personal information?
+      (straight-vc-git-default-protocol 'ssh)
       (straight-use-package-by-default t)
       ;; Make sure packages do not pull in internal org, we pregister org from straight.el
       (straight-register-package 'org)
-      (straight-register-package 'org-contrib)
-      )
+      (straight-register-package 'org-contrib))
 
     ;; FROM THIS POINT use-package should work as intended, i.e. using straight.
 
