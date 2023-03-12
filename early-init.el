@@ -17,3 +17,4 @@
             "*not* ")
           "available"))
 
+(provide 'early-init)
