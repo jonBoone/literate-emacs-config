@@ -7,11 +7,54 @@
 
 ;;; Code:
 
-(require 'cl-lib)                           ; for remove-if
+(require 'cl-lib)                           ; for cl-remove
 
-;; HACK: Disable Org-mode that was shipped with Emacs and add one I control
-(setq load-path (remove-if (lambda (x) (string-match-p "org-20" x))
-			   (remove-if (lambda (x) (string-match-p "org$" x)) load-path)))
+;; Disable Org-mode that was shipped with Emacs
+(setq load-path (cl-remove "org$" load-path :test 'string-match-p))
+;;(setq load-path (remove-if (lambda (x) (string-match-p "org-20" x))
+;;			   (remove-if (lambda (x) (string-match-p "org$" x)) load-path)))
+load-path
+(length load-path)
+
+;; setup straight.el for package management
+  (defvar bootstrap-version)
+  (setq straight-repository-branch "develop") ; Need this for new org-contrib location
+  (let ((bootstrap-file
+         (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+        (bootstrap-version 5))
+    (unless (file-exists-p bootstrap-file)
+      (with-current-buffer
+          (url-retrieve-synchronously
+           "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+           'silent 'inhibit-cookies)
+        (goto-char (point-max))
+        (eval-print-last-sexp)))
+    (load bootstrap-file nil 'nomessage))
+
+;; configure 'use-package macro to use straight.el
+    (setq use-package-always-ensure nil   ; Make sure this is nil, so we do not use package.el
+          use-package-verbose 'debug      ; TODO  use a debug var for all of config?
+          )
+    ;; From this point on we should be able to use `use-package
+    (use-package straight
+      :custom
+      (straight-host-usernames '((github . "jonBoone"))) ; TODO Move to personal information?
+      (straight-use-package-by-default t)
+      ;; Make sure packages do not pull in internal org, we pregister org from straight.el
+      (straight-register-package 'org)
+      (straight-register-package 'org-contrib)
+      )
+
+    ;; FROM THIS POINT use-package should work as intended, i.e. using straight.
+
+    ;; Need to install dependencies of use-package manually, why??
+    (use-package diminish)
+
+
+;; set up latest version of org-mode
+(use-package org
+  :straight (org
+	     :includes (org-babel)))
 (add-to-list 'load-path "~/.emacs.d/straight/repos/org-mode/lisp")
 
 ;; config-file var gets used in iain.el as well, not sure I like that
