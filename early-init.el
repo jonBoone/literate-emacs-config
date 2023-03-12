@@ -1,11 +1,24 @@
+;; Set gc really large when loading the config file
+(setq gc-cons-threshold (* 200 1024 1024))
+
+;; Unnecessary? 
+;;(run-with-idle-timer 5 t #'garbage-collect)
+
 ;; Disable package.el in favor of straight.el
 (setq package-enable-at-startup nil)
 
-;; Set gc really large, especially when loading the config file
-;; These two lines prevent a stuttering cursor for me, in most cases
-;; FIXME: gc collection in idle time is not the way to do this, but it works for me
-(setq gc-cons-threshold (* 200 1024 1024))
-(run-with-idle-timer 5 t #'garbage-collect)
+;; Don't look for file-handlers yet
+(defvar file-name-handler-alist-original file-name-handler-alist)
+(setq file-name-handler-alist nil)
+
+;; Don't look in site-lisp for an init.el file
+(setq site-run-file nil)
+
+;; clear up the UI clutter
+(unless (and (display-graphic-p) (eq system-type 'darwin))
+  (push '(menu-bar-lines . 0) default-frame-alist))
+(push '(tool-bar-lines . 0) default-frame-alist)
+(push '(vertical-scroll-bars . 0) default-frame-alist)
 
 ;; If we have the native compiler, use it
 (message (concat
