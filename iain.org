@@ -4,7 +4,7 @@
 #+OPTIONS: H:5 toc:nil creator:nil email:nil author:t timestamp:t tags:nil tex:verbatim
 #+PROPERTY: header-args :noweb no-export
 
-Last update: call_last_modified()
+Last update: call_last_modified() :exports results
 
 * Overview
 
@@ -18,17 +18,21 @@ The first example of a literate emacs configuration, which I used as a basis ini
 In creating this configuration, I am attempting to leverage the following principles:
 
 1. The emacs configuration files should leverage literate programming style as much as possible.
-2. The various emacs features (including org-mode and associate) should be compartmentalized into separate files.
+2. The various emacs features (excluding =straight=, =use-package= and basic =org-mode=) should be compartmentalized into separate files.
 3. The configuration sections that are system/context-specific (such as work/home or Linux/macOS) should be separately compartmentalized and able to be pulled from separate repository servers.
 
 * Bootstrapping A Literate Configuration
 To bootstrap the literate configuration, there are a few items to attend to first.  In =early-init.el=, we disable the use of the built-in /package.el/ so that we can leverage /straight.el/ as the backend for /use-packge/:
-#+INCLUDE: early-init.el src emacs-lisp
+#+INCLUDE: "~/.emacs.d/early-init.el" src emacs-lisp
+
+The next file that is leveraged is =init.el=.  This file first deactivates any org-mode that was shipped with the Emacs installation and then leverages a local copy that we installed ourselves.
+#+INCLUDE: "~/.emacs.d/init.el" src emacs-lisp
+
 
 
 
 #+NAME: last_modified
-#+BEGIN_SRC shell :results value raw output append
+#+BEGIN_SRC shell :results output verbatim raw none
   git log -1 --pretty="format:%ci" ~/.emacs.d/iain.org
 #+END_SRC
 
