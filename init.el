@@ -15,7 +15,7 @@
 	    (makunbound 'file-name-hanlder-alist-original)))
 
 ;; pull in system-specific definitions
-(require 'system-specific)
+;; (require 'system-specific)
 
 ;; force custom into separate local file
 (setq custom-file (concat user-emacs-directory "custom.el"))
