@@ -14,9 +14,6 @@
 	    (setq file-name-handler-alist file-name-handler-alias-original)
 	    (makunbound 'file-name-hanlder-alist-original)))
 
-;; pull in system-specific definitions
-;; (require 'system-specific)
-
 ;; force custom into separate local file
 (setq custom-file (concat user-emacs-directory "custom.el"))
 (load custom-file 'noerror)
