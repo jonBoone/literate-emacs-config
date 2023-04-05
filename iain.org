@@ -15,6 +15,7 @@ The first example of a literate emacs configuration, which I used as a basis ini
 #+TOC: headlines 4
 
 * Guiding Principles
+
 In creating this configuration, I am attempting to leverage the following principles:
 
 1. The emacs configuration files should leverage literate programming style as much as possible.
@@ -22,12 +23,23 @@ In creating this configuration, I am attempting to leverage the following princi
 3. The configuration sections that are system/context-specific (such as work/home or Linux/macOS) should be separately compartmentalized and able to be pulled from separate repository servers.
 
 * Bootstrapping A Literate Configuration
+
 To bootstrap the literate configuration, there are a few items to attend to first.  In =early-init.el=, we disable the use of the built-in /package.el/ so that we can leverage /straight.el/ as the backend for /use-packge/:
 #+INCLUDE: "~/.emacs.d/early-init.el" src emacs-lisp
 
 The next file that is leveraged is =init.el=.  This file first deactivates any org-mode that was shipped with the Emacs installation and then leverages a local copy that we installed ourselves.
 #+INCLUDE: "~/.emacs.d/init.el" src emacs-lisp
 
+* Org-Roam
+
+I am initialy intending to configure Emacs for use of Org-Roam exclusivley.  The Org-Roam configuration will be stored in /org-roam.org/ in my ${HOME}/.emacs.d/org-roam.org file.
+#+INCLUDE "~/.emacs.d/org-roam.org" src emacs-lisp
+
+#+NAME: org-roam.org
+#+BEGIN_SRC emacs-lisp
+  (use-package org-roam
+    :ensure t)
+#+END_SRC
 
 
 
