@@ -1,8 +1,7 @@
-#+SETUPFILE: "~/.emacs.d/org-config.org"
 #+TITLE: Literate Emacs Configuration
 #+SUBTITLE: taken from github.com/daviwil/emacs-from-scratch
 #+OPTIONS: H:5 toc:nil creator:nil email:nil author:t timestamp:t tags:nil tex:verbatim
-#+PROPERTY: header-args :results silent :noweb no-export
+#+PROPERTY: header-args :results silent :exports code :tangle Emacs.el
 
 * Welcome!
 
@@ -26,14 +25,14 @@ At some point, I'll determine how to generate those files from org-babel, but fo
 I want to know how long it took for startup to happen.
 
 #+begin_src emacs-lisp
-  (defun efs/display-startup-time ()
+  (defun my/display-startup-time ()
     (message "Emacs loaded in %s with %d garbage collections."
 	     (format "%.2f seconds"
 		     (float-time
 		      (time-subtract after-init-time before-init-time)))
 	     gcs-done))
 
-  (add-hook 'emacs-startup-hook #'efs/display-startup-time)
+  (add-hook 'emacs-startup-hook #'my/display-startup-time)
 #+end_src
 
 
@@ -93,26 +92,22 @@ We're going to use =straight.el= to provide a deterministic reproducible set of 
 Now, we can configure =use-package= to use =straight= for package fetching.
 
 #+begin_src emacs-lisp
-    (setq use-package-always-ensure nil   ; Make sure this is nil, so we do not use package.el
-          use-package-verbose 'debug      ; TODO  use a debug var for all of config?
-          )
-    ;; From this point on we should be able to use `use-package
-    (use-package straight
-      :custom
-      (straight-host-usernames '((github . "mrvdb"))) ; TODO Move to personal information?
-      (straight-use-package-by-default t)
-      ;; Make sure packages do not pull in internal org, we pregister org from straight.el
-      (straight-register-package 'org)
-      (straight-register-package 'org-contrib)
+  (setq use-package-always-ensure nil   ; Make sure this is nil, so we do not use package.el
+	use-package-verbose 'debug      ; TODO  use a debug var for all of config?
+	)
+  ;; From this point on we should be able to use `use-package
+  (use-package straight
+    :custom
+    (straight-host-usernames '((github . "mrvdb"))) ; TODO Move to personal information?
+    (straight-use-package-by-default t)
+    ;; Make sure packages do not pull in internal org, we pregister org from straight.el
+    (straight-register-package 'org)
+    (straight-register-package 'org-contrib))
 
-      <<straight-helperfunctions>>
+  ;; FROM THIS POINT use-package should work as intended, i.e. using straight.
 
-      )
-
-    ;; FROM THIS POINT use-package should work as intended, i.e. using straight.
-
-    ;; Need to install dependencies of use-package manually, why??
-    (use-package diminish)
+  ;; Need to install dependencies of use-package manually, why??
+  (use-package diminish)
 #+end_src
 
 * Environment Variable Capture
@@ -197,13 +192,13 @@ This section configures basic UI settings that remove unneeded elements to make 
 
 #+begin_src emacs-lisp
 
-(set-face-attribute 'default nil :font "Source Code Pro" :height efs/default-font-size)
+(set-face-attribute 'default nil :font "Source Code Pro" :height my/default-font-size)
 
 ;; Set the fixed pitch face
-(set-face-attribute 'fixed-pitch nil :font "Source Code Pro" :height efs/default-font-size)
+(set-face-attribute 'fixed-pitch nil :font "Source Code Pro" :height my/default-font-size)
 
 ;; Set the variable pitch face
-(set-face-attribute 'variable-pitch nil :font "Cantarell" :height efs/default-variable-font-size :weight 'regular)
+(set-face-attribute 'variable-pitch nil :font "Cantarell" :height my/default-variable-font-size :weight 'regular)
 
 #+end_src
 
@@ -366,7 +361,7 @@ This is an example of using [[https://github.com/abo-abo/hydra][Hydra]] to desig
     ("k" text-scale-decrease "out")
     ("f" nil "finished" :exit t))
 
-  (efs/leader-keys
+  (my/leader-keys
     "ts" '(hydra-text-scale/body :which-key "scale text"))
 
 #+end_src
@@ -377,11 +372,11 @@ This is an example of using [[https://github.com/abo-abo/hydra][Hydra]] to desig
 
 ** Better Font Faces
 
-The =efs/org-font-setup= function configures various text faces to tweak the sizes of headings and use variable width fonts in most cases so that it looks more like we're editing a document in =org-mode=.  We switch back to fixed width (monospace) fonts for code blocks and tables so that they display correctly.
+The =my/org-font-setup= function configures various text faces to tweak the sizes of headings and use variable width fonts in most cases so that it looks more like we're editing a document in =org-mode=.  We switch back to fixed width (monospace) fonts for code blocks and tables so that they display correctly.
 
 #+begin_src emacs-lisp
 
-  (defun efs/org-font-setup ()
+  (defun my/org-font-setup ()
     ;; Replace list hyphen with dot
     (font-lock-add-keywords 'org-mode
                             '(("^ *\\([-]\\) "
@@ -419,7 +414,7 @@ This section contains the basic configuration for =org-mode= plus the configurat
 
 #+begin_src emacs-lisp
 
-  (defun efs/org-mode-setup ()
+  (defun my/org-mode-setup ()
     (org-indent-mode)
     (variable-pitch-mode 1)
     (visual-line-mode 1))
@@ -427,7 +422,7 @@ This section contains the basic configuration for =org-mode= plus the configurat
   (use-package org
     :pin org
     :commands (org-capture org-agenda)
-    :hook (org-mode . efs/org-mode-setup)
+    :hook (org-mode . my/org-mode-setup)
     :config
     (setq org-ellipsis " ▾")
 
@@ -546,7 +541,7 @@ This section contains the basic configuration for =org-mode= plus the configurat
     (define-key global-map (kbd "C-c j")
       (lambda () (interactive) (org-capture nil "jj")))
 
-    (efs/org-font-setup))
+    (my/org-font-setup))
 
 #+end_src
 
@@ -569,13 +564,13 @@ We use [[https://github.com/joostkremers/visual-fill-column][visual-fill-column]
 
 #+begin_src emacs-lisp
 
-  (defun efs/org-mode-visual-fill ()
+  (defun my/org-mode-visual-fill ()
     (setq visual-fill-column-width 100
           visual-fill-column-center-text t)
     (visual-fill-column-mode 1))
 
   (use-package visual-fill-column
-    :hook (org-mode . efs/org-mode-visual-fill))
+    :hook (org-mode . my/org-mode-visual-fill))
 
 #+end_src
 
@@ -615,19 +610,19 @@ You can add more =src= block templates below by copying one of the lines and cha
 
 ** Auto-tangle Configuration Files
 
-This snippet adds a hook to =org-mode= buffers so that =efs/org-babel-tangle-config= gets executed each time such a buffer gets saved.  This function checks to see if the file being saved is the Emacs.org file you're looking at right now, and if so, automatically exports the configuration here to the associated output files.
+This snippet adds a hook to =org-mode= buffers so that =my/org-babel-tangle-config= gets executed each time such a buffer gets saved.  This function checks to see if the file being saved is the Emacs.org file you're looking at right now, and if so, automatically exports the configuration here to the associated output files.
 
 #+begin_src emacs-lisp
 
   ;; Automatically tangle our Emacs.org config file when we save it
-  (defun efs/org-babel-tangle-config ()
+  (defun my/org-babel-tangle-config ()
     (when (string-equal (file-name-directory (buffer-file-name))
                         (expand-file-name user-emacs-directory))
       ;; Dynamic scoping to the rescue
       (let ((org-confirm-babel-evaluate nil))
         (org-babel-tangle))))
 
-  (add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'efs/org-babel-tangle-config)))
+  (add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'my/org-babel-tangle-config)))
 
 #+end_src
 
@@ -647,13 +642,13 @@ The =which-key= integration adds helpful descriptions of the various keys so you
 
 #+begin_src emacs-lisp
 
-  (defun efs/lsp-mode-setup ()
+  (defun my/lsp-mode-setup ()
     (setq lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols))
     (lsp-headerline-breadcrumb-mode))
 
   (use-package lsp-mode
     :commands (lsp lsp-deferred)
-    :hook (lsp-mode . efs/lsp-mode-setup)
+    :hook (lsp-mode . my/lsp-mode-setup)
     :init
     (setq lsp-keymap-prefix "C-c l")  ;; Or 'C-l', 's-l'
     :config
@@ -952,7 +947,7 @@ For more thoughts on Eshell, check out these articles by Pierre Neidhardt:
 
 #+begin_src emacs-lisp
 
-  (defun efs/configure-eshell ()
+  (defun my/configure-eshell ()
     ;; Save command history when commands are entered
     (add-hook 'eshell-pre-command-hook 'eshell-save-some-history)
 
@@ -973,7 +968,7 @@ For more thoughts on Eshell, check out these articles by Pierre Neidhardt:
     :after eshell)
 
   (use-package eshell
-    :hook (eshell-first-time-mode . efs/configure-eshell)
+    :hook (eshell-first-time-mode . my/configure-eshell)
     :config
 
     (with-eval-after-load 'esh-opt
