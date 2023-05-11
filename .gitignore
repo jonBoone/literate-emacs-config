@@ -1,4 +1,6 @@
+eln-cache/
+Emacs.el
 etc/
+straight/
 var/
-elpa/
-packages/
+
