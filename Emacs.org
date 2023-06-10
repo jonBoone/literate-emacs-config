@@ -98,7 +98,7 @@ Now, we can configure =use-package= to use =straight= for package fetching.
   ;; From this point on we should be able to use `use-package
   (use-package straight
     :custom
-    (straight-host-usernames '((github . "mrvdb"))) ; TODO Move to personal information?
+    (straight-host-usernames '((github . "jonBoone"))) ; TODO Move to personal information?
     (straight-use-package-by-default t)
     ;; Make sure packages do not pull in internal org, we pregister org from straight.el
     (straight-register-package 'org)
@@ -175,15 +175,15 @@ This section configures basic UI settings that remove unneeded elements to make 
   ;; Set frame transparency
   (set-frame-parameter (selected-frame) 'alpha my/frame-transparency)
   (add-to-list 'default-frame-alist `(alpha . ,my/frame-transparency))
-  (set-frame-parameter (selected-frame) 'fullscreen 'maximized)
-  (add-to-list 'default-frame-alist '(fullscreen . maximized))
+  ;; (set-frame-parameter (selected-frame) 'fullscreen 'maximized)
+  ;; (add-to-list 'default-frame-alist '(fullscreen . maximized))
 
   ;; Disable line numbers for some modes
   (dolist (mode '(org-mode-hook
-		  term-mode-hook
-		  shell-mode-hook
-		  treemacs-mode-hook
-		  eshell-mode-hook))
+                  term-mode-hook
+                  shell-mode-hook
+                  treemacs-mode-hook
+                  eshell-mode-hook))
     (add-hook mode (lambda () (display-line-numbers-mode 0))))
 
 #+end_src
@@ -209,6 +209,18 @@ This section configures basic UI settings that remove unneeded elements to make 
   ;; Make ESC quit prompts
   (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 
+
+  (use-package general
+    :config
+    (general-create-definer my/leader-keys
+			    :keymaps '(normal insert visual emacs)
+			    :prefix "SPC"
+			    :global-prefix "C-SPC")
+    (my/leader-keys
+     "t"   '(:ignore t :which-key "toggles")
+     "tt"  '(counsel-load-theme :which-key "choose theme")
+     "fde" '(lambda () (interactive) (find-file config-file))))
+  
 #+end_src
 
 * UI Configuration
@@ -224,7 +236,7 @@ This section configures basic UI settings that remove unneeded elements to make 
 
 #+end_src
 
-** Color Theme
+** Color Theme 
 
 [[https://github.com/hlissner/emacs-doom-themes][doom-themes]] is a great set of themes with a lot of variety and support for many different Emacs modes.  Taking a look at the [[https://github.com/hlissner/emacs-doom-themes/tree/screenshots][screenshots]] might help you decide which one you like best.  You can also run =M-x counsel-load-theme= to choose between them easily.
 
@@ -243,11 +255,21 @@ This section configures basic UI settings that remove unneeded elements to make 
 
 #+begin_src emacs-lisp
 
-(use-package all-the-icons)
+  (use-package all-the-icons
+    :straight t
+    ;; usually requires a manual invocation `M-x all-the-icons-install-fonts`
+    )
 
-(use-package doom-modeline
-  :init (doom-modeline-mode 1)
-  :custom ((doom-modeline-height 15)))
+
+  (use-package doom-modeline
+    :straight t
+    :init (doom-modeline-mode 1)
+    :config
+    (setq doom-modeline-height 15
+          doom-modeline-buffer-file-name-style 'relative-to-project
+          doom-modeline-major-mode-icon t
+          doom-modeline-buffer-state-icon t
+          doom-modeline-major-mode-color-icon t))
 
 #+end_src
 
@@ -258,10 +280,10 @@ This section configures basic UI settings that remove unneeded elements to make 
 #+begin_src emacs-lisp
 
   (use-package which-key
-    :defer 0
+    :straight t
     :diminish which-key-mode
     :config
-    (which-key-mode)
+    (which-key-mode t)
     (setq which-key-idle-delay 1))
 
 #+end_src
@@ -308,7 +330,7 @@ This section configures basic UI settings that remove unneeded elements to make 
 
 #+end_src
 
-*** Improved Candidate Sorting with prescient.el
+** Improved Candidate Sorting with prescient.el
 
 prescient.el provides some helpful behavior for sorting Ivy completion candidates based on how recently or frequently you select them.  This can be especially helpful when using =M-x= to run commands that you don't have bound to a key but still need to access occasionally.
 
@@ -353,6 +375,11 @@ This is an example of using [[https://github.com/abo-abo/hydra][Hydra]] to desig
 #+begin_src emacs-lisp
 
   (use-package hydra
+    :straight t
+    :defer t)
+
+  (use-package use-package-hydra
+    :straight t
     :defer t)
 
   (defhydra hydra-text-scale (:timeout 4)
@@ -365,6 +392,25 @@ This is an example of using [[https://github.com/abo-abo/hydra][Hydra]] to desig
     "ts" '(hydra-text-scale/body :which-key "scale text"))
 
 #+end_src
+
+** Snippets
+#+begin_src emacs-lisp
+  (use-package yasnippet
+    :straight t
+    :config
+    (yas-global-mode 1))
+
+  (use-package yasnippet-snippets
+    :straight t
+    :after yasnippet)
+#+end_src
+
+** ChatGPT
+#+begin_src emacs-lisp
+  (use-package gptel
+    :straight t)
+#+end_src
+
 
 * Org Mode
 
@@ -414,134 +460,134 @@ This section contains the basic configuration for =org-mode= plus the configurat
 
 #+begin_src emacs-lisp
 
-  (defun my/org-mode-setup ()
-    (org-indent-mode)
-    (variable-pitch-mode 1)
-    (visual-line-mode 1))
+    (defun my/org-mode-setup ()
+      (org-indent-mode)
+      (variable-pitch-mode 1)
+      (visual-line-mode 1))
 
-  (use-package org
-    :pin org
-    :commands (org-capture org-agenda)
-    :hook (org-mode . my/org-mode-setup)
-    :config
-    (setq org-ellipsis " ▾")
+    (use-package org
+      :commands (org-capture org-agenda)
+      :hook (org-mode . my/org-mode-setup)
+      :config
+      (setq org-ellipsis " ▾")
 
-    (setq org-agenda-start-with-log-mode t)
-    (setq org-log-done 'time)
-    (setq org-log-into-drawer t)
+      (setq org-agenda-start-with-log-mode t)
+      (setq org-log-done 'time)
+      (setq org-log-into-drawer t)
 
-    (setq org-agenda-files
-          '("~/Projects/Code/emacs-from-scratch/OrgFiles/Tasks.org"
-            "~/Projects/Code/emacs-from-scratch/OrgFiles/Habits.org"
-            "~/Projects/Code/emacs-from-scratch/OrgFiles/Birthdays.org"))
+      (setq org-agenda-files
+	    '("~/Dropbox/pkb/org"
+	      "~/Projects/Code/emacs-from-scratch/OrgFiles/Tasks.org"
+	      "~/Projects/Code/emacs-from-scratch/OrgFiles/Habits.org"
+	      "~/Projects/Code/emacs-from-scratch/OrgFiles/Birthdays.org"))
 
-    (require 'org-habit)
-    (add-to-list 'org-modules 'org-habit)
-    (setq org-habit-graph-column 60)
+      (require 'org-habit)
+      (add-to-list 'org-modules 'org-habit)
+      (setq org-habit-graph-column 60)
 
-    (setq org-todo-keywords
-      '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d!)")
-        (sequence "BACKLOG(b)" "PLAN(p)" "READY(r)" "ACTIVE(a)" "REVIEW(v)" "WAIT(w@/!)" "HOLD(h)" "|" "COMPLETED(c)" "CANC(k@)")))
+      (setq org-todo-keywords
+	'((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d!)")
+	  (sequence "BACKLOG(b)" "PLAN(p)" "READY(r)" "ACTIVE(a)" "REVIEW(v)" "WAIT(w@/!)" "HOLD(h)" "|" "COMPLETED(c)" "CANC(k@)")))
 
-    (setq org-refile-targets
-      '(("Archive.org" :maxlevel . 1)
-        ("Tasks.org" :maxlevel . 1)))
+      (setq org-refile-targets
+	'(("Archive.org" :maxlevel . 1)
+	  ("Tasks.org" :maxlevel . 1)))
 
-    ;; Save Org buffers after refiling!
-    (advice-add 'org-refile :after 'org-save-all-org-buffers)
+      ;; Save Org buffers after refiling!
+      (advice-add 'org-refile :after 'org-save-all-org-buffers)
 
-    (setq org-tag-alist
-      '((:startgroup)
-         ; Put mutually exclusive tags here
-         (:endgroup)
-         ("@errand" . ?E)
-         ("@home" . ?H)
-         ("@work" . ?W)
-         ("agenda" . ?a)
-         ("planning" . ?p)
-         ("publish" . ?P)
-         ("batch" . ?b)
-         ("note" . ?n)
-         ("idea" . ?i)))
+      (setq org-tag-alist
+	'((:startgroup)
+	   ; Put mutually exclusive tags here
+	   (:endgroup)
+	   ("@errand" . ?E)
+	   ("@home" . ?H)
+	   ("@work" . ?W)
+	   ("agenda" . ?a)
+	   ("planning" . ?p)
+	   ("publish" . ?P)
+	   ("batch" . ?b)
+	   ("note" . ?n)
+	   ("idea" . ?i)))
 
-    ;; Configure custom agenda views
-    (setq org-agenda-custom-commands
-     '(("d" "Dashboard"
-       ((agenda "" ((org-deadline-warning-days 7)))
-        (todo "NEXT"
-          ((org-agenda-overriding-header "Next Tasks")))
-        (tags-todo "agenda/ACTIVE" ((org-agenda-overriding-header "Active Projects")))))
+      ;; Configure custom agenda views
+      (setq org-agenda-custom-commands
+       '(("d" "Dashboard"
+	 ((agenda "" ((org-deadline-warning-days 7)))
+	  (todo "NEXT"
+	    ((org-agenda-overriding-header "Next Tasks")))
+	  (tags-todo "agenda/ACTIVE" ((org-agenda-overriding-header "Active Projects")))))
 
-      ("n" "Next Tasks"
-       ((todo "NEXT"
-          ((org-agenda-overriding-header "Next Tasks")))))
+	("n" "Next Tasks"
+	 ((todo "NEXT"
+	    ((org-agenda-overriding-header "Next Tasks")))))
 
-      ("W" "Work Tasks" tags-todo "+work-email")
+	("W" "Work Tasks" tags-todo "+work-email")
 
-      ;; Low-effort next actions
-      ("e" tags-todo "+TODO=\"NEXT\"+Effort<15&+Effort>0"
-       ((org-agenda-overriding-header "Low Effort Tasks")
-        (org-agenda-max-todos 20)
-        (org-agenda-files org-agenda-files)))
+	;; Low-effort next actions
+	("e" tags-todo "+TODO=\"NEXT\"+Effort<15&+Effort>0"
+	 ((org-agenda-overriding-header "Low Effort Tasks")
+	  (org-agenda-max-todos 20)
+	  (org-agenda-files org-agenda-files)))
 
-      ("w" "Workflow Status"
-       ((todo "WAIT"
-              ((org-agenda-overriding-header "Waiting on External")
-               (org-agenda-files org-agenda-files)))
-        (todo "REVIEW"
-              ((org-agenda-overriding-header "In Review")
-               (org-agenda-files org-agenda-files)))
-        (todo "PLAN"
-              ((org-agenda-overriding-header "In Planning")
-               (org-agenda-todo-list-sublevels nil)
-               (org-agenda-files org-agenda-files)))
-        (todo "BACKLOG"
-              ((org-agenda-overriding-header "Project Backlog")
-               (org-agenda-todo-list-sublevels nil)
-               (org-agenda-files org-agenda-files)))
-        (todo "READY"
-              ((org-agenda-overriding-header "Ready for Work")
-               (org-agenda-files org-agenda-files)))
-        (todo "ACTIVE"
-              ((org-agenda-overriding-header "Active Projects")
-               (org-agenda-files org-agenda-files)))
-        (todo "COMPLETED"
-              ((org-agenda-overriding-header "Completed Projects")
-               (org-agenda-files org-agenda-files)))
-        (todo "CANC"
-              ((org-agenda-overriding-header "Cancelled Projects")
-               (org-agenda-files org-agenda-files)))))))
+	("w" "Workflow Status"
+	 ((todo "WAIT"
+		((org-agenda-overriding-header "Waiting on External")
+		 (org-agenda-files org-agenda-files)))
+	  (todo "REVIEW"
+		((org-agenda-overriding-header "In Review")
+		 (org-agenda-files org-agenda-files)))
+	  (todo "PLAN"
+		((org-agenda-overriding-header "In Planning")
+		 (org-agenda-todo-list-sublevels nil)
+		 (org-agenda-files org-agenda-files)))
+	  (todo "BACKLOG"
+		((org-agenda-overriding-header "Project Backlog")
+		 (org-agenda-todo-list-sublevels nil)
+		 (org-agenda-files org-agenda-files)))
+	  (todo "READY"
+		((org-agenda-overriding-header "Ready for Work")
+		 (org-agenda-files org-agenda-files)))
+	  (todo "ACTIVE"
+		((org-agenda-overriding-header "Active Projects")
+		 (org-agenda-files org-agenda-files)))
+	  (todo "COMPLETED"
+		((org-agenda-overriding-header "Completed Projects")
+		 (org-agenda-files org-agenda-files)))
+	  (todo "CANC"
+		((org-agenda-overriding-header "Cancelled Projects")
+		 (org-agenda-files org-agenda-files)))))))
 
-    (setq org-capture-templates
-      `(("t" "Tasks / Projects")
-        ("tt" "Task" entry (file+olp "~/Projects/Code/emacs-from-scratch/OrgFiles/Tasks.org" "Inbox")
-             "* TODO %?\n  %U\n  %a\n  %i" :empty-lines 1)
+      (setq org-capture-templates
+	`(("t" "Tasks / Projects")
+	  ("tt" "Task" entry (file+olp "~/Projects/Code/emacs-from-scratch/OrgFiles/Tasks.org" "Inbox")
+	       "* TODO %?\n  %U\n  %a\n  %i" :empty-lines 1)
 
-        ("j" "Journal Entries")
-        ("jj" "Journal" entry
-             (file+olp+datetree "~/Projects/Code/emacs-from-scratch/OrgFiles/Journal.org")
-             "\n* %<%I:%M %p> - Journal :journal:\n\n%?\n\n"
-             ;; ,(dw/read-file-as-string "~/Notes/Templates/Daily.org")
-             :clock-in :clock-resume
-             :empty-lines 1)
-        ("jm" "Meeting" entry
-             (file+olp+datetree "~/Projects/Code/emacs-from-scratch/OrgFiles/Journal.org")
-             "* %<%I:%M %p> - %a :meetings:\n\n%?\n\n"
-             :clock-in :clock-resume
-             :empty-lines 1)
+	  ("j" "Journal Entries")
+	  ("jj" "Journal" entry
+	       (file+olp+datetree "~/Projects/Code/emacs-from-scratch/OrgFiles/Journal.org")
+	       "\n* %<%I:%M %p> - Journal :journal:\n\n%?\n\n"
+	       ;; ,(dw/read-file-as-string "~/Notes/Templates/Daily.org")
+	       :clock-in :clock-resume
+	       :empty-lines 1)
+	  ("jm" "Meeting" entry
+	       (file+olp+datetree "~/Projects/Code/emacs-from-scratch/OrgFiles/Journal.org")
+	       "* %<%I:%M %p> - %a :meetings:\n\n%?\n\n"
+	       :clock-in :clock-resume
+	       :empty-lines 1)
 
-        ("w" "Workflows")
-        ("we" "Checking Email" entry (file+olp+datetree "~/Projects/Code/emacs-from-scratch/OrgFiles/Journal.org")
-             "* Checking Email :email:\n\n%?" :clock-in :clock-resume :empty-lines 1)
+	  ("w" "Workflows")
+	  ("we" "Checking Email" entry (file+olp+datetree "~/Projects/Code/emacs-from-scratch/OrgFiles/Journal.org")
+	       "* Checking Email :email:\n\n%?" :clock-in :clock-resume :empty-lines 1)
 
-        ("m" "Metrics Capture")
-        ("mw" "Weight" table-line (file+headline "~/Projects/Code/emacs-from-scratch/OrgFiles/Metrics.org" "Weight")
-         "| %U | %^{Weight} | %^{Notes} |" :kill-buffer t)))
+	  ("m" "Metrics Capture")
+	  ("mw" "Weight" table-line (file+headline "~/Projects/Code/emacs-from-scratch/OrgFiles/Metrics.org" "Weight")
+	   "| %U | %^{Weight} | %^{Notes} |" :kill-buffer t)))
 
-    (define-key global-map (kbd "C-c j")
-      (lambda () (interactive) (org-capture nil "jj")))
+      (define-key global-map (kbd "C-c j")
+	(lambda () (interactive) (org-capture nil "jj")))
 
-    (my/org-font-setup))
+      (my/org-font-setup))
 
 #+end_src
 
@@ -626,7 +672,31 @@ This snippet adds a hook to =org-mode= buffers so that =my/org-babel-tangle-conf
 
 #+end_src
 
+** Tree-sitter
+#+begin_src emacs-lisp
+  (use-package tree-sitter
+    :straight t)
+
+  (use-package tree-sitter-langs
+    :straight t
+    :after tree-sitter)
+#+end_src
+
 * Development
+
+** Programming Practice
+
+*** Leetcode
+
+#+begin_src emacs-lisp
+  (use-package leetcode
+    :straight t
+    :commands leetcode-show
+    :config
+    (setq leetcode-prefer-language  "python3"
+          leetcode-save-solutions t
+          leetcode-directory "~/Dropbox/leetcode"))
+#+end_src
 
 ** Languages
 
@@ -704,6 +774,18 @@ Try these commands with =M-x=:
 
 #+end_src
 
+**** lsp-pyright
+
+[[https://github.com/emacs-lsp/lsp-pyright][lsp-pyright]] intergrates =lsp-mode= with Microsoft's pyright language server protocol support for python.
+
+#+begin_src emacs-lisp
+  (use-package lsp-pyright
+    :straight t
+    :hook (python-mode . (lambda ()
+                           (require 'lsp-pyright)
+                           (lsp))))
+#+end_src
+
 *** Debugging with dap-mode
 
 [[https://emacs-lsp.github.io/dap-mode/][dap-mode]] is an excellent package for bringing rich debugging capabilities to Emacs via the [[https://microsoft.github.io/debug-adapter-protocol/][Debug Adapter Protocol]].  You should check out the [[https://emacs-lsp.github.io/dap-mode/page/configuration/][configuration docs]] to learn how to configure the debugger for your language.  Also make sure to check out the documentation for the debug adapter to see what configuration parameters are available to use for your debug templates!
@@ -747,7 +829,7 @@ There are a number of other language servers for Python so if you find that =pyl
 #+begin_src emacs-lisp
 
   (use-package python-mode
-    :ensure t
+    :straight t
     :hook (python-mode . lsp-deferred)
     :custom
     ;; NOTE: Set these if Python 3 is called "python3" on your system!
@@ -769,6 +851,87 @@ You can use the pyvenv package to use =virtualenv= environments in Emacs.  The =
     :config
     (pyvenv-mode 1))
 
+#+end_src
+
+** Lisp
+*** Lispy
+#+begin_src emacs-lisp
+  (use-package lispy
+    :straight t
+    :hook ((emacs-lisp-mode . lispy-mode)
+           (lisp-mode . lispy-mode)
+           (scheme-mode . lispy-mode)))
+#+end_src
+*** SLIME
+#+begin_src emacs-lisp
+  (use-package slime
+    :straight t
+    :mode ("\\.lisp\\'" . lisp-mode)
+    :init
+    (setq slime-net-coding-system 'utf-8-unix
+          slime-lisp-implementations
+          '((cmucl-latest ("lisp") :env ("LANG=en@piglatin"))
+            (sbcl ("sbcl" "--core" "sbcl.core-for-slime") :coding-system utf-8-lang))
+          slime-contribs '(slime-fancy
+                           slime-repl
+                           slime-autodoc))
+    :config
+    ;; fontify *SLIME Description* buffer (SBCL only?)
+    (defun slime-description-fontify ()
+      "Fontify sections of SLIME Description."
+      (with-current-buffer "*SLIME Description*"
+        (highlight-regexp
+         (concat "^Function:\\|"
+                 "^Macro-function:\\|"
+                 "^Its associated name.+?) is\\|"
+                 "^The .+'s arguments are:\\|"
+                 "^Function documentation:$\\|"
+                 "^Its.+\\(is\\|are\\):\\|"
+                 "^On.+it was compiled from:$")
+         'hi-green-b)))
+    (defadvice slime-show-description (after slime-description-fontify activate)
+      "Fontify sections of SLIME Description."
+      (slime-description-fontify))
+
+    ;; improve slime apropos usability
+    (defvar slime-apropos-anchor-regexp "^[^ ]")
+    (defun slime-apropos-next-anchor ()
+      (interactive)
+      (let ((pt (point)))
+        (forward-line 1)
+        (if (re-search-forward slime-apropos-anchor-regexp nil t)
+            (goto-char (match-beginning 0))
+          (goto-char pt)
+          (error "anchor not found"))))
+    (defun slime-apropos-prev-anchor ()
+      (interactive)
+      (let ((pt (point)))
+        (if (re-search-backward slime-apropos-anchor-regexp nil t)
+            (goto-char (match-beginning 0))
+          (goto-char pt)
+          (error "anchor not found"))))
+    (defvar slime-apropos-minor-mode-map (make-sparse-keymap))
+    (define-key slime-apropos-minor-mode-map "\C-m" 'slime-describe-symbol)
+    (define-key slime-apropos-minor-mode-map "l" 'slime-describe-symbol)
+    (define-key slime-apropos-minor-mode-map "j" 'slime-apropos-next-anchor)
+    (define-key slime-apropos-minor-mode-map "k" 'slime-apropos-prev-anchor)
+    (define-minor-mode slime-apropos-minor-mode "")
+    (defadvice slime-show-apropos (after slime-apropos-minor-mode activate)
+      ""
+      (when (get-buffer "*SLIME Apropos*")
+        (with-current-buffer "*SLIME Apropos*" (slime-apropos-minor-mode 1))))
+
+    ;; integrate Yasnippet support
+    (defun slime-tab ()
+      "slime-mode tab dwim, either indent, complete symbol or yas/expand"
+      (interactive)
+      (let ((r (slime-indent-and-complete-symbol)))
+        (unless r
+          (yas/expand))))
+    (defun my-slime-mode-hook ()
+      (interactive)
+      (define-key slime-mode-map (kbd "<tab>")
+                  'slime-tab)))
 #+end_src
 
 ** Company Mode
@@ -838,14 +1001,22 @@ We also use [[https://github.com/sebastiencs/company-box][company-box]] to furth
 
 #+end_src
 
+** Improved parenthesis
+#+begin_src emacs-lisp
+  (use-package smartparens
+    :straight t
+    :hook (prog-mode . smartparens-mode))
+#+end_src 
+
 ** Rainbow Delimiters
 
 [[https://github.com/Fanael/rainbow-delimiters][rainbow-delimiters]] is useful in programming modes because it colorizes nested parentheses and brackets according to their nesting depth.  This makes it a lot easier to visually match parentheses in Emacs Lisp code without having to count them yourself.
 
 #+begin_src emacs-lisp
 
-(use-package rainbow-delimiters
-  :hook (prog-mode . rainbow-delimiters-mode))
+  (use-package rainbow-delimiters
+    :straight t
+    :hook (prog-mode . rainbow-delimiters-mode))
 
 #+end_src
 
@@ -904,6 +1075,19 @@ Make sure that you have the [[https://github.com/akermu/emacs-libvterm/#requirem
     (setq vterm-max-scrollback 10000))
 
 #+end_src
+
+** multi-vterm
+[[https://github.com/suonlight/multi-vterm][multi-vterm mode]] allows running multiple =vterm= buffers simultaneously.
+
+#+begin_src emacs-lisp
+
+  (use-package multi-vterm
+    :straight t
+    :config
+    (setq multi-vterm-dedicated-window-height-percent 10)
+    :after vterm)
+#+end_src
+
 
 ** shell-mode
 
@@ -1048,27 +1232,30 @@ Dired is a built-in file manager for Emacs that does some pretty amazing things!
 #+begin_src emacs-lisp
 
   (use-package dired
-    :ensure nil
+    :straight nil
     :commands (dired dired-jump)
     :bind (("C-x C-j" . dired-jump))
-    :custom ((dired-listing-switches "-agho --group-directories-first"))
-    )
+    :custom ((dired-listing-switches "-agho --group-directories-first")))
 
   (use-package dired-single
+    :straight t
     :commands (dired dired-jump))
 
   (use-package all-the-icons-dired
+    :straight t
     :hook (dired-mode . all-the-icons-dired-mode))
 
   (use-package dired-open
+    :straight t
     :commands (dired dired-jump)
     :config
     ;; Doesn't work as expected!
     ;;(add-to-list 'dired-open-functions #'dired-open-xdg t)
     (setq dired-open-extensions '(("png" . "feh")
-				  ("mkv" . "mpv"))))
+                                  ("mkv" . "mpv"))))
 
   (use-package dired-hide-dotfiles
+    :straight t
     :hook (dired-mode . dired-hide-dotfiles-mode))
 
 #+end_src
