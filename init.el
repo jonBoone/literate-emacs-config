@@ -3,23 +3,23 @@
 ;; Emacs initialization file
 ;;
 ;; As a literate emacs configuration, we leverage org-babel.
-;; Our goal here is to load a proper subset of org-mode to enable the full configuration.
+;; Our goal here is to load a proper subset of org-mode to
+;; enable the full configuration.
 
 ;;; Code:
 
-;; upon startup, do the following *after* =early-init.el= is loaded
-;; reset file-name-handler-alist
-(add-hook 'emacs-startup-hook
-	  (lambda ()
-	    (setq file-name-handler-alist file-name-handler-alias-original)
-	    (makunbound 'file-name-hanlder-alist-original)))
+(require 'cl-lib) ; for 'cl-remove
+
+;; ensure =user-init-file= and =user=emacs-directory= are correct
+(setq user-init-file (or load-file-name (buffer-file-name)))
+(setq user-emacs-directory (file-name-directory user-init-file))
+
 
 ;; force custom into separate local file
 (setq custom-file (concat user-emacs-directory "custom.el"))
 (load custom-file 'noerror)
 
 ;; ensure that we don't pick up the included version of org-mode
-(require 'cl-lib)                           ; for cl-remove
 (setq load-path (cl-remove "org$" load-path :test 'string-match-p))
 
 ;; setup straight.el for package management
@@ -64,7 +64,7 @@
 (add-to-list 'load-path "~/.emacs.d/straight/repos/org-mode/lisp")
 
 ;; config-file var gets used in iain.el as well, not sure I like that
-(setq config-file (expand-file-name "iain.org" user-emacs-directory))
+(setq config-file (expand-file-name "Emacs.org" user-emacs-directory))
 
 ;; This produces iain.el which is then loaded. It checks datetime before tangling.
 (org-babel-load-file config-file)
