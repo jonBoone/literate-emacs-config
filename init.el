@@ -1,37 +1,79 @@
-;;;; Package --- Emacs initialisation 
-;;; Commentary: initialisation starting point
+;;;; Package --- Emacs initialization
+;;; Commentary:
+;; Emacs initialization file
 ;;
+;; As a literate emacs configuration, we leverage org-babel.
+;; Our goal here is to load a proper subset of org-mode to enable the full configuration.
+
 ;;; Code:
 
-(require 'cl-lib)
+;; upon startup, do the following *after* =early-init.el= is loaded
+;; reset file-name-handler-alist
+(add-hook 'emacs-startup-hook
+	  (lambda ()
+	    (setq file-name-handler-alist file-name-handler-alias-original)
+	    (makunbound 'file-name-hanlder-alist-original)))
 
-;; ensure =user-init-file= and =user-emacs-directory= are correct
-(setq user-init-file (or load-file-name (buffer-file-name)))
-(setq user-emacs-directory (file-name-directory user-init-file))
+;; force custom into separate local file
+(setq custom-file (concat user-emacs-directory "custom.el"))
+(load custom-file 'noerror)
 
-;; Set gc really large, especially when loading the config file
-;; These two lines prevent a stuttering cursor for me, in most cases
-;; FIXME: gc collection in idle time is not the way to do this, but it works for me
-(setq gc-cons-threshold (* 200 1024 1024))
-(run-with-idle-timer 5 t #'garbage-collect)
+;; ensure that we don't pick up the included version of org-mode
+(require 'cl-lib)                           ; for cl-remove
+(setq load-path (cl-remove "org$" load-path :test 'string-match-p))
 
-;; If we have the native compiler, use it
-(message (concat
-          "Native compilation is "
-          (if (and (fboundp 'native-comp-available-p) (native-comp-available-p))
-              (progn
-                (setq comp-deferred-compilation t)
-                "")
-            "*not* ")
-          "available"))
+;; setup straight.el for package management
+  (defvar bootstrap-version)
+  (setq straight-repository-branch "develop") ; Need this for new org-contrib location
+  (let ((bootstrap-file
+         (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+        (bootstrap-version 5))
+    (unless (file-exists-p bootstrap-file)
+      (with-current-buffer
+          (url-retrieve-synchronously
+           "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+           'silent 'inhibit-cookies)
+        (goto-char (point-max))
+        (eval-print-last-sexp)))
+    (load bootstrap-file nil 'nomessage))
 
-;; HACK: Disable Org-mode that was shipped with Emacs and add one I control
-(setq load-path (cl-remove "org$" load-path :test (lambda (x y) (string-match-p x y))))
-(add-to-list 'load-path (expand-file-name "straight/repos/org/lisp" user-emacs-directory))
+;; configure 'use-package macro to use straight.el
+    (setq use-package-always-ensure nil   ; Make sure this is nil, so we do not use package.el
+          use-package-verbose 'debug      ; TODO  use a debug var for all of config?
+          )
+    ;; From this point on we should be able to use `use-package
+    (use-package straight
+      :custom
+      (straight-host-usernames '((github . "jonBoone"))) ; TODO Move to personal information?
+      (straight-vc-git-default-protocol 'ssh)
+      (straight-use-package-by-default t)
+      ;; Make sure packages do not pull in internal org, we pregister org from straight.el
+      (straight-register-package 'org)
+      (straight-register-package 'org-contrib))
 
-(setq config-file (expand-file-name "Emacs.org" user-emacs-directory))
+    ;; FROM THIS POINT use-package should work as intended, i.e. using straight.
 
-;; This produces mrb.el which is then loaded. It checks datetime before tangling.
+    ;; Need to install dependencies of use-package manually, why??
+    (use-package diminish)
+
+
+;; set up latest version of org-mode
+(use-package org
+  :straight (org
+	     :includes (org-babel)))
+(add-to-list 'load-path "~/.emacs.d/straight/repos/org-mode/lisp")
+
+;; config-file var gets used in iain.el as well, not sure I like that
+(setq config-file (expand-file-name "iain.org" user-emacs-directory))
+
+;; This produces iain.el which is then loaded. It checks datetime before tangling.
 (org-babel-load-file config-file)
 
+(provide 'init)
+
 ;; END init.el
+;; Exception 1:
+;; Apparently when disabled functions get enabled, Emacs puts them here
+;;
+
+;;; init.el ends here
