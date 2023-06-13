@@ -1,6 +1,6 @@
-eln-cache/
 Emacs.el
+eln-cache/
+elpa/
 etc/
 straight/
 var/
-
