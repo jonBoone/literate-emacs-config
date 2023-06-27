@@ -84,7 +84,21 @@
       (path-separator . ":")
       (null-device . "/dev/null"))))
  '(ignored-local-variable-values
-   '((eval add-hook 'before-save-hook
+   '((Package . eval)
+     (Package PCL Lisp 1000)
+     (Package . C)
+     (Package . Extensions)
+     (Syntax . Common-Lisp)
+     (Package PCL
+	      (LISP WALKER))
+     (Package PCL LISP 1000)
+     (Log . C.Log)
+     (Package . conditions)
+     (Package . Kernel)
+     (Syntax . Common-lisp)
+     (Base . 10)
+     (Package . PCL)
+     (eval add-hook 'before-save-hook
 	   (lambda nil
 	     (if
 		 (fboundp 'org-make-toc)
@@ -102,7 +116,8 @@
      (whitespace-style quote
 		       (face trailing empty tabs))
      (whitespace-action)
-     (Package . Lisp))))
+     (Package . Lisp)))
+ '(warning-suppress-types '((use-package))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
