@@ -23,38 +23,38 @@
 (setq load-path (cl-remove "org$" load-path :test 'string-match-p))
 
 ;; setup straight.el for package management
-  (defvar bootstrap-version)
-  (setq straight-repository-branch "develop") ; Need this for new org-contrib location
-  (let ((bootstrap-file
-         (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
-        (bootstrap-version 5))
-    (unless (file-exists-p bootstrap-file)
-      (with-current-buffer
-          (url-retrieve-synchronously
-           "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
-           'silent 'inhibit-cookies)
-        (goto-char (point-max))
-        (eval-print-last-sexp)))
-    (load bootstrap-file nil 'nomessage))
+(defvar bootstrap-version)
+(setq straight-repository-branch "develop") ; Need this for new org-contrib location
+(let ((bootstrap-file
+       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+      (bootstrap-version 5))
+  (unless (file-exists-p bootstrap-file)
+    (with-current-buffer
+        (url-retrieve-synchronously
+         "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+         'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
 
 ;; configure 'use-package macro to use straight.el
-    (setq use-package-always-ensure nil   ; Make sure this is nil, so we do not use package.el
-          use-package-verbose 'debug      ; TODO  use a debug var for all of config?
-          )
-    ;; From this point on we should be able to use `use-package
-    (use-package straight
-      :custom
-      (straight-host-usernames '((github . "jonBoone"))) ; TODO Move to personal information?
-      (straight-vc-git-default-protocol 'ssh)
-      (straight-use-package-by-default t)
-      ;; Make sure packages do not pull in internal org, we pregister org from straight.el
-      (straight-register-package 'org)
-      (straight-register-package 'org-contrib))
+(setq use-package-always-ensure nil   ; Make sure this is nil, so we do not use package.el
+      use-package-verbose 'debug      ; TODO  use a debug var for all of config?
+      )
+;; From this point on we should be able to use `use-package
+(use-package straight
+  :custom
+  (straight-host-usernames '((github . "jonBoone"))) ; TODO Move to personal information?
+  (straight-vc-git-default-protocol 'ssh)
+  (straight-use-package-by-default t)
+  ;; Make sure packages do not pull in internal org, we pregister org from straight.el
+  (straight-register-package 'org)
+  (straight-register-package 'org-contrib))
 
-    ;; FROM THIS POINT use-package should work as intended, i.e. using straight.
+;; FROM THIS POINT use-package should work as intended, i.e. using straight.
 
-    ;; Need to install dependencies of use-package manually, why??
-    (use-package diminish)
+;; Need to install dependencies of use-package manually, why??
+(use-package diminish)
 
 
 ;; set up latest version of org-mode
