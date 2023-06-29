@@ -206,8 +206,17 @@ This section configures UI settings that remove unneeded elements to make Emacs 
 #+begin_src emacs-lisp
 
   ;; This may need to be adjusted from system to system
-  (defvar my/default-font-size 120)
-  (defvar my/default-variable-font-size 120)
+  ;; Initialize them to nil
+  (defvar my/default-font-size nil)
+  (defvar my/default-variable-font-size nil)
+
+  (case
+   ((= system-type "darwin")
+    (setq my/default-font-size 180
+          my/default-variable-font-size 180))
+   ((= system-type "gnu/linux")
+    (setq my/default-font-size 120
+          my/default-variable-font-size 120)))
 
   ;; Make frame transparency overridable
   (defvar my/frame-transparency '(90 . 90))
