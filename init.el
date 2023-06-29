@@ -54,7 +54,8 @@
 ;; FROM THIS POINT use-package should work as intended, i.e. using straight.
 
 ;; Need to install dependencies of use-package manually, why??
-(use-package diminish)
+(use-package diminish
+  :straight t)
 
 
 ;; set up latest version of org-mode
