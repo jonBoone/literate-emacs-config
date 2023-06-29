@@ -738,7 +738,7 @@ This section contains the basic configuration for =org-mode= plus the configurat
           org-edit-src-content-indentation   2
           org-hide-block-startup             nil
           org-src-preserve-indentation       nil
-          org-startup-folded                 'content
+          ;; org-startup-folded                 'content
           org-cycle-separator-lines          2
           org-modules                        '(org-crypt
                                                org-habit
