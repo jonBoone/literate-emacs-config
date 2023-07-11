@@ -355,7 +355,7 @@ Prettify the mode line with `smart-mode-line`.  Really need to re-evaluate the o
                     " "
                     mode-line-misc-info)))
 #+end_src
-*** Doome Mode Line
+*** Doom Mode Line
 [[https://github.com/seagle0128/doom-modeline][doom-modeline]] is a very attractive and rich (yet still minimal) mode line configuration for Emacs.  The default configuration is quite good but you can check out the [[https://github.com/seagle0128/doom-modeline#customize][configuration options]] for more things you can enable or disable.
 *NOTE:* The first time you load your configuration on a new machine, you'll need to run `M-x all-the-icons-install-fonts` so that mode line icons display correctly.
 #+begin_src emacs-lisp
@@ -752,10 +752,10 @@ This section contains the basic configuration for =org-mode= plus the configurat
                                                ("Tasks.org" :maxlevel . 1))
           org-outline-path-complete-in-steps nil
           org-refile-use-outline-path        t
-          org-agenda-files                   '("~/Dropbox/pkb/org"
-                                               "~/Projects/Code/emacs-from-scratch/OrgFiles/Tasks.org"
-                                               "~/Projects/Code/emacs-from-scratch/OrgFiles/Habits.org"
-                                               "~/Projects/Code/emacs-from-scratch/OrgFiles/Birthdays.org"))
+          org-agenda-files               '("~/Dropbox/pkb/org/journal/2023-07-07-agenda.org"
+                                           "~/Projects/Code/emacs-from-scratch/OrgFiles/Tasks.org"
+                                           "~/Projects/Code/emacs-from-scratch/OrgFiles/Habits.org"
+                                           "~/Projects/Code/emacs-from-scratch/OrgFiles/Birthdays.org"))
 
     ;; Save Org buffers after refiling!
     (advice-add 'org-refile :after 'org-save-all-org-buffers)
@@ -1075,6 +1075,15 @@ This package makes it much easier to edit Org documents when`org-hide-emphasis-m
     :after tree-sitter)
 #+end_src
 
+* LLMs
+** ChatGPT
+#+begin_src emacs-lisp
+  (use-package c3po
+    :straight (:host github :repo "d1egoaz/c3po.el")
+    :config
+    (setq c3po-api-key custom-c3po-api-key))
+#+end_src
+
 * Development
 
 ** Programming Practice
@@ -1242,19 +1251,19 @@ You can use the pyvenv package to use =virtualenv= environments in Emacs.  The =
 
 *** Emacs Lisp
 #+begin_src emacs-lisp
-  (add-hook 'emacs-lisp-mode-hook #'flycheck-mode)
+  ;;  (add-hook 'emacs-lisp-mode-hook #'flycheck-mode)
 
   (use-package helpful
-    :commands (helpful-callable helpful-variable helpful-command helpful-key)
-    :bind
-    ([remap describe-function] . helpful-function)
-    ([remap describe-symbol] . helpful-symbol)
-    ([remap describe-variable] . helpful-variable)
-    ([remap describe-command] . helpful-command)
-    ([remap describe-key] . helpful-key)
-    :config
-    (setq counsel-describe-function-function #'helpful-callable
-          counsel-describe-variable-function #'helpful-variable))
+      :commands (helpful-callable helpful-variable helpful-command helpful-key)
+      :bind
+      ([remap describe-function] . helpful-function)
+      ([remap describe-symbol] . helpful-symbol)
+      ([remap describe-variable] . helpful-variable)
+      ([remap describe-command] . helpful-command)
+      ([remap describe-key] . helpful-key)
+      :config
+      (setq counsel-describe-function-function #'helpful-callable
+            counsel-describe-variable-function #'helpful-variable))
 #+end_src
 
 *** SLY
@@ -1357,54 +1366,54 @@ You can use the pyvenv package to use =virtualenv= environments in Emacs.  The =
 
 ** C/C++
 #+begin_src emacs-lisp
-  (use-package ccls
-    :hook ((c-mode c++-mode objc-mode cuda-mode) .
-           (lambda () (require 'ccls) (lsp))))
+  ;; (use-package ccls
+  ;;   :hook ((c-mode c++-mode objc-mode cuda-mode) .
+  ;;          (lambda () (require 'ccls) (lsp))))
 #+end_src
 
 ** Go
 #+begin_src emacs-lisp
-  (use-package go-mode
-    :hook (go-mode . lsp-deferred))
+  ;; (use-package go-mode
+  ;;   :hook (go-mode . lsp-deferred))
 #+end_src
 
 ** Rust Mode
 #+begin_src emacs-lisp
-  (use-package rust-mode
-    :straight t
-    :mode "\\.rs\\'"
-    :init
-    ;; scratchpad for rust
-    (setq lsp-rust-clippy-preference "on"
-          rust-format-on-save        t)
+  ;; (use-package rust-mode
+  ;;   :straight t
+  ;;   :mode "\\.rs\\'"
+  ;;   :init
+  ;;   ;; scratchpad for rust
+  ;;   (setq lsp-rust-clippy-preference "on"
+  ;;         rust-format-on-save        t)
 
-    (use-package rust-playground
-      :commands (rust-playground)
-      :straight t))
+  ;;   (use-package rust-playground
+  ;;     :commands (rust-playground)
+  ;;     :straight t))
 
-  (use-package cargo
-    :straight t
-    :defer t)
+  ;; (use-package cargo
+  ;;   :straight t
+  ;;   :defer t)
 #+end_src
 
 
 ** Web Mode
 #+begin_src emacs-lisp
-  (use-package web-mode
-    :straight t
-    :bind (:map web-mode-map
-                ("C-c C-M-f" . sgml-skip-tag-forward)
-                ("C-c C-f"   . sgml-skip-tag-forward)
-                ("C-c C-M-b" . sgml-skip-tag-backward)
-                ("C-c C-b"   . sgml-skip-tag-backward)
-                ("C-M-i"     . completion-at-point)
-                ("C-M-u"     . web-mode-element-parent)
-                ("C-M-d"     . web-mode-element-child))
-    :init
-    (setq web-mode-markup-indent-offset 2
-          web-mode-css-indent-offset 2
-          web-mode-code-indent-offset 2
-          web-mode-auto-close-style 2))
+  ;; (use-package web-mode
+  ;;   :straight t
+  ;;   :bind (:map web-mode-map
+  ;;               ("C-c C-M-f" . sgml-skip-tag-forward)
+  ;;               ("C-c C-f"   . sgml-skip-tag-forward)
+  ;;               ("C-c C-M-b" . sgml-skip-tag-backward)
+  ;;               ("C-c C-b"   . sgml-skip-tag-backward)
+  ;;               ("C-M-i"     . completion-at-point)
+  ;;               ("C-M-u"     . web-mode-element-parent)
+  ;;               ("C-M-d"     . web-mode-element-child))
+  ;;   :init
+  ;;   (setq web-mode-markup-indent-offset 2
+  ;;         web-mode-css-indent-offset 2
+  ;;         web-mode-code-indent-offset 2
+  ;;         web-mode-auto-close-style 2))
 #+end_src
 
 ** Company Mode
@@ -1715,9 +1724,9 @@ For more thoughts on Eshell, check out these articles by Pierre Neidhardt:
 
 ** Syntax checking with Flycheck
 #+begin_src emacs-lisp
-  (use-package flycheck
-    :defer t
-    :hook lsp-mode)
+  ;; (use-package flycheck
+  ;;   :defer t
+  ;;   :hook lsp-mode)
 #+end_src
 ** Snippets
 #+begin_src emacs-lisp
@@ -1735,8 +1744,7 @@ For more thoughts on Eshell, check out these articles by Pierre Neidhardt:
 
 ** ChatGPT
 #+begin_src emacs-lisp
-  (use-package gptel
-    :straight t)
+  ;; replace with c3po.el
 #+end_src
 
 
