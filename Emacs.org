@@ -224,8 +224,8 @@ This section configures UI settings that remove unneeded elements to make Emacs 
 	       (setq my/default-font-size 180
 		     my/default-variable-font-size 180))
   (with-system gnu/linux
-	       (setq my/default-font-size 120
-		     my/default-variable-font-size 120))
+	       (setq my/default-font-size 130
+		     my/default-variable-font-size 130))
 
   ;; Make frame transparency overridable
   (defvar my/frame-transparency '(90 . 90))
@@ -378,7 +378,7 @@ Prettify the mode line with `smart-mode-line`.  Really need to re-evaluate the o
     (setq doom-modeline-height    15
           doom-modeline-bar-width 6
           doom-modeline-lsp       t
-          doom-mode-line-github   nil
+          doom-mode-line-github   t
           doom-modeline-major-mode-icon t
           doom-modeline-major-mode-color-icon t
           doom-modeline-minor-mode-icon t
