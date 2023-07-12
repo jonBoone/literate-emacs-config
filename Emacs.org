@@ -221,8 +221,8 @@ This section configures UI settings that remove unneeded elements to make Emacs 
   (defvar my/default-variable-font-size nil)
 
   (with-system darwin
-	       (setq my/default-font-size 180
-		     my/default-variable-font-size 180))
+	       (setq my/default-font-size 200
+		     my/default-variable-font-size 200))
   (with-system gnu/linux
 	       (setq my/default-font-size 130
 		     my/default-variable-font-size 130))
@@ -672,6 +672,10 @@ This module is absolutely necessary for working inside of Emacs Lisp files, espe
                           (hl-line-mode 1)))
     :config
     (require 'dired-x)
+    (with-system darwin
+      (setq dired-use-ls-dired                    t
+            insert-directory-program              "/usr/local/bin/gls"))
+
     (setq dired-listing-switches                  "-aghoA --group-directories-first"
           dired-dwim-target                       t
           dired-deletion-confirmer                'y-or-n-p
