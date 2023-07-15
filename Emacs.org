@@ -221,8 +221,8 @@ This section configures UI settings that remove unneeded elements to make Emacs 
   (defvar my/default-variable-font-size nil)
 
   (with-system darwin
-	       (setq my/default-font-size 200
-		     my/default-variable-font-size 200))
+	       (setq my/default-font-size 280
+		     my/default-variable-font-size 280))
   (with-system gnu/linux
 	       (setq my/default-font-size 130
 		     my/default-variable-font-size 130))
@@ -673,8 +673,9 @@ This module is absolutely necessary for working inside of Emacs Lisp files, espe
     :config
     (require 'dired-x)
     (with-system darwin
+      ;; assumes homebrew bin path is in ${PATH}
       (setq dired-use-ls-dired                    t
-            insert-directory-program              "/usr/local/bin/gls"))
+            insert-directory-program              "gls"))
 
     (setq dired-listing-switches                  "-aghoA --group-directories-first"
           dired-dwim-target                       t
@@ -1277,26 +1278,26 @@ You can use the pyvenv package to use =virtualenv= environments in Emacs.  The =
 *** SLY
 
 #+begin_src emacs-lisp
-  (use-package sly
-    :straight t
-    :mode ("\\.lisp\\'" . lisp-mode)
-    :hook (lisp-mode . (lambda ()
-                         (unless (sly-connected-p)
-                           (save-excursion (sly)))))
-    :init
-    (setq sly-contribs              '(sly-scratch sly-mrepl)
-          sly-lisp-implementations  '((cmucl-latest ("lisp"))
-                                      (sbcl ("sbcl" "--core" "sbcl.core-for-sly") :coding-system utf-8-lang))
-          sly-net-coding-system     'utf-8-unix)
-    :config
-    ;; setup sly-documentation-lookup
-    (eval-after-load 'sly
-      `(define-key sly-prefix-map (kbd "M-h") 'sly-documentation-lookup))
+    (use-package sly
+      :straight t
+      :mode ("\\.lisp\\'" . lisp-mode)
+      :hook (lisp-mode . (lambda ()
+                           (unless (sly-connected-p)
+                             (save-excursion (sly)))))
+      :init
+      (setq sly-contribs              '(sly-scratch sly-mrepl)
+            sly-lisp-implementations  '((sbcl ("sbcl" "--core" "sbcl.core-for-sly"))
+                                        (cmucl-latest ("lisp")))
+            sly-net-coding-system     'utf-8-unix)
+      :config
+      ;; setup sly-documentation-lookup
+      (eval-after-load 'sly
+        `(define-key sly-prefix-map (kbd "M-h") 'sly-documentation-lookup))
 
-    ;; setup sly-mrepl-clear-recent-output
-    (eval-after-load 'sly-mrepl
-      `(define-key sly-mrepl-mode-map (kbd "C-c C-k")
-                   `sly-mrepl-clear-recent-output)))
+      ;; setup sly-mrepl-clear-recent-output
+      (eval-after-load 'sly-mrepl
+        `(define-key sly-mrepl-mode-map (kbd "C-c C-k")
+                     `sly-mrepl-clear-recent-output)))
 #+end_src
 
 *** SLIME
