@@ -221,8 +221,8 @@ This section configures UI settings that remove unneeded elements to make Emacs 
   (defvar my/default-variable-font-size nil)
 
   (with-system darwin
-	       (setq my/default-font-size 280
-		     my/default-variable-font-size 280))
+	       (setq my/default-font-size 240
+		     my/default-variable-font-size 240))
   (with-system gnu/linux
 	       (setq my/default-font-size 130
 		     my/default-variable-font-size 130))
@@ -1278,26 +1278,26 @@ You can use the pyvenv package to use =virtualenv= environments in Emacs.  The =
 *** SLY
 
 #+begin_src emacs-lisp
-    (use-package sly
-      :straight t
-      :mode ("\\.lisp\\'" . lisp-mode)
-      :hook (lisp-mode . (lambda ()
-                           (unless (sly-connected-p)
-                             (save-excursion (sly)))))
-      :init
-      (setq sly-contribs              '(sly-scratch sly-mrepl)
-            sly-lisp-implementations  '((sbcl ("sbcl" "--core" "sbcl.core-for-sly"))
-                                        (cmucl-latest ("lisp")))
-            sly-net-coding-system     'utf-8-unix)
-      :config
-      ;; setup sly-documentation-lookup
-      (eval-after-load 'sly
-        `(define-key sly-prefix-map (kbd "M-h") 'sly-documentation-lookup))
+         (use-package sly
+           :straight t
+           :mode ("\\.lisp\\'" . lisp-mode)
+           :hook (lisp-mode . (lambda ()
+                                (unless (sly-connected-p)
+                                  (save-excursion (sly)))))
+           :init
+           (setq sly-contribs              '(sly-fancy sly-retro sly-trace-dialog sly-arglists )
+                 sly-lisp-implementations  '((sbcl ("sbcl" "--core" "sbcl.core-for-sly"))
+                                             (cmucl-latest ("lisp")))
+                 sly-net-coding-system     'utf-8-unix)
+           :config
+           ;; setup sly-documentation-lookup
+           (eval-after-load 'sly
+             `(define-key sly-prefix-map (kbd "M-h") 'sly-documentation-lookup))
 
-      ;; setup sly-mrepl-clear-recent-output
-      (eval-after-load 'sly-mrepl
-        `(define-key sly-mrepl-mode-map (kbd "C-c C-k")
-                     `sly-mrepl-clear-recent-output)))
+           ;; setup sly-mrepl-clear-recent-output
+           (eval-after-load 'sly-mrepl
+             `(define-key sly-mrepl-mode-map (kbd "C-c C-k")
+                          `sly-mrepl-clear-recent-output)))
 #+end_src
 
 *** SLIME
