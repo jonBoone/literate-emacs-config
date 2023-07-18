@@ -170,22 +170,22 @@ On some sytems Emacs may be launched without the benefit of the user's shell ini
     :init
     (setq popper-reference-buffers
           '("\\*Messages\\*"
-          "\\*Warnings\\*"
-          "\\*xref\\*"
-          "\\*Backtrace\\*"
-          "*Flymake diagnostics.*"
-          "\\*eldoc\\*"
-          "\\*compilation\\*"
-          "\\*rustic-"
-          "^*tex"
-          "\\*Ement Notifications\\*"
-          "Output\\*$"
-          "\\*Async Shell Command\\*"
-          "\\*Dtache Shell Command\\*"
-          "\\*mu4e-update\\*"
-          "\\*GDB.*out\\*"
-          help-mode
-          compilation-mode)
+            "\\*Warnings\\*"
+            "\\*xref\\*"
+            "\\*Backtrace\\*"
+            "*Flymake diagnostics.*"
+            "\\*eldoc\\*"
+            "\\*compilation\\*"
+            "\\*rustic-"
+            "^*tex"
+            "\\*Ement Notifications\\*"
+            "Output\\*$"
+            "\\*Async Shell Command\\*"
+            "\\*Dtache Shell Command\\*"
+            "\\*mu4e-update\\*"
+            "\\*GDB.*out\\*"
+            help-mode
+            compilation-mode)
           popper-display-control 'user)
     (popper-mode +1))
 #+end_src
@@ -221,11 +221,11 @@ This section configures UI settings that remove unneeded elements to make Emacs 
   (defvar my/default-variable-font-size nil)
 
   (with-system darwin
-	       (setq my/default-font-size 240
-		     my/default-variable-font-size 240))
+    (setq my/default-font-size 240
+  	      my/default-variable-font-size 240))
   (with-system gnu/linux
-	       (setq my/default-font-size 130
-		     my/default-variable-font-size 130))
+    (setq my/default-font-size 130
+  	      my/default-variable-font-size 130))
 
   ;; Make frame transparency overridable
   (defvar my/frame-transparency '(90 . 90))
@@ -269,6 +269,9 @@ This section configures UI settings that remove unneeded elements to make Emacs 
   ;; Set up the visible bell
   (setq visible-bell t)
 
+  ;; remove gaps between emacs frames and other windows
+  (setq frame-resize-pixelwise t)
+
   (column-number-mode)
   (global-display-line-numbers-mode t)
 
@@ -280,16 +283,15 @@ This section configures UI settings that remove unneeded elements to make Emacs 
 
   ;; Disable line numbers for some modes
   (dolist (mode '(term-mode-hook
-		  shell-mode-hook
-		  treemacs-mode-hook
-		  eshell-mode-hook))
+  	              shell-mode-hook
+  	              treemacs-mode-hook
+  	              eshell-mode-hook))
     (add-hook mode (lambda () (display-line-numbers-mode 0))))
 
-
   (setq large-file-warning-threshold nil      ;; Don't warn regarding large files
-	vc-follow-symlinks           t        ;; Always follow symlinked files
-	ad-redefinition-action       'accept  ;; add advice wihtout warning
-	)
+        vc-follow-symlinks           t        ;; Always follow symlinked files
+        ad-redefinition-action       'accept  ;; add advice wihtout warning
+        )
 #+end_src
 
 *** Font Configuration
@@ -462,7 +464,8 @@ Default to an indentation size of 2 spaces since it's the norm for nearly all pr
 ** Use Parinfer for Lisp Languages
 #+begin_src emacs-lisp
   (use-package parinfer
-    :hook (clojure-mode emacs-lisp-mode common-lisp-mode scheme-mode lisp-mode)
+    :hook
+    (clojure-mode emacs-lisp-mode common-lisp-mode scheme-mode lisp-mode)
     :config
     (setq parinfer-extensions
           '(defaults         ; should be included
@@ -486,20 +489,21 @@ Here are some workflow notes on how to best use Ivy:
 #+begin_src emacs-lisp
   (use-package ivy
     :diminish
-    :bind (("C-s" . swiper)
-           :map ivy-minibuffer-map
-           ("TAB" . ivy-alt-done)
-           ("C-f" . ivy-alt-done)
-           ("C-l" . ivy-alt-done)
-           ("C-j" . ivy-next-line)
-           ("C-k" . ivy-previous-line)
-           :map ivy-switch-buffer-map
-           ("C-k" . ivy-previous-line)
-           ("C-l" . ivy-done)
-           ("C-d" . ivy-switch-buffer-kill)
-           :map ivy-reverse-i-search-map
-           ("C-k" . ivy-previous-line)
-           ("C-d" . ivy-reverse-i-search-kill))
+    :bind
+    (("C-s" . swiper)
+     :map ivy-minibuffer-map
+     ("TAB" . ivy-alt-done)
+     ("C-f" . ivy-alt-done)
+     ("C-l" . ivy-alt-done)
+     ("C-j" . ivy-next-line)
+     ("C-k" . ivy-previous-line)
+     :map ivy-switch-buffer-map
+     ("C-k" . ivy-previous-line)
+     ("C-l" . ivy-done)
+     ("C-d" . ivy-switch-buffer-kill)
+     :map ivy-reverse-i-search-map
+     ("C-k" . ivy-previous-line)
+     ("C-d" . ivy-reverse-i-search-kill))
     :init
     (ivy-mode 1)
     :config
@@ -611,8 +615,9 @@ The keybindings for this are `C+M+-` and `C+M+=`.
 #+begin_src emacs-lisp
   (use-package winner
     :straight nil
-    :bind (("s-/" . winner-undo)
-           ("s-?" . winner-redo))
+    :bind
+    (("s-/" . winner-undo)
+     ("s-?" . winner-redo))
     :config
     (winner-mode))
 #+end_src
@@ -664,12 +669,13 @@ This module is absolutely necessary for working inside of Emacs Lisp files, espe
   (use-package dired
     :straight nil
     :commands (dired dired-jump)
-    :hook (dired-mode . (lambda ()
-                          (interactive)
-                          (dired-omit-mode 1)
-                          (dired-hide-details-mode 1)
-                          (all-the-icons-dired-mode 1)
-                          (hl-line-mode 1)))
+    :hook
+    (dired-mode . (lambda ()
+                    (interactive)
+                    (dired-omit-mode 1)
+                    (dired-hide-details-mode 1)
+                    (all-the-icons-dired-mode 1)
+                    (hl-line-mode 1)))
     :config
     (require 'dired-x)
     (with-system darwin
