@@ -1291,8 +1291,8 @@ You can use the pyvenv package to use =virtualenv= environments in Emacs.  The =
                                 (unless (sly-connected-p)
                                   (save-excursion (sly)))))
            :init
-           (setq sly-contribs              '(sly-fancy sly-retro sly-trace-dialog sly-arglists )
-                 sly-lisp-implementations  '((sbcl ("sbcl" "--core" "sbcl.core-for-sly"))
+           (setq sly-contribs              '(sly-fancy sly-retro sly-trace-dialog)
+                 sly-lisp-implementations  '((sbcl ("sbcl" "--core" "/Users/iain/.local/sbcl/latest/lib/sbcl/sbcl.core-for-sly"))
                                              (cmucl-latest ("lisp")))
                  sly-net-coding-system     'utf-8-unix)
            :config
