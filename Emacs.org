@@ -214,18 +214,17 @@ This section configures UI settings that remove unneeded elements to make Emacs 
 
 *** Visual Configuration
 #+begin_src emacs-lisp
-
   ;; This may need to be adjusted from system to system
   ;; Initialize them to nil
   (defvar my/default-font-size nil)
   (defvar my/default-variable-font-size nil)
 
   (with-system darwin
-    (setq my/default-font-size 240
-  	      my/default-variable-font-size 240))
+    (setq my/default-font-size 280
+          my/default-variable-font-size 280))
   (with-system gnu/linux
     (setq my/default-font-size 130
-  	      my/default-variable-font-size 130))
+          my/default-variable-font-size 130))
 
   ;; Make frame transparency overridable
   (defvar my/frame-transparency '(90 . 90))
@@ -275,6 +274,19 @@ This section configures UI settings that remove unneeded elements to make Emacs 
   (column-number-mode)
   (global-display-line-numbers-mode t)
 
+  ;; Don't pop up UI dialogs when prompting
+  (setq use-dialog-box nil)
+
+  ;; Remember recently edited files
+  (recentf-mode 1)
+
+  ;; remembering minibuffer prompt history
+  (setq history-length 25)
+  (savehist-mode 1)
+
+  ;; Remember and restore the last cursor location of opened files
+  (save-place-mode 1)
+
   ;; Set frame transparency
   (set-frame-parameter (selected-frame) 'alpha my/frame-transparency)
   (add-to-list 'default-frame-alist `(alpha . ,my/frame-transparency))
@@ -283,9 +295,10 @@ This section configures UI settings that remove unneeded elements to make Emacs 
 
   ;; Disable line numbers for some modes
   (dolist (mode '(term-mode-hook
-  	              shell-mode-hook
-  	              treemacs-mode-hook
-  	              eshell-mode-hook))
+                  shell-mode-hook
+                  treemacs-mode-hook
+                  eshell-mode-hook))
+
     (add-hook mode (lambda () (display-line-numbers-mode 0))))
 
   (setq large-file-warning-threshold nil      ;; Don't warn regarding large files
@@ -1091,6 +1104,7 @@ It's nice to have a table of contents section for long literate configuration fi
 #+end_src
 
 * LLMs
+
 ** ChatGPT
 #+begin_src emacs-lisp
 ;;  (use-package c3po
@@ -1098,6 +1112,31 @@ It's nice to have a table of contents section for long literate configuration fi
 ;;    :config
 ;;    (setq c3po-api-key custom-c3po-api-key))
 #+end_src
+
+* Web Browsing
+  I build my emacsen with xwidget-webkit support on darwin systems, so I want
+  that to be the default browser function.
+
+#+begin_src emacs-lisp
+  ;; configure xwidget-webkit-browse-url as default browser function
+  (setq browse-url-browser-function 'xwidget-webkit-browse-url)
+#+end_src
+
+* Writing
+
+** Markdown Support
+
+*** Markdown Mode
+#+begin_src emacs-lisp
+  (use-package markdown-mode
+    :straight t
+    :mode
+    ("README\\.md\\'" . gfm-mode)
+    :config
+    (setq markdown-command '("pandoc" "-f" "gfm" "-t" "html5")
+          markdown-live-preview-window-function #'xwidget-webkit-browse-url))
+#+end_src
+
 
 * Development
 
@@ -1134,7 +1173,8 @@ The =which-key= integration adds helpful descriptions of the various keys so you
 
   (use-package lsp-mode
     :commands (lsp lsp-deferred)
-    :hook (lsp-mode . my/lsp-mode-setup)
+    :hook ((lsp-mode . my/lsp-mode-setup)
+           ((python-mode emacs-lisp-mode) . lsp))
     :init
     (setq lsp-keymap-prefix "C-c l")  ;; Or 'C-l', 's-l'
     :config
@@ -1148,8 +1188,13 @@ The =which-key= integration adds helpful descriptions of the various keys so you
 #+begin_src emacs-lisp
   (use-package lsp-ui
     :hook lsp-mode
-    :custom
-    (lsp-ui-doc-position 'bottom))
+    :config
+    (setq lsp-ui-doc-position               'at-point
+          lsp-ui-doc-show-with-mouse         nil
+          lsp-ui-sideline-show-code-actions  t)
+    :bind (("C-c A" . lsp-execute-code-action)
+           ("C-c d" . lsp-ui-doc-show)
+           ("C-c I" . lsp-ui-imenu)))
 #+end_src
 
 **** lsp-treemacs
@@ -1284,26 +1329,27 @@ You can use the pyvenv package to use =virtualenv= environments in Emacs.  The =
 *** SLY
 
 #+begin_src emacs-lisp
-         (use-package sly
-           :straight t
-           :mode ("\\.lisp\\'" . lisp-mode)
-           :hook (lisp-mode . (lambda ()
-                                (unless (sly-connected-p)
-                                  (save-excursion (sly)))))
-           :init
-           (setq sly-contribs              '(sly-fancy sly-retro sly-trace-dialog)
-                 sly-lisp-implementations  '((sbcl ("sbcl" "--core" "/Users/iain/.local/sbcl/latest/lib/sbcl/sbcl.core-for-sly"))
-                                             (cmucl-latest ("lisp")))
-                 sly-net-coding-system     'utf-8-unix)
-           :config
-           ;; setup sly-documentation-lookup
-           (eval-after-load 'sly
-             `(define-key sly-prefix-map (kbd "M-h") 'sly-documentation-lookup))
-
-           ;; setup sly-mrepl-clear-recent-output
-           (eval-after-load 'sly-mrepl
-             `(define-key sly-mrepl-mode-map (kbd "C-c C-k")
-                          `sly-mrepl-clear-recent-output)))
+  (use-package sly
+    :straight t
+    :mode ("\\.lisp\\'" . lisp-mode)
+    :hook (lisp-mode . (lambda ()
+                         (unless (sly-connected-p)
+                           (save-excursion (sly)))))
+    :init
+    (setq sly-contribs              '(sly-fancy sly-retro sly-trace-dialog)
+          sly-lisp-implementations  '((sbcl ("sbcl" "--core" "/Users/iain/.local/sbcl/latest/lib/sbcl/sbcl.core-for-sly"))
+                                      (cmucl-latest ("lisp")))
+          sly-net-coding-system     'utf-8-unix)
+    :config
+    ;; setup sly-documentation-lookup
+    (eval-after-load 'sly
+      `(define-key sly-prefix-map (kbd "M-h") 'sly-documentation-lookup))
+    ;; setup sly-mrepl-clear-recent-output
+    (eval-after-load 'sly-mrepl
+      `(define-key sly-mrepl-mode-map (kbd "C-c C-k")
+                   `sly-mrepl-clear-recent-output))
+    :custom-face
+    (sly-mrepl-output-face ((t (:forground "sienna")))))
 #+end_src
 
 *** SLIME
