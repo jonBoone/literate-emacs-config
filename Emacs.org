@@ -214,12 +214,16 @@ We use the [[https://github.com/emacscollective/no-littering/blob/master/no-litt
   (use-package dashboard
     :ensure t
     :config
-    (setq dashboard-banner-logo-title "My Dashboard")
-    (with-system darwin
-      (setq dashboard-startup-banner (concat user-emacs-directory "Emacs-Is-Sexy-V2-64x64.png")))
+    (setq
+     dashboard-banner-logo-title "My Dashboard"
+     dashboard-startup-banner    (concat user-emacs-directory "Emacs-Is-Sexy-V2-64x64.png")
+     dashboard-center-content    t
+     dashboard-items             '((agenda   . 10))
+     dashboard-icon-type         'all-the-icons
+     dashboard-display-icons-p   t
+     dashboard-icon-type         'nerd-icons)
     (dashboard-setup-startup-hook))
 #+end_src
-
 
 * General Configuration
 
@@ -753,6 +757,7 @@ editor, project planner, task and time tracker, blogging engine, and literate
 coding utility all wrapped up in one package.
 
 ** Better Font Faces
+
 The =my/org-font-setup= function configures various text faces to tweak the sizes of headings and use variable width fonts in most cases so that it looks more like we're editing a document in =org-mode=.  We switch back to fixed width (monospace) fonts for code blocks and tables so that they display correctly.
 
 #+begin_src emacs-lisp
@@ -763,14 +768,14 @@ The =my/org-font-setup= function configures various text faces to tweak the size
                                (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
 
     ;; Set faces for heading levels
-    (dolist (face '((org-level-1 . 1.2)
-                    (org-level-2 . 1.1)
-                    (org-level-3 . 1.05)
-                    (org-level-4 . 1.0)
-                    (org-level-5 . 1.1)
-                    (org-level-6 . 1.1)
-                    (org-level-7 . 1.1)
-                    (org-level-8 . 1.1)))
+    (dolist (face '((org-level-1 . 1.25)
+                    (org-level-2 . 1.20)
+                    (org-level-3 . 1.15)
+                    (org-level-4 . 1.10)
+                    (org-level-5 . 1.05)
+                    (org-level-6 . 1.00)
+                    (org-level-7 . 0.95)
+                    (org-level-8 . 0.90)))
       (set-face-attribute (car face) nil :font "Cantarell" :weight 'regular :height (cdr face)))
 
     ;; Ensure that anything that should be fixed-pitch in Org files appears that way
