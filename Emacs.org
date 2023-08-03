@@ -181,6 +181,7 @@ On some sytems Emacs may be launched without the benefit of the user's shell ini
 #+BEGIN_SRC emacs-lisp
   (use-package popper
     :straight t
+    :disable t
     :bind (("M-`"     . popper-toggle-latest)
            ("M-~"     . popper-cycle)
            ("C-x M-`" . popper-toggle-type))
@@ -809,8 +810,7 @@ coding utility all wrapped up in one package.
 
 ** Better Font Faces
 
-The =my/org-font-setup= function configures various text faces to tweak the sizes of headings and use variable width fonts in most cases so that it looks more like we're editing a document in =org-mode=.  We switch back to fixed width (monospace) fonts for code blocks and tables so that they display correctly.
-
+The =my/org-font-setup= function configures various text faces to tweak the sizes of headings and use variable width fonts in most cases so that it looks more like we're editing a document in =org-mode=.  We switch back to fixed width (monospace) fonts for code blocks and tables so that they display correctly.  *Note:* This must appear prior to the `(use-package org-mode...)` invocation so that we can call `my/org-font-setup` during the call to `use-package`.
 #+BEGIN_SRC emacs-lisp
   (defun my/org-font-setup ()
     ;; Replace list hyphen with dot
@@ -844,17 +844,13 @@ The =my/org-font-setup= function configures various text faces to tweak the size
 #+END_SRC
 
 ** Basic Config
-This section contains the basic configuration for =org-mode= plus the configuration for Org agendas and capture templates.  There's a lot to unpack in here so I'd recommend watching the videos for [[https://youtu.be/VcgjTEa0kU4][Part 5]] and [[https://youtu.be/PNE-mgkZ6HM][Part 6]] for a full explanation.
-
+This section contains the basic configuration for =org-mode= plus the configuration for Org agendas and capture templates.
 #+BEGIN_SRC emacs-lisp
-  (setq-default fill-column 72)
-
   ;; Turn on indentation and auto-fill mode for Org files
   (defun my/org-mode-setup ()
     (org-indent-mode)
     (variable-pitch-mode 1)
     (visual-line-mode 1)
-    (auto-fill-mode 1)
     (diminish org-indent-mode))
 
   (use-package org
