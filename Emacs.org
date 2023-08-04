@@ -58,14 +58,14 @@ I want to know how long it took for startup to happen.
 * Enable easy configuration reloading
 This makes it easy to open the config file:
 #+BEGIN_SRC emacs-lisp
-  (defun my/open-config()
+  (defun my/open-config ()
     (interactive)
     (find-file config-file))
 #+END_SRC
 
 This makes it easy to reload the config that has changed:
 #+BEGIN_SRC emacs-lisp
-  (defun my/reload-config()
+  (defun my/reload-config ()
     "Reload init file, which will effectivley reload everything"
     (interactive)
     (load-file (expand-file-name "init.el" user-emacs-directory)))
@@ -107,8 +107,8 @@ We're going to use =straight.el= to provide a deterministic reproducible set of 
 Now, we can configure =use-package= to use =straight= for package fetching.
 #+BEGIN_SRC emacs-lisp
   (setq use-package-always-ensure nil   ; Make sure this is nil, so we do not use package.el
-        use-package-verbose 'debug      ; TODO  use a debug var for all of config?
-        )
+        use-package-verbose 'debug)      ; TODO  use a debug var for all of config?
+
   ;; From this point on we should be able to use `use-package
   (use-package straight
     :custom
@@ -181,11 +181,12 @@ On some sytems Emacs may be launched without the benefit of the user's shell ini
 #+BEGIN_SRC emacs-lisp
   (use-package popper
     :straight t
-    :disable t
-    :bind (("M-`"     . popper-toggle-latest)
-           ("M-~"     . popper-cycle)
-           ("C-x M-`" . popper-toggle-type))
-    :init
+    :disabled
+    :bind
+    (("M-`"     . popper-toggle-latest)
+     ("M-~"     . popper-cycle)
+     ("C-x M-`" . popper-toggle-type))
+    :config
     (setq popper-reference-buffers
           '("\\*Messages\\*"
             "\\*Warnings\\*"
@@ -217,9 +218,9 @@ We use the [[https://github.com/emacscollective/no-littering/blob/master/no-litt
   ;; NOTE: this is handled via the profiles.el file that is used by chemacs2
 
   (use-package no-littering)
-
-  ;; no-littering doesn't set this by default so we must place
-  ;; auto save files in the same path as it uses for sessions
+  ;;:config
+    ;; no-littering doesn't set this by default so we must place
+    ;; auto save files in the same path as it uses for sessions
   (setq auto-save-file-name-transforms
         `((".*" ,(no-littering-expand-var-file-name "auto-save/") t)))
 #+END_SRC
@@ -318,14 +319,12 @@ This section configures UI settings that remove unneeded elements to make Emacs 
                   shell-mode-hook
                   treemacs-mode-hook
                   eshell-mode-hook))
-
     (add-hook mode (lambda () (display-line-numbers-mode 0))))
 
   (setq large-file-warning-threshold nil      ;; Don't warn regarding large files
         vc-follow-symlinks           t        ;; Always follow symlinked files
         ad-redefinition-action       'accept  ;; add advice wihtout warning
-        x-stretch-cursor             t
-        )
+        x-stretch-cursor             t)
 #+END_SRC
 
 *** Eliminate having to type out `yes` or `no`
@@ -372,24 +371,24 @@ This section configures UI settings that remove unneeded elements to make Emacs 
 
 
 ** Emacs Dashboard
-  I like the idea of having emacs launch and present a dashboard as the
-  default buffer in my primary frame.  This requires using the
-  `dashboard` package:
+I like the idea of having emacs launch and present a dashboard as the
+default buffer in my primary frame.  This requires using the
+`dashboard` package:
 
-  #+BEGIN_SRC emacs-lisp
-    (use-package dashboard
-      :ensure t
-      :config
-      (setq
-       dashboard-banner-logo-title "My Dashboard"
-       dashboard-startup-banner    (concat user-emacs-directory "Emacs-Is-Sexy-V2-64x64.png")
-       dashboard-center-content    t
-       dashboard-items             '((agenda   . 10))
-       dashboard-icon-type         'all-the-icons
-       dashboard-display-icons-p   t
-       dashboard-icon-type         'nerd-icons)
-      (dashboard-setup-startup-hook))
-  #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (use-package dashboard
+    :ensure t
+    :config
+    (setq
+     dashboard-banner-logo-title "My Dashboard"
+     dashboard-startup-banner    (concat user-emacs-directory "Emacs-Is-Sexy-V2-64x64.png")
+     dashboard-center-content    t
+     dashboard-items             '((agenda   . 16))
+     dashboard-icon-type         'all-the-icons
+     dashboard-display-icons-p   t
+     dashboard-icon-type         'nerd-icons)
+    (dashboard-setup-startup-hook))
+#+END_SRC
 
 
 ** Mode Line
@@ -804,12 +803,9 @@ This module is absolutely necessary for working inside of Emacs Lisp files, espe
 
 * Org Mode
 
-[[https://orgmode.org/][Org Mode]] is one of the hallmark features of Emacs.  It is a rich document
-editor, project planner, task and time tracker, blogging engine, and literate
-coding utility all wrapped up in one package.
+[[https://orgmode.org/][Org Mode]] is one of the hallmark features of Emacs.  It is a rich document editor, project planner, task and time tracker, blogging engine, and literate coding utility all wrapped up in one package.
 
 ** Better Font Faces
-
 The =my/org-font-setup= function configures various text faces to tweak the sizes of headings and use variable width fonts in most cases so that it looks more like we're editing a document in =org-mode=.  We switch back to fixed width (monospace) fonts for code blocks and tables so that they display correctly.  *Note:* This must appear prior to the `(use-package org-mode...)` invocation so that we can call `my/org-font-setup` during the call to `use-package`.
 #+BEGIN_SRC emacs-lisp
   (defun my/org-font-setup ()
@@ -843,139 +839,138 @@ The =my/org-font-setup= function configures various text faces to tweak the size
     (set-face-attribute 'line-number-current-line nil :inherit 'fixed-pitch))
 #+END_SRC
 
+
 ** Basic Config
 This section contains the basic configuration for =org-mode= plus the configuration for Org agendas and capture templates.
+*** Custom org-mode-setup function
 #+BEGIN_SRC emacs-lisp
-  ;; Turn on indentation and auto-fill mode for Org files
+  ;; Set a custom configuration for org-mode interaction with the other elisp packages.
   (defun my/org-mode-setup ()
     (org-indent-mode)
     (variable-pitch-mode 1)
     (visual-line-mode 1)
     (diminish org-indent-mode))
+#+END_SRC
 
+
+*** Org-Mode package
+The configuration of Org-Mode is augmented with some additional modules (see `(setq org-modules ...)` line below.)
+#+BEGIN_SRC emacs-lisp
   (use-package org
     :defer t
     :hook (org-mode . my/org-mode-setup)
     :config
-    (setq org-ellipsis                       " ▾"
-          org-hide-emphasis-markers          t
-          0rg-src-fontify-natively           t
-          org-fontify-quote-and-verse-blocks t
-          org-src-tab-acts-natively          t
-          org-edit-src-content-indentation   2
-          org-hide-block-startup             nil
-          org-src-preserve-indentation       nil
-          ;; org-startup-folded                 'content
+    (setq org-adapt-indentation              t
+          org-agenda-files                   '("~/Dropbox/pkb/org/journal")
+          org-agenda-include-diary           t
+          org-agenda-start-with-log-mode     t
           org-cycle-separator-lines          2
+          org-ellipsis                       " ▾"
+          org-edit-src-content-indentation   2
+          org-fontify-quote-and-verse-blocks t
+          org-habit-graph-column             60
+          org-hide-block-startup             nil
+          org-hide-emphasis-markers          t
+          org-hide-leading-starts            t
+          org-log-done                       'time
+          org-log-into-drawer                t
           org-modules                        '(org-crypt
+                                               org-irc
                                                org-habit
                                                org-mac-iCal
                                                org-magit
                                                org-notify
-                                               org-toc
-                                               org-eshell
-                                               org-irc)
-          org-agenda-include-diary           t
-          org-agenda-start-with-log-mode     t
-          org-log-done                       'time
-          org-log-into-drawer                t
+                                               org-toc)
+          org-outline-path-complete-in-steps nil
           org-refile-targets                 '(("Archive.org" :maxlevel . 1)
                                                ("Tasks.org" :maxlevel . 1))
-          org-outline-path-complete-in-steps nil
           org-refile-use-outline-path        t
-          org-agenda-files              '("~/Dropbox/pkb/org/journal"))
+          org-src-fontify-natively           t
+          org-src-tab-acts-natively          t
+          org-startup-folded                 'overview))
 
-    ;; Consider re-introducing later
-    ;; "~/Projects/Code/emacs-from-scratch/OrgFiles/Tasks.org"
-    ;; "~/Projects/Code/emacs-from-scratch/OrgFiles/Habits.org"
-    ;; "~/Projects/Code/emacs-from-scratch/OrgFiles/Birthdays.org"
+  ;; Save Org buffers after refiling!
+  (advice-add 'org-refile :after 'org-save-all-org-buffers)
 
-    ;; Save Org buffers after refiling!
-    (advice-add 'org-refile :after 'org-save-all-org-buffers)
 
-    ;; investigate in the future
-    ;; (require 'org-habit)
-    ;; (add-to-list 'org-modules 'org-habit)
-    ;; (setq org-habit-graph-column 60)
-
-    (setq org-todo-keywords             '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d!)")
-                                          (sequence "BACKLOG(b)" "PLAN(p)" "READY(r)" "ACTIVE(a)" "REVIEW(v)"  "WAIT(w@/!)" "HOLD(h)" "|" "COMPLETED(c)" "CANC(k@)"))
-          org-tag-alist                 '((:startgroup)
-                                          ;; Put mutually exclusive tags here
-                                          (:endgroup)
-                                          ("@errand" . ?E)
-                                          ("@home" . ?H)
-                                          ("@work" . ?W)
-                                          ("agenda" . ?a)
-                                          ("planning" . ?p)
-                                          ("publish" . ?P)
-                                          ("batch" . ?b)
-                                          ("note" . ?n)
-                                          ("idea" . ?i))
-          ;; Configure custom agenda views
-          org-agenda-custom-commands    '(("d" "Dashboard"
-                                           ((agenda "" ((org-deadline-warning-days 7)))
-                                            (todo "NEXT"
-                                                  ((org-agenda-overriding-header "Next Tasks")))
-                                            (tags-todo "agenda/ACTIVE"
-                                                       ((org-agenda-overriding-header "Active Projects")))))
-                                          ("n" "Next Tasks"
-                                           ((todo "NEXT"
-                                                  ((org-agenda-overriding-header "Next Tasks")))))
-                                          ("W" "Work Tasks" tags-todo "+work-email")
-                                          ;; Low-effort next actions
-                                          ("e" tags-todo "+TODO=\"NEXT\"+Effort<15&+Effort>0"
-                                           ((org-agenda-overriding-header "Low Effort Tasks")
-                                            (org-agenda-max-todos 20)
-                                            (org-agenda-files org-agenda-files)))
-                                          ("w" "Workflow Status"
-                                           ((todo "WAIT"
-                                                  ((org-agenda-overriding-header "Waiting on External")
-                                                   (org-agenda-files org-agenda-files)))
-                                            (todo "REVIEW"
-                                                  ((org-agenda-overriding-header "In Review")
-                                                   (org-agenda-files org-agenda-files)))
-                                            (todo "PLAN"
-                                                  ((org-agenda-overriding-header "In Planning")
-                                                   (org-agenda-todo-list-sublevels nil)
-                                                   (org-agenda-files org-agenda-files)))
-                                            (todo "BACKLOG"
-                                                  ((org-agenda-overriding-header "Project Backlog")
-                                                   (org-agenda-todo-list-sublevels nil)
-                                                   (org-agenda-files org-agenda-files)))
-                                            (todo "READY"
-                                                  ((org-agenda-overriding-header "Ready for Work")
-                                                   (org-agenda-files org-agenda-files)))
-                                            (todo "ACTIVE"
-                                                  ((org-agenda-overriding-header "Active Projects")
-                                                   (org-agenda-files org-agenda-files)))
-                                            (todo "COMPLETED"
-                                                  ((org-agenda-overriding-header "Completed Projects")
-                                                   (org-agenda-files org-agenda-files)))
-                                            (todo "CANCELLED"
-                                                  ((org-agenda-overriding-header "Cancelled Projects")
-                                                   (org-agenda-files org-agenda-files))))))
-          org-capture-templates         `(("t" "Tasks / Projects")
-                                          ("tt" "Task" entry (file+olp "~/Dropbox/pkb/org/Tasks.org" "Inbox")
-                                           "* TODO %?\n  %U\n  %a\n  %i" :empty-lines 1)
-                                          ("j" "Journal Entries")
-                                          ("jj" "Journal" entry
-                                           (file+olp+datetree "~/Dropbox/pkb/org/journal/Journal.org")
-                                           "\n* %<%I:%M %p> - Journal :journal:\n\n%?\n\n"
-                                           ;; ,(dw/read-file-as-string "~/Notes/Templates/Daily.org")
-                                           :clock-in :clock-resume
-                                           :empty-lines 1)
-                                          ("jm" "Meeting" entry
-                                           (file+olp+datetree "~/Dropbox/pkb/org/journal/Journal.org")
-                                           "* %<%I:%M %p> - %a :meetings:\n\n%?\n\n"
-                                           :clock-in :clock-resume
-                                           :empty-lines 1)
-                                          ("w" "Workflows")
-                                          ("we" "Checking Email" entry (file+olp+datetree "~/Dropbox/pkb/org/journal/Journal.org")
-                                           "* Checking Email :email:\n\n%?" :clock-in :clock-resume :empty-lines 1)))
-    (define-key global-map (kbd "C-c j")
-                (lambda () (interactive) (org-capture nil "jj")))
-    (my/org-font-setup))
+  (setq org-todo-keywords             '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d!)")
+                                        (sequence "BACKLOG(b)" "PLAN(p)" "READY(r)" "ACTIVE(a)" "REVIEW(v)"  "WAIT(w@/!)" "HOLD(h)" "|" "COMPLETED(c)" "CANC(k@)"))
+        org-tag-alist                 '((:startgroup)
+                                        ;; Put mutually exclusive tags here
+                                        (:endgroup)
+                                        ("@errand" . ?E)
+                                        ("@home" . ?H)
+                                        ("@work" . ?W)
+                                        ("agenda" . ?a)
+                                        ("planning" . ?p)
+                                        ("publish" . ?P)
+                                        ("batch" . ?b)
+                                        ("note" . ?n)
+                                        ("idea" . ?i))
+        ;; Configure custom agenda views
+        org-agenda-custom-commands    '(("d" "Dashboard"
+                                         ((agenda "" ((org-deadline-warning-days 7)))
+                                          (todo "NEXT"
+                                                ((org-agenda-overriding-header "Next Tasks")))
+                                          (tags-todo "agenda/ACTIVE"
+                                                     ((org-agenda-overriding-header "Active Projects")))))
+                                        ("n" "Next Tasks"
+                                         ((todo "NEXT"
+                                                ((org-agenda-overriding-header "Next Tasks")))))
+                                        ("W" "Work Tasks" tags-todo "+work-email")
+                                        ;; Low-effort next actions
+                                        ("e" tags-todo "+TODO=\"NEXT\"+Effort<15&+Effort>0"
+                                         ((org-agenda-overriding-header "Low Effort Tasks")
+                                          (org-agenda-max-todos 20)
+                                          (org-agenda-files org-agenda-files)))
+                                        ("w" "Workflow Status"
+                                         ((todo "WAIT"
+                                                ((org-agenda-overriding-header "Waiting on External")
+                                                 (org-agenda-files org-agenda-files)))
+                                          (todo "REVIEW"
+                                                ((org-agenda-overriding-header "In Review")
+                                                 (org-agenda-files org-agenda-files)))
+                                          (todo "PLAN"
+                                                ((org-agenda-overriding-header "In Planning")
+                                                 (org-agenda-todo-list-sublevels nil)
+                                                 (org-agenda-files org-agenda-files)))
+                                          (todo "BACKLOG"
+                                                ((org-agenda-overriding-header "Project Backlog")
+                                                 (org-agenda-todo-list-sublevels nil)
+                                                 (org-agenda-files org-agenda-files)))
+                                          (todo "READY"
+                                                ((org-agenda-overriding-header "Ready for Work")
+                                                 (org-agenda-files org-agenda-files)))
+                                          (todo "ACTIVE"
+                                                ((org-agenda-overriding-header "Active Projects")
+                                                 (org-agenda-files org-agenda-files)))
+                                          (todo "COMPLETED"
+                                                ((org-agenda-overriding-header "Completed Projects")
+                                                 (org-agenda-files org-agenda-files)))
+                                          (todo "CANCELLED"
+                                                ((org-agenda-overriding-header "Cancelled Projects")
+                                                 (org-agenda-files org-agenda-files))))))
+        org-capture-templates         `(("t" "Tasks / Projects")
+                                        ("tt" "Task" entry (file+olp "~/Dropbox/pkb/org/Tasks.org" "Inbox")
+                                         "* TODO %?\n  %U\n  %a\n  %i" :empty-lines 1)
+                                        ("j" "Journal Entries")
+                                        ("jj" "Journal" entry
+                                         (file+olp+datetree "~/Dropbox/pkb/org/journal/Journal.org")
+                                         "\n* %<%I:%M %p> - Journal :journal:\n\n%?\n\n"
+                                         ;; ,(dw/read-file-as-string "~/Notes/Templates/Daily.org")
+                                         :clock-in :clock-resume
+                                         :empty-lines 1)
+                                        ("jm" "Meeting" entry
+                                         (file+olp+datetree "~/Dropbox/pkb/org/journal/Journal.org")
+                                         "* %<%I:%M %p> - %a :meetings:\n\n%?\n\n"
+                                         :clock-in :clock-resume
+                                         :empty-lines 1)
+                                        ("w" "Workflows")
+                                        ("we" "Checking Email" entry (file+olp+datetree "~/Dropbox/pkb/org/journal/Journal.org")
+                                         "* Checking Email :email:\n\n%?" :clock-in :clock-resume :empty-lines 1)))
+  (define-key global-map (kbd "C-c j")
+              (lambda () (interactive) (org-capture nil "jj")))
+  (my/org-font-setup)
 #+END_SRC
 
 ** Nicer Heading Bullets
@@ -1177,16 +1172,16 @@ It's nice to have a table of contents section for long literate configuration fi
 
 ** ChatGPT
 #+BEGIN_SRC emacs-lisp
-;;  (use-package c3po
-;;    :straight (:host github :repo "d1egoaz/c3po.el")
-;;    :config
-;;    (setq c3po-api-key custom-c3po-api-key))
+  ;;  (use-package c3po
+  ;;    :straight (:host github :repo "d1egoaz/c3po.el")
+  ;;    :config
+  ;;    (setq c3po-api-key custom-c3po-api-key))
 #+END_SRC
 
 
 * Web Browsing
-  I build my emacsen with xwidget-webkit support on darwin systems, so I want
-  that to be the default browser function.
+I build my emacsen with xwidget-webkit support on darwin systems, so I want
+that to be the default browser function.
 
 #+BEGIN_SRC emacs-lisp
   ;; configure xwidget-webkit-browse-url as default browser function
@@ -1213,15 +1208,15 @@ It's nice to have a table of contents section for long literate configuration fi
 * Development
 ** Programming Practice
 *** Leetcode
-  #+BEGIN_SRC emacs-lisp
-    (use-package leetcode
-      :straight t
-      :commands leetcode-show
-      :config
-      (setq leetcode-prefer-language  "python3"
-            leetcode-save-solutions t
-            leetcode-directory "~/Dropbox/leetcode"))
-  #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (use-package leetcode
+    :straight t
+    :commands leetcode-show
+    :config
+    (setq leetcode-prefer-language  "python3"
+          leetcode-save-solutions t
+          leetcode-directory "~/Dropbox/leetcode"))
+#+END_SRC
 
 ** Languages
 *** IDE Features with lsp-mode
@@ -1381,16 +1376,16 @@ You can use the pyvenv package to use =virtualenv= environments in Emacs.  The =
   ;;  (add-hook 'emacs-lisp-mode-hook #'flycheck-mode)
 
   (use-package helpful
-      :commands (helpful-callable helpful-variable helpful-command helpful-key)
-      :bind
-      ([remap describe-function] . helpful-function)
-      ([remap describe-symbol] . helpful-symbol)
-      ([remap describe-variable] . helpful-variable)
-      ([remap describe-command] . helpful-command)
-      ([remap describe-key] . helpful-key)
-      :config
-      (setq counsel-describe-function-function #'helpful-callable
-            counsel-describe-variable-function #'helpful-variable))
+    :commands (helpful-callable helpful-variable helpful-command helpful-key)
+    :bind
+    ([remap describe-function] . helpful-function)
+    ([remap describe-symbol] . helpful-symbol)
+    ([remap describe-variable] . helpful-variable)
+    ([remap describe-command] . helpful-command)
+    ([remap describe-key] . helpful-key)
+    :config
+    (setq counsel-describe-function-function #'helpful-callable
+          counsel-describe-variable-function #'helpful-variable))
 #+END_SRC
 
 *** SLY
@@ -1512,13 +1507,13 @@ We also use [[https://github.com/sebastiencs/company-box][company-box]] to furth
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-;;  (use-package diff-hl
-;;    :straight t
-;;    :defer 5
-;;    :hook ((magit-pre-refresh . diff-hl-magit-pre-refresh)
-;;           (magit-pre-refresh . diff-hl-magit-post-refresh))
-;;    :init (global-diff-hl-mode)
-;;    :config (diff-hl-flydiff-mode))
+  ;;  (use-package diff-hl
+  ;;    :straight t
+  ;;    :defer 5
+  ;;    :hook ((magit-pre-refresh . diff-hl-magit-pre-refresh)
+  ;;           (magit-pre-refresh . diff-hl-magit-post-refresh))
+  ;;    :init (global-diff-hl-mode)
+  ;;    :config (diff-hl-flydiff-mode))
 #+END_SRC
 
 ** Improved parenthesis
