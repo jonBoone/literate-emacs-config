@@ -1392,8 +1392,10 @@ You can use the pyvenv package to use =virtualenv= environments in Emacs.  The =
 #+END_SRC
 
 *** SLY
-
+For Common Lisp development, I use sly to interact with the lisp instance.
 #+BEGIN_SRC emacs-lisp
+  (defvar lisp-images-base-dir (concat default-directory ".local"))
+
   (use-package sly
     :straight t
     :mode ("\\.lisp\\'" . lisp-mode)
@@ -1402,7 +1404,10 @@ You can use the pyvenv package to use =virtualenv= environments in Emacs.  The =
                            (save-excursion (sly)))))
     :init
     (setq sly-contribs              '(sly-fancy sly-retro sly-trace-dialog)
-          sly-lisp-implementations  '((sbcl ("sbcl" "--core" "/Users/iain/.local/sbcl/latest/lib/sbcl/sbcl.core-for-sly"))
+          sly-lisp-implementations  '((sbcl
+                                       ("sbcl" "--core"
+                                        (concat lisp-images-base-dir
+                                                "sbcl/latest/lib/sbcl/sbcl.core-for-sly")))
                                       (cmucl-latest ("lisp")))
           sly-net-coding-system     'utf-8-unix)
     :config
