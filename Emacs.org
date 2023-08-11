@@ -154,6 +154,7 @@ Start the Emacs server to receive all `emacsclient` calls.
   (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 #+END_SRC
 
+
 ** Keybinding Panel `(which-key)`
 `which-key` provides an overview of the available keybindings based on the prefix keys entered so far.
 #+BEGIN_SRC emacs-lisp
@@ -227,11 +228,9 @@ We use the [[https://github.com/emacscollective/no-littering/blob/master/no-litt
 
 
 * General Configuration
-
 ** User Interface
 
 This section configures UI settings that remove unneeded elements to make Emacs look a lot more minimal and modern.  If you're just getting started in Emacs, the menu bar might be helpful so you can remove the =(menu-bar-mode -1)= line if you'd like to still see that.
-
 *** Visual Configuration
 #+BEGIN_SRC emacs-lisp
   ;; This may need to be adjusted from system to system
@@ -332,7 +331,6 @@ This section configures UI settings that remove unneeded elements to make Emacs 
   (fset 'yes-or-no-p 'y-or-n-p)
 #+END_SRC
 
-
 *** Font Configuration
 #+BEGIN_SRC emacs-lisp
   (use-package nerd-icons
@@ -351,7 +349,6 @@ This section configures UI settings that remove unneeded elements to make Emacs 
                       :font "Cantarell" :height my/default-variable-font-size :weight 'regular)
 #+END_SRC
 
-
 *** Command Log Mode
 [[https://github.com/lewang/command-log-mode][command-log-mode]] is useful for displaying a panel showing each key binding you use in a panel on the right side of the frame.  Great for live streams and screencasts!
 #+BEGIN_SRC emacs-lisp
@@ -359,8 +356,7 @@ This section configures UI settings that remove unneeded elements to make Emacs 
     :commands command-log-mode)
 #+END_SRC
 
-
-*** Color Theme 
+*** Color Theme
 [[https://github.com/hlissner/emacs-doom-themes][doom-themes]] is a great set of themes with a lot of variety and support for many different Emacs modes.  Taking a look at the [[https://github.com/hlissner/emacs-doom-themes/tree/screenshots][screenshots]] might help you decide which one you like best.  You can also run =M-x counsel-load-theme= to choose between them easily.
 #+BEGIN_SRC emacs-lisp
   (use-package doom-themes
@@ -742,7 +738,6 @@ This module is absolutely necessary for working inside of Emacs Lisp files, espe
 
 
 * File Browsing
-
 ** Dired
 #+BEGIN_SRC emacs-lisp
   (use-package all-the-icons-dired)
@@ -802,9 +797,7 @@ This module is absolutely necessary for working inside of Emacs Lisp files, espe
 
 
 * Org Mode
-
 [[https://orgmode.org/][Org Mode]] is one of the hallmark features of Emacs.  It is a rich document editor, project planner, task and time tracker, blogging engine, and literate coding utility all wrapped up in one package.
-
 ** Better Font Faces
 The =my/org-font-setup= function configures various text faces to tweak the sizes of headings and use variable width fonts in most cases so that it looks more like we're editing a document in =org-mode=.  We switch back to fixed width (monospace) fonts for code blocks and tables so that they display correctly.  *Note:* This must appear prior to the `(use-package org-mode...)` invocation so that we can call `my/org-font-setup` during the call to `use-package`.
 #+BEGIN_SRC emacs-lisp
@@ -851,7 +844,6 @@ This section contains the basic configuration for =org-mode= plus the configurat
     (visual-line-mode 1)
     (diminish org-indent-mode))
 #+END_SRC
-
 
 *** Org-Mode package
 The configuration of Org-Mode is augmented with some additional modules (see `(setq org-modules ...)` line below.)
@@ -973,6 +965,7 @@ The configuration of Org-Mode is augmented with some additional modules (see `(s
   (my/org-font-setup)
 #+END_SRC
 
+
 ** Nicer Heading Bullets
 
 [[https://github.com/sabof/org-bullets][org-bullets]] replaces the heading stars in =org-mode= buffers with nicer looking characters that you can control.  Another option for this is [[https://github.com/integral-dw/org-superstar-mode][org-superstar-mode]] which we may cover in a later video.
@@ -983,6 +976,7 @@ The configuration of Org-Mode is augmented with some additional modules (see `(s
     :custom
     (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
 #+END_SRC
+
 
 ** Center Org Buffers
 
@@ -998,6 +992,7 @@ We use [[https://github.com/joostkremers/visual-fill-column][visual-fill-column]
     :hook (org-mode . my/org-mode-visual-fill))
 #+END_SRC
 
+
 ** Configure Babel Languages
 
 To execute or export code in =org-mode= code blocks, you'll need to set up =org-babel-load-languages= for each language you'd like to use.  [[https://orgmode.org/worg/org-contrib/babel/languages.html][This page]] documents all of the languages that you can use with =org-babel=.
@@ -1011,6 +1006,7 @@ To execute or export code in =org-mode= code blocks, you'll need to set up =org-
 
     (push '("conf-unix" . conf-unix) org-src-lang-modes))
 #+END_SRC
+
 
 ** Structure Templates
 
@@ -1028,6 +1024,7 @@ You can add more =src= block templates below by copying one of the lines and cha
     (add-to-list 'org-structure-template-alist '("py" . "src python")))
 #+END_SRC
 
+
 ** Pomodoro
 #+BEGIN_SRC emacs-lisp
   (use-package org-pomodoro
@@ -1038,6 +1035,7 @@ You can add more =src= block templates below by copying one of the lines and cha
           org-pomodoro-long-break-sound   "~/Dropbox/pkb/sounds/three_beeps.wav"
           org-pomodoro-finished-sound     "~/Dropbox/pkb/sounds/meditation_bell.env"))
 #+END_SRC
+
 
 ** Auto-tangle Configuration Files
 This snippet adds a hook to =org-mode= buffers so that =my/org-babel-tangle-config= gets executed each time such a buffer gets saved.  This function checks to see if the file being saved is the Emacs.org file you're looking at right now, and if so, automatically exports the configuration here to the associated output files.
@@ -1054,6 +1052,7 @@ This snippet adds a hook to =org-mode= buffers so that =my/org-babel-tangle-conf
   (add-hook 'org-mode-hook
             (lambda () (add-hook 'after-save-hook #'my/org-babel-tangle-config)))
 #+END_SRC
+
 
 ** Org Roam
 #+BEGIN_SRC emacs-lisp
@@ -1133,6 +1132,7 @@ This snippet adds a hook to =org-mode= buffers so that =my/org-babel-tangle-conf
                  ("C-c n I" . org-roam-insert-immediate))))
 #+END_SRC
 
+
 ** Deft
 #+BEGIN_SRC emacs-lisp
   (use-package deft
@@ -1143,6 +1143,7 @@ This snippet adds a hook to =org-mode= buffers so that =my/org-babel-tangle-conf
           deft-extensions '("md" "org")))
 #+END_SRC
 
+
 ** Auto-show Markup Symbols
 This package makes it much easier to edit Org documents when`org-hide-emphasis-markers` is turned on. It temporarily shows the emphasis markers around certain markup elements when you place your cursor inside of them. No more fumbling around with `=` and `*` characters!
 #+BEGIN_SRC emacs-lisp
@@ -1150,12 +1151,14 @@ This package makes it much easier to edit Org documents when`org-hide-emphasis-m
     :hook org-mode)
 #+END_SRC
 
+
 ** Update Table of Contents on Save
 It's nice to have a table of contents section for long literate configuration files (like this one!) so use `org-make-toc` to automatically update the `ToC` in any header with a property named `TOC`.
 #+BEGIN_SRC emacs-lisp
   (use-package org-make-toc
     :hook org-mode)
 #+END_SRC
+
 
 ** Tree-sitter
 #+BEGIN_SRC emacs-lisp
@@ -1169,7 +1172,6 @@ It's nice to have a table of contents section for long literate configuration fi
 
 
 * LLMs
-
 ** ChatGPT
 #+BEGIN_SRC emacs-lisp
   ;;  (use-package c3po
@@ -1190,7 +1192,6 @@ that to be the default browser function.
 
 
 * Writing
-
 ** Markdown Support
 
 *** Markdown Mode
@@ -1217,6 +1218,7 @@ that to be the default browser function.
           leetcode-save-solutions t
           leetcode-directory "~/Dropbox/leetcode"))
 #+END_SRC
+
 
 ** Languages
 *** IDE Features with lsp-mode
@@ -1363,6 +1365,7 @@ You can use the pyvenv package to use =virtualenv= environments in Emacs.  The =
     (pyvenv-mode 1))
 #+END_SRC
 
+
 ** Lisp
 *** Lispy
 #+BEGIN_SRC emacs-lisp
@@ -1414,8 +1417,8 @@ You can use the pyvenv package to use =virtualenv= environments in Emacs.  The =
     (sly-mrepl-output-face ((t (:forground "sienna")))))
 #+END_SRC
 
-** Company Mode
 
+** Company Mode
 [[http://company-mode.github.io/][Company Mode]] provides a nicer in-buffer completion interface than =completion-at-point= which is more reminiscent of what you would expect from an IDE.  We add a simple configuration to make the keybindings a little more useful (=TAB= now completes the selection and initiates completion at the current location if needed).
 
 We also use [[https://github.com/sebastiencs/company-box][company-box]] to further enhance the look of the completions with icons and better overall presentation.
@@ -1435,6 +1438,7 @@ We also use [[https://github.com/sebastiencs/company-box][company-box]] to furth
   (use-package company-box
     :hook (company-mode . company-box-mode))
 #+END_SRC
+
 
 ** Projectile
 
@@ -1457,6 +1461,7 @@ We also use [[https://github.com/sebastiencs/company-box][company-box]] to furth
     :after projectile
     :config (counsel-projectile-mode))
 #+END_SRC
+
 
 ** Magit
 
@@ -1516,6 +1521,7 @@ We also use [[https://github.com/sebastiencs/company-box][company-box]] to furth
   ;;    :config (diff-hl-flydiff-mode))
 #+END_SRC
 
+
 ** Improved parenthesis
 #+BEGIN_SRC emacs-lisp
   (use-package smartparens
@@ -1523,8 +1529,8 @@ We also use [[https://github.com/sebastiencs/company-box][company-box]] to furth
     :hook prog-mode)
 #+END_SRC
 
-** Rainbow Delimiters
 
+** Rainbow Delimiters
 [[https://github.com/Fanael/rainbow-delimiters][rainbow-delimiters]] is useful in programming modes because it colorizes nested parentheses and brackets according to their nesting depth.  This makes it a lot easier to visually match parentheses in Emacs Lisp code without having to count them yourself.
 
 #+BEGIN_SRC emacs-lisp
@@ -1535,7 +1541,6 @@ We also use [[https://github.com/sebastiencs/company-box][company-box]] to furth
 
 
 * Terminals
-
 ** term-mode
 
 =term-mode= is a built-in terminal emulator in Emacs.  Because it is written in Emacs Lisp, you can start using it immediately with very little configuration.  If you are on Linux or macOS, =term-mode= is a great choice to get started because it supports fairly complex terminal applications (=htop=, =vim=, etc) and works pretty reliably.  However, because it is written in Emacs Lisp, it can be slower than other options like =vterm=.  The speed will only be an issue if you regularly run console apps with a lot of output.
@@ -1570,6 +1575,7 @@ The =eterm-256color= package enhances the output of =term-mode= to enable handli
     :hook term-mode)
 #+END_SRC
 
+
 ** vterm
 
 [[https://github.com/akermu/emacs-libvterm/][vterm]] is an improved terminal emulator package which uses a compiled native module to interact with the underlying terminal applications.  This enables it to be much faster than =term-mode= and to also provide a more complete terminal emulation experience.
@@ -1589,6 +1595,7 @@ Make sure that you have the [[https://github.com/akermu/emacs-libvterm/#requirem
     (setq vterm-shell "zsh")                       ;; Set this to customize the shell to launch
     (setq vterm-max-scrollback 10000))
 #+END_SRC
+
 
 ** multi-vterm
 [[https://github.com/suonlight/multi-vterm][multi-vterm mode]] allows running multiple =vterm= buffers simultaneously.
@@ -1621,6 +1628,7 @@ One advantage of =shell-mode= on Windows is that it's the only way to run =cmd.e
     (setq explicit-shell-file-name "powershell.exe")
     (setq explicit-powershell.exe-args '()))
 #+END_SRC
+
 
 ** Eshell
 
@@ -1705,7 +1713,6 @@ For more thoughts on Eshell, check out these articles by Pierre Neidhardt:
 
 
 * Productivity
-
 ** Improve PDF handling
 #+BEGIN_SRC emacs-lisp
   (use-package pdf-tools
@@ -1723,12 +1730,14 @@ For more thoughts on Eshell, check out these articles by Pierre Neidhardt:
                                    (org-pdftools-open link)))))
 #+END_SRC
 
+
 ** Syntax checking with Flycheck
 #+BEGIN_SRC emacs-lisp
   ;; (use-package flycheck
   ;;   :defer t
   ;;   :hook lsp-mode)
 #+END_SRC
+
 ** Snippets
 #+BEGIN_SRC emacs-lisp
   (use-package yasnippet
@@ -1743,6 +1752,7 @@ For more thoughts on Eshell, check out these articles by Pierre Neidhardt:
     :after yasnippet)
 #+END_SRC
 
+
 ** ChatGPT
 #+BEGIN_SRC emacs-lisp
   ;; replace with c3po.el
@@ -1750,7 +1760,6 @@ For more thoughts on Eshell, check out these articles by Pierre Neidhardt:
 
 
 * Applications
-
 ** Some App
 
 This is an example of configuring another non-Emacs application using org-mode.  Not only do we write out the configuration at =.config/some-app/config=, we also compute the value that gets stored in this configuration from the Emacs Lisp block above it.
