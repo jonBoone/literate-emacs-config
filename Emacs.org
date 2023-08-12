@@ -833,7 +833,7 @@ The =my/org-font-setup= function configures various text faces to tweak the size
 #+END_SRC
 
 
-** Basic Config
+** Essential Org Mode Config
 This section contains the basic configuration for =org-mode= plus the configuration for Org agendas and capture templates.
 *** Custom org-mode-setup function
 #+BEGIN_SRC emacs-lisp
@@ -853,7 +853,7 @@ The configuration of Org-Mode is augmented with some additional modules (see `(s
     :hook (org-mode . my/org-mode-setup)
     :config
     (setq org-adapt-indentation              t
-          org-agenda-files                   '("~/Dropbox/pkb/org/journal")
+          org-agenda-files                   '("~/Dropbox/pkb/org")
           org-agenda-include-diary           t
           org-agenda-start-with-log-mode     t
           org-cycle-separator-lines          2
@@ -877,6 +877,7 @@ The configuration of Org-Mode is augmented with some additional modules (see `(s
           org-refile-targets                 '(("Archive.org" :maxlevel . 1)
                                                ("Tasks.org" :maxlevel . 1))
           org-refile-use-outline-path        t
+          org-return-follows-link            t
           org-src-fontify-natively           t
           org-src-tab-acts-natively          t
           org-startup-folded                 'overview))
@@ -960,8 +961,19 @@ The configuration of Org-Mode is augmented with some additional modules (see `(s
                                         ("w" "Workflows")
                                         ("we" "Checking Email" entry (file+olp+datetree "~/Dropbox/pkb/org/journal/Journal.org")
                                          "* Checking Email :email:\n\n%?" :clock-in :clock-resume :empty-lines 1)))
-  (define-key global-map (kbd "C-c j")
-              (lambda () (interactive) (org-capture nil "jj")))
+  ;; use UP or DOWN keys to re-prioritize
+  (define-key org-mode-map (kbd "C-c <up>")    'org-priority-up)
+  (define-key org-mode-map (kbd "C-c <down>")  'org-priority-down)
+  ;; change level of an item with Shift-Meta-Right
+  (define-key org-mode-map (kbd "C-c C-g C-r") 'org-shiftmetaright)
+
+  ;; Shortcuts for storing links, viewing agenda and starting a capture
+  (define-key global-map (kbd "C-c l")  'org-stor-link)
+  (define-key global-map (kbd "C-c a")  'org-agenda)
+  (define-key global-map (kbd "C-c c")  'org-capture)
+  (define-key global-map (kbd "C-c j")  (lambda ()
+                                          (interactive)
+                                          (org-capture nil "jj")))
   (my/org-font-setup)
 #+END_SRC
 
@@ -1749,6 +1761,7 @@ For more thoughts on Eshell, check out these articles by Pierre Neidhardt:
   ;;   :defer t
   ;;   :hook lsp-mode)
 #+END_SRC
+
 
 ** Snippets
 #+BEGIN_SRC emacs-lisp
