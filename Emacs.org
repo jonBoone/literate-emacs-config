@@ -163,6 +163,12 @@ Start the Emacs server to receive all `emacsclient` calls.
     :straight t)
 #+end_src
 
+** s
+   [[https://github.com/magnars/s.el][s.el]] is a string manipulation library for Emacs Lisp
+#+begin_src emacs-lisp
+  (use-package "s"
+    :straight t)
+#+end_src
 
 * Keybinding Configuration
 ** `ESC` Cancels All
