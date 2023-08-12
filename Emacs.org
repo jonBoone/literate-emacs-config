@@ -148,6 +148,15 @@ Start the Emacs server to receive all `emacsclient` calls.
 #+END_SRC
 
 
+* Emacs Lisp Libraries
+** DASH
+   [[https://github.com/magnars/dash.el][dash.el]] is a modern list library addition to Emacs Lisp
+#+begin_src emacs-lisp
+  (use-package "dash"
+    :straight t)
+#+end_src
+
+
 * Keybinding Configuration
 ** `ESC` Cancels All
 #+BEGIN_SRC emacs-lisp
@@ -366,27 +375,6 @@ This section configures UI settings that remove unneeded elements to make Emacs 
 #+END_SRC
 
 
-** Emacs Dashboard
-I like the idea of having emacs launch and present a dashboard as the
-default buffer in my primary frame.  This requires using the
-`dashboard` package:
-
-#+BEGIN_SRC emacs-lisp
-  (use-package dashboard
-    :ensure t
-    :config
-    (setq
-     dashboard-banner-logo-title "My Dashboard"
-     dashboard-startup-banner    (concat user-emacs-directory "Emacs-Is-Sexy-V2-64x64.png")
-     dashboard-center-content    t
-     dashboard-items             '((agenda   . 16))
-     dashboard-icon-type         'all-the-icons
-     dashboard-display-icons-p   t
-     dashboard-icon-type         'nerd-icons)
-    (dashboard-setup-startup-hook))
-#+END_SRC
-
-
 ** Mode Line
 *** Basic Customization
 #+BEGIN_SRC emacs-lisp
@@ -508,6 +496,28 @@ Prettify the mode line with `smart-mode-line`.  Really need to re-evaluate the o
 #+END_SRC
 
 
+** Emacs Dashboard
+I like the idea of having emacs launch and present a dashboard as the
+default buffer in my primary frame.  This requires using the
+`dashboard` package:
+
+#+BEGIN_SRC emacs-lisp
+  (use-package dashboard
+    :ensure t
+    :config
+    (setq
+     dashboard-banner-logo-title "My Dashboard"
+     dashboard-startup-banner    (concat user-emacs-directory "Emacs-Is-Sexy-V2-64x64.png")
+     dashboard-center-content    t
+     dashboard-items             '((agenda   . 16))
+     dashboard-icon-type         'all-the-icons
+     dashboard-display-icons-p   t
+     dashboard-icon-type         'nerd-icons)
+    (dashboard-setup-startup-hook))
+#+END_SRC
+
+
+
 * Editing Configuration
 ** Tab Widths
 Default to an indentation size of 2 spaces since it's the norm for nearly all programming languages I use.
@@ -527,6 +537,15 @@ Default to an indentation size of 2 spaces since it's the norm for nearly all pr
   (use-package ws-butler
     :hook (prog-mode text-mode))
 #+END_SRC
+
+
+** Expand Region
+ This module is absolutely necessary for working inside of Emacs Lisp files, especially when trying to edit some parent of an expression (like a `setq`).  Makes tweaking Org agend views much less annoying.
+ #+BEGIN_SRC emacs-lisp
+   (use-package expand-region
+     :bind (("M-[" . er/expand-region)
+            ("C-(" . er/mark-outside-pairs)))
+ #+END_SRC
 
 
 ** Use Parinfer for Lisp Languages
@@ -683,7 +702,6 @@ The keybindings for this are `C+M+-` and `C+M+=`.
     (default-text-scale-mode))
 #+END_SRC
 
-
 *** Window History with `winner-mode`
 #+BEGIN_SRC emacs-lisp
   (use-package winner
@@ -694,7 +712,6 @@ The keybindings for this are `C+M+-` and `C+M+=`.
     :config
     (winner-mode))
 #+END_SRC
-
 
 *** Set Margins for Modes
 #+BEGIN_SRC emacs-lisp
@@ -712,7 +729,6 @@ The keybindings for this are `C+M+-` and `C+M+=`.
     :hook (org-mode . my/org-mode-visual-fill))
 #+END_SRC
 
-
 *** Control Buffer Placement
 Emacs' default buffer placement algorithm is pretty disruptive if you like setting up window layouts a certain way in your workflow. The display-buffer-alist video controls this behavior and you can customize it to prevent Emacs from popping up new windows when you run commands.
 
@@ -724,16 +740,6 @@ Emacs' default buffer placement algorithm is pretty disruptive if you like setti
 
   ;; If a popup does happen, don't resize windows to be equal-sized
   (setq even-window-sizes nil)
-#+END_SRC
-
-
-* Expand Region
-This module is absolutely necessary for working inside of Emacs Lisp files, especially when trying to edit some parent of an expression (like a `setq`).  Makes tweaking Org agend views much less annoying.
-
-#+BEGIN_SRC emacs-lisp
-  (use-package expand-region
-    :bind (("M-[" . er/expand-region)
-           ("C-(" . er/mark-outside-pairs)))
 #+END_SRC
 
 
@@ -1205,7 +1211,6 @@ that to be the default browser function.
 
 * Writing
 ** Markdown Support
-
 *** Markdown Mode
 #+BEGIN_SRC emacs-lisp
   (use-package markdown-mode
@@ -1305,9 +1310,7 @@ Try these commands with =M-x=:
 #+END_SRC
 
 **** lsp-pyright
-
 [[https://github.com/emacs-lsp/lsp-pyright][lsp-pyright]] intergrates =lsp-mode= with Microsoft's pyright language server protocol support for python.
-
 #+BEGIN_SRC emacs-lisp
   (use-package lsp-pyright
     :straight t
@@ -1316,252 +1319,253 @@ Try these commands with =M-x=:
                            (lsp))))
 #+END_SRC
 
-*** Debugging with dap-mode
-[[https://emacs-lsp.github.io/dap-mode/][dap-mode]] is an excellent package for bringing rich debugging capabilities to Emacs via the [[https://microsoft.github.io/debug-adapter-protocol/][Debug Adapter Protocol]].  You should check out the [[https://emacs-lsp.github.io/dap-mode/page/configuration/][configuration docs]] to learn how to configure the debugger for your language.  Also make sure to check out the documentation for the debug adapter to see what configuration parameters are available to use for your debug templates!
-
-#+BEGIN_SRC emacs-lisp
-  (use-package dap-mode
-    :straight t
-    :defer t
-    :bind (:map dap-mode-map
-                ("C-x D D" . dap-debug)
-                ("C-x D d" . dap-debug-last))
-    ;; Uncomment the config below if you want all UI panes to be hidden by default!
-    ;; :custom
-    ;; (lsp-enable-dap-auto-configure nil)
-    ;; :config
-    ;; (dap-ui-mode 1)
-    :commands dap-debug
-    :config
-    (setq dap-auto-configure-features '(sessions locals controls tooltip))
-
-    ;; Bind `C-c l d` to `dap-hydra` for easy access
-    (general-define-key
-     :keymaps 'lsp-mode-map
-     :prefix lsp-keymap-prefix
-     "d" '(dap-hydra t :wk "debugger")))
-#+END_SRC
-
-*** Python
+*** Improved parenthesis
+  #+BEGIN_SRC emacs-lisp
+    (use-package smartparens
+      :straight t
+      :hook prog-mode)
+  #+END_SRC
 
 
-We use =lsp-mode= and =dap-mode= to provide a more complete development environment for Python in Emacs.  Check out [[https://emacs-lsp.github.io/lsp-mode/page/lsp-pyls/][the =pyls= configuration]] in the =lsp-mode= documentation for more details.
+***** Debugging with dap-mode
+  [[https://emacs-lsp.github.io/dap-mode/][dap-mode]] is an excellent package for bringing rich debugging capabilities to Emacs via the [[https://microsoft.github.io/debug-adapter-protocol/][Debug Adapter Protocol]].  You should check out the [[https://emacs-lsp.github.io/dap-mode/page/configuration/][configuration docs]] to learn how to configure the debugger for your language.  Also make sure to check out the documentation for the debug adapter to see what configuration parameters are available to use for your debug templates!
 
-Make sure you have the =pyls= language server installed before trying =lsp-mode=!
+  #+BEGIN_SRC emacs-lisp
+    (use-package dap-mode
+      :straight t
+      :defer t
+      :bind (:map dap-mode-map
+                  ("C-x D D" . dap-debug)
+                  ("C-x D d" . dap-debug-last))
+      ;; Uncomment the config below if you want all UI panes to be hidden by default!
+      ;; :custom
+      ;; (lsp-enable-dap-auto-configure nil)
+      ;; :config
+      ;; (dap-ui-mode 1)
+      :commands dap-debug
+      :config
+      (setq dap-auto-configure-features '(sessions locals controls tooltip))
 
-#+BEGIN_SRC sh :tangle no
-  pip install --user "python-language-server[all]"
-#+END_SRC
+      ;; Bind `C-c l d` to `dap-hydra` for easy access
+      (general-define-key
+       :keymaps 'lsp-mode-map
+       :prefix lsp-keymap-prefix
+       "d" '(dap-hydra t :wk "debugger")))
+  #+END_SRC
 
-There are a number of other language servers for Python so if you find that =pyls= doesn't work for you, consult the =lsp-mode= [[https://emacs-lsp.github.io/lsp-mode/page/languages/][language configuration documentation]] to try the others!
-
-#+BEGIN_SRC emacs-lisp
-  (use-package python-mode
-    :straight t
-    :hook (python-mode . lsp-deferred)
-    :custom
-    ;; NOTE: Set these if Python 3 is called "python3" on your system!
-    ;; (python-shell-interpreter "python3")
-    ;; (dap-python-executable "python3")
-    (dap-python-debugger 'debugpy)
-    :config
-    (require 'dap-python))
-#+END_SRC
-
-You can use the pyvenv package to use =virtualenv= environments in Emacs.  The =pyvenv-activate= command should configure Emacs to cause =lsp-mode= and =dap-mode= to use the virtual environment when they are loaded, just select the path to your virtual environment before loading your project.
-
-#+BEGIN_SRC emacs-lisp
-  (use-package pyvenv
-    :after python-mode
-    :config
-    (pyvenv-mode 1))
-#+END_SRC
+***** Python
 
 
-** Lisp
-*** Lispy
-#+BEGIN_SRC emacs-lisp
-  (use-package lispy
-    :straight t
-    :hook (emacs-lisp-mode lisp-mode scheme-mode))
-#+END_SRC
+  We use =lsp-mode= and =dap-mode= to provide a more complete development environment for Python in Emacs.  Check out [[https://emacs-lsp.github.io/lsp-mode/page/lsp-pyls/][the =pyls= configuration]] in the =lsp-mode= documentation for more details.
 
-*** Emacs Lisp
-#+BEGIN_SRC emacs-lisp
-  ;;  (add-hook 'emacs-lisp-mode-hook #'flycheck-mode)
+  Make sure you have the =pyls= language server installed before trying =lsp-mode=!
 
-  (use-package helpful
-    :commands (helpful-callable helpful-variable helpful-command helpful-key)
-    :bind
-    ([remap describe-function] . helpful-function)
-    ([remap describe-symbol] . helpful-symbol)
-    ([remap describe-variable] . helpful-variable)
-    ([remap describe-command] . helpful-command)
-    ([remap describe-key] . helpful-key)
-    :config
-    (setq counsel-describe-function-function #'helpful-callable
-          counsel-describe-variable-function #'helpful-variable))
-#+END_SRC
+  #+BEGIN_SRC sh :tangle no
+    pip install --user "python-language-server[all]"
+  #+END_SRC
 
-*** SLY
-For Common Lisp development, I use sly to interact with the lisp instance.
-#+BEGIN_SRC emacs-lisp
-  (defvar lisp-images-base-dir (concat default-directory ".local")
-    "This is the base directory in which to find various cl implementations.")
+  There are a number of other language servers for Python so if you find that =pyls= doesn't work for you, consult the =lsp-mode= [[https://emacs-lsp.github.io/lsp-mode/page/languages/][language configuration documentation]] to try the others!
 
-  (defvar sbcl-core-for-sly "/lib/sbcl/sbcl.core-for-sly"
-    "This is the relative path to the sly-specific core for sbcl.")
+  #+BEGIN_SRC emacs-lisp
+    (use-package python-mode
+      :straight t
+      :hook (python-mode . lsp-deferred)
+      :custom
+      ;; NOTE: Set these if Python 3 is called "python3" on your system!
+      ;; (python-shell-interpreter "python3")
+      ;; (dap-python-executable "python3")
+      (dap-python-debugger 'debugpy)
+      :config
+      (require 'dap-python))
+  #+END_SRC
 
-  (defvar sbcl-latest-sly-core-file
-    (concat lisp-images-base-dir "/sbcl/latest" sbcl-core-for-sly)
-    "This is where to find ")
+  You can use the pyvenv package to use =virtualenv= environments in Emacs.  The =pyvenv-activate= command should configure Emacs to cause =lsp-mode= and =dap-mode= to use the virtual environment when they are loaded, just select the path to your virtual environment before loading your project.
 
-  (use-package sly
-    :straight t
-    :mode ("\\.lisp\\'" . lisp-mode)
-    :hook (lisp-mode . (lambda ()
-                         (unless (sly-connected-p)
-                           (save-excursion (sly)))))
-    :init
-    (setq sly-contribs              '(sly-fancy sly-retro sly-trace-dialog)
-          sly-lisp-implementations  '((sbcl-latest
-                                       ("sbcl" "--core"
-                                        sbcl-latest-sly-core-file))
-                                      (cmucl-latest ("lisp")))
-          sly-net-coding-system     'utf-8-unix)
-    :config
-    ;; setup sly-documentation-lookup
-    (eval-after-load 'sly
-      `(define-key sly-prefix-map (kbd "M-h") 'sly-documentation-lookup))
-    ;; setup sly-mrepl-clear-recent-output
-    (eval-after-load 'sly-mrepl
-      `(define-key sly-mrepl-mode-map (kbd "C-c C-k")
-                   `sly-mrepl-clear-recent-output))
-    :custom-face
-    (sly-mrepl-output-face ((t (:forground "sienna")))))
-#+END_SRC
+  #+BEGIN_SRC emacs-lisp
+    (use-package pyvenv
+      :after python-mode
+      :config
+      (pyvenv-mode 1))
+  #+END_SRC
 
+***** Lisp
+****** Lispy
+   #+BEGIN_SRC emacs-lisp
+     (use-package lispy
+       :straight t
+       :hook (emacs-lisp-mode lisp-mode scheme-mode))
+   #+END_SRC
 
-** Company Mode
-[[http://company-mode.github.io/][Company Mode]] provides a nicer in-buffer completion interface than =completion-at-point= which is more reminiscent of what you would expect from an IDE.  We add a simple configuration to make the keybindings a little more useful (=TAB= now completes the selection and initiates completion at the current location if needed).
+****** Emacs Lisp
+   #+BEGIN_SRC emacs-lisp
+     ;;  (add-hook 'emacs-lisp-mode-hook #'flycheck-mode)
 
-We also use [[https://github.com/sebastiencs/company-box][company-box]] to further enhance the look of the completions with icons and better overall presentation.
+     (use-package helpful
+       :commands (helpful-callable helpful-variable helpful-command helpful-key)
+       :bind
+       ([remap describe-function] . helpful-function)
+       ([remap describe-symbol] . helpful-symbol)
+       ([remap describe-variable] . helpful-variable)
+       ([remap describe-command] . helpful-command)
+       ([remap describe-key] . helpful-key)
+       :config
+       (setq counsel-describe-function-function #'helpful-callable
+             counsel-describe-variable-function #'helpful-variable))
+   #+END_SRC
 
-#+BEGIN_SRC emacs-lisp
-  (use-package company
-    :after lsp-mode
-    :hook (lsp-mode . company-mode)
-    :bind (:map company-active-map
-                ("<tab>" . company-complete-selection))
-    (:map lsp-mode-map
-          ("<tab>" . company-indent-or-complete-common))
-    :custom
-    (company-minimum-prefix-length 1)
-    (company-idle-delay 0.0))
+****** SLY
+   For Common Lisp development, I use sly to interact with the lisp instance.
+   #+BEGIN_SRC emacs-lisp
+     (defvar lisp-images-base-dir (concat default-directory ".local")
+       "This is the base directory in which to find various cl implementations.")
 
-  (use-package company-box
-    :hook (company-mode . company-box-mode))
-#+END_SRC
+     (defvar sbcl-core-for-sly "/lib/sbcl/sbcl.core-for-sly"
+       "This is the relative path to the sly-specific core for sbcl.")
 
+     (defvar sbcl-latest-sly-core-file
+       (concat lisp-images-base-dir "/sbcl/latest" sbcl-core-for-sly)
+       "This is where to find ")
 
-** Projectile
-
-[[https://projectile.mx/][Projectile]] is a project management library for Emacs which makes it a lot easier to navigate around code projects for various languages.  Many packages integrate with Projectile so it's a good idea to have it installed even if you don't use its commands directly.
-
-#+BEGIN_SRC emacs-lisp
-  (use-package projectile
-    :diminish projectile-mode
-    :config (projectile-mode)
-    :custom ((projectile-completion-system 'ivy))
-    :bind-keymap
-    ("C-c p" . projectile-command-map)
-    :init
-    ;; NOTE: Set this to the folder where you keep your Git repos!
-    (when (file-directory-p "~/Projects/Code")
-      (setq projectile-project-search-path '("~/Projects/Code")))
-    (setq projectile-switch-project-action #'projectile-dired))
-
-  (use-package counsel-projectile
-    :after projectile
-    :config (counsel-projectile-mode))
-#+END_SRC
+     (use-package sly
+       :straight t
+       :mode ("\\.lisp\\'" . lisp-mode)
+       :hook (lisp-mode . (lambda ()
+                            (unless (sly-connected-p)
+                              (save-excursion (sly)))))
+       :init
+       (setq sly-contribs              '(sly-fancy sly-retro sly-trace-dialog)
+             sly-lisp-implementations  '((sbcl-latest
+                                          ("sbcl" "--core"
+                                           sbcl-latest-sly-core-file))
+                                         (cmucl-latest ("lisp")))
+             sly-net-coding-system     'utf-8-unix)
+       :config
+       ;; setup sly-documentation-lookup
+       (eval-after-load 'sly
+         `(define-key sly-prefix-map (kbd "M-h") 'sly-documentation-lookup))
+       ;; setup sly-mrepl-clear-recent-output
+       (eval-after-load 'sly-mrepl
+         `(define-key sly-mrepl-mode-map (kbd "C-c C-k")
+                      `sly-mrepl-clear-recent-output))
+       :custom-face
+       (sly-mrepl-output-face ((t (:forground "sienna")))))
+   #+END_SRC
 
 
-** Magit
+**** Company Mode
+  [[http://company-mode.github.io/][Company Mode]] provides a nicer in-buffer completion interface than =completion-at-point= which is more reminiscent of what you would expect from an IDE.  We add a simple configuration to make the keybindings a little more useful (=TAB= now completes the selection and initiates completion at the current location if needed).
 
-[[https://magit.vc/][Magit]] is the best Git interface I've ever used.  Common Git operations are easy to execute quickly using Magit's command panel system.
+  We also use [[https://github.com/sebastiencs/company-box][company-box]] to further enhance the look of the completions with icons and better overall presentation.
 
-#+BEGIN_SRC emacs-lisp
-  (use-package magit
-    :straight t
-    :bind (("C-M-;" . magit-status)
-           :map project-prefix-map
-           ("m" . project-magit))
-    :commands (magit-status magit-get-current-branch project-magit)
-    :custom
-    (add-to-list 'project-switch-commands
-                 '(project-magit "Magit" m))
-    (defun project-magit ()
-      (interactive)
-      (let ((dir (project-root (project-current t))))
-        (magit-status dir)))
+  #+BEGIN_SRC emacs-lisp
+    (use-package company
+      :after lsp-mode
+      :hook (lsp-mode . company-mode)
+      :bind (:map company-active-map
+                  ("<tab>" . company-complete-selection))
+      (:map lsp-mode-map
+            ("<tab>" . company-indent-or-complete-common))
+      :custom
+      (company-minimum-prefix-length 1)
+      (company-idle-delay 0.0))
 
-    (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
-
-  ;; NOTE: Make sure to configure a GitHub token before using this package!
-  ;; - https://magit.vc/manual/forge/Token-Creation.html#Token-Creation
-  ;; - https://magit.vc/manual/ghub/Getting-Started.html#Getting-Started
-  (use-package forge
-    :straight t
-    :after magit)
-
-  (use-package magit-todos
-    :straight t
-    :defer t)
-
-  (use-package git-link
-    :commands git-link
-    :config
-    (setq git-link-open-in-browser-t))
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-  (use-package ediff
-    :after (magit vc)
-    :commands (ediff)
-    :init
-    (with-eval-after-load 'winner
-      (add-hook 'edif-quit-hook 'winner-undo))
-    (setq ediff-window-setup-function 'ediff-setup-windows-plain))
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-  ;;  (use-package diff-hl
-  ;;    :straight t
-  ;;    :defer 5
-  ;;    :hook ((magit-pre-refresh . diff-hl-magit-pre-refresh)
-  ;;           (magit-pre-refresh . diff-hl-magit-post-refresh))
-  ;;    :init (global-diff-hl-mode)
-  ;;    :config (diff-hl-flydiff-mode))
-#+END_SRC
+    (use-package company-box
+      :hook (company-mode . company-box-mode))
+  #+END_SRC
 
 
-** Improved parenthesis
-#+BEGIN_SRC emacs-lisp
-  (use-package smartparens
-    :straight t
-    :hook prog-mode)
-#+END_SRC
+**** Projectile
+
+  [[https://projectile.mx/][Projectile]] is a project management library for Emacs which makes it a lot easier to navigate around code projects for various languages.  Many packages integrate with Projectile so it's a good idea to have it installed even if you don't use its commands directly.
+
+  #+BEGIN_SRC emacs-lisp
+    (use-package projectile
+      :diminish projectile-mode
+      :config (projectile-mode)
+      :custom ((projectile-completion-system 'ivy))
+      :bind-keymap
+      ("C-c p" . projectile-command-map)
+      :init
+      ;; NOTE: Set this to the folder where you keep your Git repos!
+      (when (file-directory-p "~/Projects/Code")
+        (setq projectile-project-search-path '("~/Projects/Code")))
+      (setq projectile-switch-project-action #'projectile-dired))
+
+    (use-package counsel-projectile
+      :after projectile
+      :config (counsel-projectile-mode))
+  #+END_SRC
 
 
-** Rainbow Delimiters
-[[https://github.com/Fanael/rainbow-delimiters][rainbow-delimiters]] is useful in programming modes because it colorizes nested parentheses and brackets according to their nesting depth.  This makes it a lot easier to visually match parentheses in Emacs Lisp code without having to count them yourself.
+**** Magit
 
-#+BEGIN_SRC emacs-lisp
-  (use-package rainbow-delimiters
-    :straight t
-    :hook (prog-mode . rainbow-delimiters-mode))
-#+END_SRC
+  [[https://magit.vc/][Magit]] is the best Git interface I've ever used.  Common Git operations are easy to execute quickly using Magit's command panel system.
+
+  #+BEGIN_SRC emacs-lisp
+    (use-package magit
+      :straight t
+      :bind (("C-M-;" . magit-status)
+             :map project-prefix-map
+             ("m" . project-magit))
+      :commands (magit-status magit-get-current-branch project-magit)
+      :custom
+      (add-to-list 'project-switch-commands
+                   '(project-magit "Magit" m))
+      (defun project-magit ()
+        (interactive)
+        (let ((dir (project-root (project-current t))))
+          (magit-status dir)))
+
+      (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
+
+    ;; NOTE: Make sure to configure a GitHub token before using this package!
+    ;; - https://magit.vc/manual/forge/Token-Creation.html#Token-Creation
+    ;; - https://magit.vc/manual/ghub/Getting-Started.html#Getting-Started
+    (use-package forge
+      :straight t
+      :after magit)
+
+    (use-package magit-todos
+      :straight t
+      :defer t)
+
+    (use-package git-link
+      :commands git-link
+      :config
+      (setq git-link-open-in-browser-t))
+  #+END_SRC
+
+  #+BEGIN_SRC emacs-lisp
+    (use-package ediff
+      :after (magit vc)
+      :commands (ediff)
+      :init
+      (with-eval-after-load 'winner
+        (add-hook 'edif-quit-hook 'winner-undo))
+      (setq ediff-window-setup-function 'ediff-setup-windows-plain))
+  #+END_SRC
+
+  #+BEGIN_SRC emacs-lisp
+    ;;  (use-package diff-hl
+    ;;    :straight t
+    ;;    :defer 5
+    ;;    :hook ((magit-pre-refresh . diff-hl-magit-pre-refresh)
+    ;;           (magit-pre-refresh . diff-hl-magit-post-refresh))
+    ;;    :init (global-diff-hl-mode)
+    ;;    :config (diff-hl-flydiff-mode))
+  #+END_SRC
+
+
+  *
+
+**** Rainbow Delimiters
+  [[https://github.com/Fanael/rainbow-delimiters][rainbow-delimiters]] is useful in programming modes because it colorizes nested parentheses and brackets according to their nesting depth.  This makes it a lot easier to visually match parentheses in Emacs Lisp code without having to count them yourself.
+
+  #+BEGIN_SRC emacs-lisp
+    (use-package rainbow-delimiters
+      :straight t
+      :hook (prog-mode . rainbow-delimiters-mode))
+  #+END_SRC
 
 
 * Terminals
