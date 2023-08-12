@@ -149,6 +149,13 @@ Start the Emacs server to receive all `emacsclient` calls.
 
 
 * Emacs Lisp Libraries
+** comment-tags
+   [[https://github.com/vincekd/comment-tags][comment-tags.el]] adds highlighting and listing capabilities to comment tags
+   #+begin_src emacs-lisp
+     (use-package comment-tags
+       :straight t)
+   #+end_src
+
 ** dash
    [[https://github.com/magnars/dash.el][dash.el]] is a modern list library addition to Emacs Lisp
 #+begin_src emacs-lisp
@@ -825,7 +832,6 @@ Emacs' default buffer placement algorithm is pretty disruptive if you like setti
 
 * Org Mode
 [[https://orgmode.org/][Org Mode]] is one of the hallmark features of Emacs.  It is a rich document editor, project planner, task and time tracker, blogging engine, and literate coding utility all wrapped up in one package.
-*
 ** Essential Org Mode Config
 This section contains the basic configuration for =org-mode= plus the configuration for Org agendas and capture templates.
 *** Support for Better Font Faces
