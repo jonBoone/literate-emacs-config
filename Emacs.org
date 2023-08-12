@@ -170,6 +170,14 @@ Start the Emacs server to receive all `emacsclient` calls.
     :straight t)
 #+end_src
 
+** ts
+   [[https://github.com/alphapapa/ts.el][ts.el]] is a timestamp and date library for Emacs Lisp
+#+begin_src emacs-lisp
+  (use-package "ts"
+    :straight t)
+#+end_src
+
+
 * Keybinding Configuration
 ** `ESC` Cancels All
 #+BEGIN_SRC emacs-lisp
