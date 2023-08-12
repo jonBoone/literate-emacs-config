@@ -825,43 +825,43 @@ Emacs' default buffer placement algorithm is pretty disruptive if you like setti
 
 * Org Mode
 [[https://orgmode.org/][Org Mode]] is one of the hallmark features of Emacs.  It is a rich document editor, project planner, task and time tracker, blogging engine, and literate coding utility all wrapped up in one package.
-** Better Font Faces
-The =my/org-font-setup= function configures various text faces to tweak the sizes of headings and use variable width fonts in most cases so that it looks more like we're editing a document in =org-mode=.  We switch back to fixed width (monospace) fonts for code blocks and tables so that they display correctly.  *Note:* This must appear prior to the `(use-package org-mode...)` invocation so that we can call `my/org-font-setup` during the call to `use-package`.
-#+BEGIN_SRC emacs-lisp
-  (defun my/org-font-setup ()
-    ;; Replace list hyphen with dot
-    (font-lock-add-keywords 'org-mode
-                            '(("^ *\\([-]\\) "
-                               (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
-
-    ;; Set faces for heading levels
-    (dolist (face '((org-level-1 . 1.25)
-                    (org-level-2 . 1.20)
-                    (org-level-3 . 1.15)
-                    (org-level-4 . 1.10)
-                    (org-level-5 . 1.05)
-                    (org-level-6 . 1.00)
-                    (org-level-7 . 0.95)
-                    (org-level-8 . 0.90)))
-      (set-face-attribute (car face) nil :font "Cantarell" :weight 'regular :height (cdr face)))
-
-    ;; Ensure that anything that should be fixed-pitch in Org files appears that way
-    (set-face-attribute 'org-block nil    :foreground 'unspecified :inherit 'fixed-pitch)
-    (set-face-attribute 'org-table nil    :inherit 'fixed-pitch)
-    (set-face-attribute 'org-formula nil  :inherit 'fixed-pitch)
-    (set-face-attribute 'org-code nil     :inherit '(shadow fixed-pitch))
-    (set-face-attribute 'org-table nil    :inherit '(shadow fixed-pitch))
-    (set-face-attribute 'org-verbatim nil :inherit '(shadow fixed-pitch))
-    (set-face-attribute 'org-special-keyword nil :inherit '(font-lock-comment-face fixed-pitch))
-    (set-face-attribute 'org-meta-line nil :inherit '(font-lock-comment-face fixed-pitch))
-    (set-face-attribute 'org-checkbox nil  :inherit 'fixed-pitch)
-    (set-face-attribute 'line-number nil :inherit 'fixed-pitch)
-    (set-face-attribute 'line-number-current-line nil :inherit 'fixed-pitch))
-#+END_SRC
-
-
+*
 ** Essential Org Mode Config
 This section contains the basic configuration for =org-mode= plus the configuration for Org agendas and capture templates.
+*** Support for Better Font Faces
+  The =my/org-font-setup= function configures various text faces to tweak the sizes of headings and use variable width fonts in most cases so that it looks more like we're editing a document in =org-mode=.  We switch back to fixed width (monospace) fonts for code blocks and tables so that they display correctly.  *Note:* This must appear prior to the `(use-package org-mode...)` invocation so that we can call `my/org-font-setup` during the call to `use-package`.
+  #+BEGIN_SRC emacs-lisp
+    (defun my/org-font-setup ()
+      ;; Replace list hyphen with dot
+      (font-lock-add-keywords 'org-mode
+                              '(("^ *\\([-]\\) "
+                                 (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
+
+      ;; Set faces for heading levels
+      (dolist (face '((org-level-1 . 1.25)
+                      (org-level-2 . 1.20)
+                      (org-level-3 . 1.15)
+                      (org-level-4 . 1.10)
+                      (org-level-5 . 1.05)
+                      (org-level-6 . 1.00)
+                      (org-level-7 . 0.95)
+                      (org-level-8 . 0.90)))
+        (set-face-attribute (car face) nil :font "Cantarell" :weight 'regular :height (cdr face)))
+
+      ;; Ensure that anything that should be fixed-pitch in Org files appears that way
+      (set-face-attribute 'org-block nil    :foreground 'unspecified :inherit 'fixed-pitch)
+      (set-face-attribute 'org-table nil    :inherit 'fixed-pitch)
+      (set-face-attribute 'org-formula nil  :inherit 'fixed-pitch)
+      (set-face-attribute 'org-code nil     :inherit '(shadow fixed-pitch))
+      (set-face-attribute 'org-table nil    :inherit '(shadow fixed-pitch))
+      (set-face-attribute 'org-verbatim nil :inherit '(shadow fixed-pitch))
+      (set-face-attribute 'org-special-keyword nil :inherit '(font-lock-comment-face fixed-pitch))
+      (set-face-attribute 'org-meta-line nil :inherit '(font-lock-comment-face fixed-pitch))
+      (set-face-attribute 'org-checkbox nil  :inherit 'fixed-pitch)
+      (set-face-attribute 'line-number nil :inherit 'fixed-pitch)
+      (set-face-attribute 'line-number-current-line nil :inherit 'fixed-pitch))
+  #+END_SRC
+
 *** Custom org-mode-setup function
 #+BEGIN_SRC emacs-lisp
   ;; Set a custom configuration for org-mode interaction with the other elisp packages.
@@ -1005,16 +1005,51 @@ The configuration of Org-Mode is augmented with some additional modules (see `(s
 #+END_SRC
 
 
-** Nicer Heading Bullets
 
-[[https://github.com/sabof/org-bullets][org-bullets]] replaces the heading stars in =org-mode= buffers with nicer looking characters that you can control.  Another option for this is [[https://github.com/integral-dw/org-superstar-mode][org-superstar-mode]] which we may cover in a later video.
+** Extra Packages that extend Org-Mode
+*** org-appear -  Auto-show Markup Symbols
+   This package makes it much easier to edit Org documents when`org-hide-emphasis-markers` is turned on. It temporarily shows the emphasis markers around certain markup elements when you place your cursor inside of them. No more fumbling around with `=` and `*` characters!
+  #+BEGIN_SRC emacs-lisp
+    (use-package org-appear
+      :hook org-mode)
+  #+END_SRC
 
-#+BEGIN_SRC emacs-lisp
-  (use-package org-bullets
-    :hook org-mode
-    :custom
-    (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
-#+END_SRC
+*** org-bullets - Nicer Heading Bullets
+   [[https://github.com/sabof/org-bullets][org-bullets]] replaces the heading stars in =org-mode= buffers with nicer looking characters that you can control.  Another option for this is [[https://github.com/integral-dw/org-superstar-mode][org-superstar-mode]] which we may cover in a later video.
+  #+BEGIN_SRC emacs-lisp
+    (use-package org-bullets
+      :hook org-mode
+      :custom
+      (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
+  #+END_SRC
+
+*** org-make-toc - Update Table of Contents on Save
+    It's nice to have a table of contents section for long literate configuration files (like this one!) so use  `org-make-toc` to automatically update the `ToC` in any header with a property named `TOC`.
+    #+begin_src emacs-lisp
+    (use-package org-make-toc
+      :hook org-mode)
+    #+end_src
+
+*** org-super-agenda
+    [[https://github.com/alphapapa/org-super-agenda][org-super-agenda]] adds additional functionality to daily/weekly agenda through grouping
+    #+begin_src emacs-lisp
+      (use-package org-super-agenda
+        :straight t)
+    #+end_src
+
+*** org-tempo - Structure Templates
+  Org Mode's [[https://orgmode.org/manual/Structure-Templates.html][structure templates]] feature enables you to quickly insert code blocks into your Org files in combination with =org-tempo= by typing =<= followed by the template name like =el= or =py= and then press =TAB=.  For example, to insert an empty =emacs-lisp= block below, you can type =<el= and press =TAB= to expand into such a block.
+
+  You can add more =src= block templates below by copying one of the lines and changing the two strings at the end, the first to be the template name and the second to contain the name of the language [[https://orgmode.org/worg/org-contrib/babel/languages.html][as it is known by Org Babel]].
+  #+BEGIN_SRC emacs-lisp
+    (with-eval-after-load 'org
+      ;; This is needed as of Org 9.2
+      (require 'org-tempo)
+
+      (add-to-list 'org-structure-template-alist '("sh" . "src shell"))
+      (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
+      (add-to-list 'org-structure-template-alist '("py" . "src python")))
+  #+END_SRC
 
 
 ** Center Org Buffers
@@ -1044,23 +1079,6 @@ To execute or export code in =org-mode= code blocks, you'll need to set up =org-
        (python . t)))
 
     (push '("conf-unix" . conf-unix) org-src-lang-modes))
-#+END_SRC
-
-
-** Structure Templates
-
-Org Mode's [[https://orgmode.org/manual/Structure-Templates.html][structure templates]] feature enables you to quickly insert code blocks into your Org files in combination with =org-tempo= by typing =<= followed by the template name like =el= or =py= and then press =TAB=.  For example, to insert an empty =emacs-lisp= block below, you can type =<el= and press =TAB= to expand into such a block.
-
-You can add more =src= block templates below by copying one of the lines and changing the two strings at the end, the first to be the template name and the second to contain the name of the language [[https://orgmode.org/worg/org-contrib/babel/languages.html][as it is known by Org Babel]].
-
-#+BEGIN_SRC emacs-lisp
-  (with-eval-after-load 'org
-    ;; This is needed as of Org 9.2
-    (require 'org-tempo)
-
-    (add-to-list 'org-structure-template-alist '("sh" . "src shell"))
-    (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
-    (add-to-list 'org-structure-template-alist '("py" . "src python")))
 #+END_SRC
 
 
@@ -1180,22 +1198,6 @@ This snippet adds a hook to =org-mode= buffers so that =my/org-babel-tangle-conf
     (setq deft-directory  "~/Dropbox/pkb/org"
           deft-recursive  t
           deft-extensions '("md" "org")))
-#+END_SRC
-
-
-** Auto-show Markup Symbols
-This package makes it much easier to edit Org documents when`org-hide-emphasis-markers` is turned on. It temporarily shows the emphasis markers around certain markup elements when you place your cursor inside of them. No more fumbling around with `=` and `*` characters!
-#+BEGIN_SRC emacs-lisp
-  (use-package org-appear
-    :hook org-mode)
-#+END_SRC
-
-
-** Update Table of Contents on Save
-It's nice to have a table of contents section for long literate configuration files (like this one!) so use `org-make-toc` to automatically update the `ToC` in any header with a property named `TOC`.
-#+BEGIN_SRC emacs-lisp
-  (use-package org-make-toc
-    :hook org-mode)
 #+END_SRC
 
 
