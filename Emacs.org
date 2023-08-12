@@ -149,10 +149,17 @@ Start the Emacs server to receive all `emacsclient` calls.
 
 
 * Emacs Lisp Libraries
-** DASH
+** dash
    [[https://github.com/magnars/dash.el][dash.el]] is a modern list library addition to Emacs Lisp
 #+begin_src emacs-lisp
   (use-package "dash"
+    :straight t)
+#+end_src
+
+** ht
+   [[https://github.com/Wilfred/ht.el][ht.el]] is a hash table library for Emacs Lisp
+#+begin_src emacs-lisp
+  (use-package "ht"
     :straight t)
 #+end_src
 
