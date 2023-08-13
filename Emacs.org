@@ -2,8 +2,7 @@
 #+STARTUP: indent
 #+STARTUP: hidestars
 #+TITLE: Literate Emacs Configuration
-#+SUBTITLE: taken from github.com/daviwil/emacs-from-scratch
-#+OPTIONS: H:5 toc:nil creator:nil email:nil author:t timestamp:t tags:nil tex:verbatim
+#+OPTIONS: H:5 author:t timestamp:t tex:verbatim
 #+PROPERTY: header-args :results silent :exports code :tangle Emacs.el
 
 * Welcome!
@@ -1252,6 +1251,109 @@ that to be the default browser function.
 #+END_SRC
 
 
+** Metrics
+This section comes from Sacha Chua's blog post [[https://sachachua.com/blog/2008/01/outlining-your-notes-with-org/][Outline Your Notes With Org]], part of a series of posts that were expected to be part of a book _Wicked Cool Emacs_ published by No Starch Press.
+
+This section tracks the number of words in a buffer.
+#+begin_src emacs-lisp
+  (defvar count-words-buffer
+    nil
+    "*Number of words in the buffer.")
+
+  (defun my/update-wc ()
+    (interactive)
+    (setq count-words-buffer (number-to-string (my/count-words-buffer)))
+    (force-mode-line-update))
+
+  ; ensure counter is initialized only once
+  (unless count-words-buffer
+    ;; seed count-words-paragraph
+    ;; create timer to keep count-words-paragraph updated
+    (run-with-idle-timer 1 t 'my/update-wc))
+
+  ;; add count words paragraph to the mode line
+  (unless (memq 'count-words-buffer global-mode-string)
+    (add-to-list 'global-mode-string "words: " t)
+    (add-to-list 'global-mode-string 'my/count-words-buffer t))
+
+  ;; count number of words in currrent paragraph
+  (defun my/count-words-buffer ()
+    "Count the number of words in the current paragraph."
+    (interactive)
+    (save-excursion
+      (goto-char (point-min))
+      (let ((count 0))
+        (while (not (eobp))
+          (forward-word 1)
+          (setq count (1+ count)))
+        count)))
+#+end_src
+
+This section extends the standard checklist feature in Org, which can track percentage completion of checklist items, to work with headlines as well.
+#+begin_src emacs-lisp
+  (defun my/org-update-checkbox-count (&optional all)
+    "Update the checkbox statistics in the current section.
+  This will find and update all statistic cookies like [57%] and [6/12] with
+  the current values. If the optional prefix argument all is provided, the
+  entire buffer is examined and the statistics are updated."
+    (interactive "P")
+    (save-excursion
+      (let* ((buffer-invisibility-spec (org-inhibit-invisibility))
+             (beg (condition-case nil
+                      (progn (outline-back-to-heading) (point))
+                    (error (point-min))))
+             (end (move-marker
+                   (make-marker)
+                   (progn (or (outline-get-next-sibling) ;; (1)
+                              (goto-char (point-max)))
+                          (point))))
+             (re "\\(\\[[0-9]*%\\]\\)\\|\\(\\[[0-9]*\\]\\)")
+             (re-box "^[ \t]*\\(*+\\|[-+*]\\|[0-9]+[.)]\\) +\\(\\[[- X]\\]\\)")
+             b1 e1 f1 c-on c-off lim (cstat 0))
+        (when all
+          (goto-char (point-min))
+          (or (outline-get-next-sibling) (goto-char (point-max))) ;; (2)
+          (setq beg (point) end (point-max)))
+        (goto-char beg)
+        (while (re-search-forward re end t)
+          (setq cstat (1+ cstat)
+                b1 (match-begining 0)
+                e1 (match-end 0)
+                f1 (match-beginning 1)
+                lim (cond
+                     ((org-on-heading-p)
+                      (or (outline-get-next-sibling) ;; (3)
+                          (goto-char (point-max)))
+                      (point))
+                     ((org-at-item-p) (org-end-of-item) (point))
+                     (t nil))
+                c-on 0
+                c-off 0)
+          (goto-char e1)
+          (when lim
+            (while (re-search-forward re-box lim t)
+              (if (number (match-string 2) '("[ ]" "[-]"))
+                  (setq c-off (1+ c-off))
+                (setq c-on (1+ c-on))))
+            (goto-char b1)
+            (insert (if f1
+                        (format "[%d%%]" (/ (* 100 c-on)
+                                            (max 1 (+ c-on c-off))))
+                      (format "[%d/%d]" c-on (+ c-on c-off))))
+            (and (looking-at "\\[.*?\\]")
+                 (replace-match ""))))
+        (when (interactive-p)
+          (message "Checkbox statistics updated %s (%d places)"
+                   (if all "in entire file" "in current outline entry")
+                   cstat)))))
+
+  (defadvice org-update-checkbox-count (around my activate)
+    "Fix the built-in checkbox count to understand headlines."
+    (setq ad-return-value
+          (my/org-update-checkbox-count (ad-get-arg 1))))
+#+end_src
+
+
 * Development
 ** Magit
 
@@ -1313,6 +1415,7 @@ that to be the default browser function.
 
 
   *
+
 
 
 ** Projectile
@@ -1395,7 +1498,6 @@ that to be the default browser function.
 
 *** IDE Features with lsp-mode
 **** lsp-mode
-
 We use the excellent [[https://emacs-lsp.github.io/lsp-mode/][lsp-mode]] to enable IDE-like functionality for many different programming languages via "language servers" that speak the [[https://microsoft.github.io/language-server-protocol/][Language Server Protocol]].  Before trying to set up =lsp-mode= for a particular language, check out the [[https://emacs-lsp.github.io/lsp-mode/page/languages/][documentation for your language]] so that you can learn which language servers are available and how to install them.
 
 The =lsp-keymap-prefix= setting enables you to define a prefix for where =lsp-mode='s default keybindings will be added.  I *highly recommend* using the prefix to find out what you can do with =lsp-mode= in a buffer.
@@ -1575,6 +1677,7 @@ We use =lsp-mode= and =dap-mode= to provide a more complete development environm
       :config
       (pyvenv-mode 1))
   #+END_SRC
+
 
 
 ** Programming Practice
@@ -1832,7 +1935,6 @@ This is an example of configuring another non-Emacs application using org-mode. 
 
 
 * Runtime Performance
-
 Dial the GC threshold back down so that garbage collection happens more frequently but in less time.
 
 #+BEGIN_SRC emacs-lisp
