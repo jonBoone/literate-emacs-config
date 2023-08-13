@@ -10,18 +10,39 @@ This is my literate emacs configuration, which leverages =org-mode= as a markup 
 
 
 * Files related to this configuration:
-This configuration file (=Emacs.org=) relies on two additional files:
+My Emacs configuration leverages a directory (=${HOME}/.emacs.d=) that contains both an =early-init.el= and an =init.el= file.  The majority of the configuration is contained in the =Emacs.org= file in the same directory.
 
-1. =early-init.el= emacs' early initialization file;
+** =early-init.el=
+This file sets the following types of configuration parameters prior to the initialization of the package system and the GUI components.
+
+1. set the garbage collection threshold to 200 MBs while loading (and processing) the subsequent configuration files.
+2. disable the provided =package.el= functionality so we can leverage =straight.el= later.
+3. disable file-name-handlers temporarily
+4. don't load the =site-lisp/init.el= file, if present
+5. disable =menu-bar-lines=, =tool-bar-lines=, and =vertical-scroll-bars= for the default-frame-alist
+6. leverage =native-comp= when available
+
+Here's the contents of =early-init.el=:
 #+INCLUDE: early-init.el src emacs-lisp
 
+** =init.el=
+This file provides the necessary configuration components to process the main configuration file =Emacs.org= (this file).  It has the following types of configuration settings:
 
-2. =init.el= the main initialization file, which generates =Emacs.el= from =Emacs.org=.
+1. loading required =Emacs Lisp= ilbrarys (such as =cl-lib= for the Common Lisp subset implemented for =Emacs Lisp=).
+2. properly set the values of =user-init-file= and =user-emacs-directory=
+3. enable separation of =Emacs Customization= settings in a separate file (=custom.el=)
+4. prevent loading of the built-in version of =org-mode=
+5. configure an alternative mechanism for loading packages by:
+   1. setup the necessary filesystem infrastructure to support using =straight.el=
+   2. configure =use-package= macro to leverage =straight.el=
+   3. load =straight.el= (via =use-package=!), including github.com configuration settings
+6. use =diminish.el=
+7. use =org-mode=, including =org-babel=
+8. set the value of =config-file= to this file (=Emacs.org=, in the user-emacs-directory)
+9. org-babel-load-file the config-file
+
+Here's the contents of =init.el=:
 #+INCLUDE: init.el src emacs-lisp
-
-
-At some point, I'll determine how to generate those files from org-babel, but
-for now they are simly emacs-lisp.
 
 
 * Make sure org-babel generated files are labeled as such
