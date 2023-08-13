@@ -1,14 +1,12 @@
 #+STARTUP: overview
 #+STARTUP: indent
 #+STARTUP: hidestars
-#+TITLE: Literate Emacs Configuration
+#+TITLE: My Literate Emacs Configuration
 #+OPTIONS: H:5 author:t timestamp:t tex:verbatim
 #+PROPERTY: header-args :results silent :exports code :tangle Emacs.el
 
-* Welcome!
-This is the configuration we've been building in the *Emacs From Scratch* series, now written as an Org Mode document.  This file generates [[file:init.el][init.el]] which can be loaded by Emacs at startup.
-
-#+TOC: headlines 4
+* Introduction
+This is my literate emacs configuration, which leverages =org-mode= as a markup language.  This allows for prose describing the intention of the various sections of the configuration and code-blocks containing the actual configuration to co-exist in the same plain-text file.  One feature of my configuration is that I have the configuration sections tangled out of the .org file into the appropriate =Emacs Lisp= files every time I save the literate configuration file.
 
 
 * Files related to this configuration:
@@ -1249,6 +1247,7 @@ that to be the default browser function.
     (setq markdown-command '("pandoc" "-f" "gfm" "-t" "html5")
           markdown-live-preview-window-function #'xwidget-webkit-browse-url))
 #+END_SRC
+
 
 
 ** Metrics
