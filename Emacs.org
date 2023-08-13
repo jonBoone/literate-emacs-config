@@ -12,6 +12,8 @@ This is my literate emacs configuration, which leverages =org-mode= as a markup 
 * Files related to this configuration:
 My Emacs configuration leverages a directory (=${HOME}/.emacs.d=) that contains both an =early-init.el= and an =init.el= file.  The majority of the configuration is contained in the =Emacs.org= file in the same directory.
 
+# TODO: configure #+begin_src emacs-lisp / #+end_src blocks to include the contents of these two files in this document
+
 ** =early-init.el=
 This file sets the following types of configuration parameters prior to the initialization of the package system and the GUI components.
 
@@ -849,9 +851,11 @@ Emacs' default buffer placement algorithm is pretty disruptive if you like setti
 
 
 * Org Mode
-[[https://orgmode.org/][Org Mode]] is one of the hallmark features of Emacs.  It is a rich document editor, project planner, task and time tracker, blogging engine, and literate coding utility all wrapped up in one package.
+[[https://orgmode.org/][Org_mode]] is one of the hallmark features of Emacs.  It is a rich document editor, project planner, task and time tracker, blogging engine, and literate coding utility all wrapped up in one package.
+
 ** Essential Org Mode Config
 This section contains the basic configuration for =org-mode= plus the configuration for Org agendas and capture templates.
+
 *** Support for Better Font Faces
   The =my/org-font-setup= function configures various text faces to tweak the sizes of headings and use variable width fonts in most cases so that it looks more like we're editing a document in =org-mode=.  We switch back to fixed width (monospace) fonts for code blocks and tables so that they display correctly.  *Note:* This must appear prior to the `(use-package org-mode...)` invocation so that we can call `my/org-font-setup` during the call to `use-package`.
   #+BEGIN_SRC emacs-lisp
@@ -901,13 +905,28 @@ The configuration of Org-Mode is augmented with some additional modules (see `(s
 #+BEGIN_SRC emacs-lisp
   (use-package org
     :defer t
+    :ensure org-plus-contrib
     :hook (org-mode . my/org-mode-setup)
+    :bind
+    ( ;; use UP or DOWN keys to re-prioritize
+     ("C-c <up>" . org-priority-up)
+     ("C-c <down>" . org-priority-down)
+     ;; change level of an item with Shift-Meta-Right
+     ("C-c C-g C-r" . org-shiftmetaright)
+     ;; Shortcuts for storing links, viewing agenda and starting a capture
+     ("C-c l" . org-stor-link)
+     ("C-c a" . org-agenda)
+     ("C-c c" . org-capture)
+     ("C-c j" . (lambda ()
+                  (interactive)
+                  (org-capture nil "jj"))))
     :config
     (setq org-adapt-indentation              t
           org-agenda-files                   '("~/Dropbox/pkb/org")
           org-agenda-include-diary           t
           org-agenda-start-with-log-mode     t
           org-cycle-separator-lines          2
+          org-default-notes-file             "inbox.org"
           org-ellipsis                       " ▾"
           org-edit-src-content-indentation   2
           org-fontify-quote-and-verse-blocks t
@@ -917,114 +936,97 @@ The configuration of Org-Mode is augmented with some additional modules (see `(s
           org-hide-leading-starts            t
           org-log-done                       'time
           org-log-into-drawer                t
-          org-modules                        '(org-crypt
-                                               org-irc
-                                               org-habit
-                                               org-mac-iCal
-                                               org-magit
-                                               org-notify
-                                               org-toc)
+          org-modules                        '(org-crypt org-irc org-habit
+                                               org-mac-iCal org-magit
+                                               org-notify org-toc)
           org-outline-path-complete-in-steps nil
-          org-refile-targets                 '(("Archive.org" :maxlevel . 1)
-                                               ("GTD.org" :maxlevel . 1))
+          org-refile-targets                 '((("gtd.org") :maxlevel . 3)
+                                               (("personal-research.org") :maxlevel . 3)
+                                               (("projects.org") :maxlevel . 3))
           org-refile-use-outline-path        t
           org-return-follows-link            t
           org-src-fontify-natively           t
           org-src-tab-acts-natively          t
-          org-startup-folded                 'overview))
+          org-startup-folded                 'overview
+          org-todo-keywords                  '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d!)")
+                                               (sequence "BACKLOG(b)" "PLAN(p)" "READY(r)" "ACTIVE(a)" "REVIEW(v)"  "WAIT(w@/!)" "HOLD(h)" "|" "COMPLETED(c)" "CANC(k@)"))
+          org-tag-alist                      '((:startgroup)
+                                               ;; Put mutually exclusive tags here
+                                               (:endgroup)
+                                               ("@errand" . ?E)
+                                               ("@home" . ?H)
+                                               ("@work" . ?W)
+                                               ("agenda" . ?a)
+                                               ("planning" . ?p)
+                                               ("publish" . ?P)
+                                               ("batch" . ?b)
+                                               ("note" . ?n)
+                                               ("idea" . ?i))
+          ;; Configure custom agenda views
+          org-agenda-custom-commands         '(("d" "Dashboard"
+                                                ((agenda "" ((org-deadline-warning-days 7)))
+                                                 (todo "NEXT"
+                                                       ((org-agenda-overriding-header "Next Tasks")))
+                                                 (tags-todo "agenda/ACTIVE"
+                     ((org-agenda-overriding-header "Active Projects")))))
+                                               ("n" "Next Tasks"
+                                                ((todo "NEXT"
+                     ((org-agenda-overriding-header "Next Tasks")))))
+                                               ;; Low-effort next actions
+                                               ("e" tags-todo "+TODO=\"NEXT\"+Effort<15&+Effort>0"
+                                                ((org-agenda-overriding-header "Low Effort Tasks")
+                                                 (org-agenda-max-todos 20)
+                                                 (org-agenda-files org-agenda-files)))
+                                               ("w" "Workflow Status"
+                                                ((todo "WAIT"
+                     ((org-agenda-overriding-header "Waiting on External")
+                      (org-agenda-files org-agenda-files)))
+                                                 (todo "REVIEW"
+                     ((org-agenda-overriding-header "In Review")
+                      (org-agenda-files org-agenda-files)))
+                                                 (todo "PLAN"
+                     ((org-agenda-overriding-header "In Planning")
+                      (org-agenda-todo-list-sublevels nil)
+                      (org-agenda-files org-agenda-files)))
+                                                 (todo "BACKLOG"
+                     ((org-agenda-overriding-header "Project Backlog")
+                      (org-agenda-todo-list-sublevels nil)
+                      (org-agenda-files org-agenda-files)))
+                                                 (todo "READY"
+                     ((org-agenda-overriding-header "Ready for Work")
+                      (org-agenda-files org-agenda-files)))
+                                                 (todo "ACTIVE"
+                     ((org-agenda-overriding-header "Active Projects")
+                      (org-agenda-files org-agenda-files)))
+                                                 (todo "COMPLETED"
+                     ((org-agenda-overriding-header "Completed Projects")
+                      (org-agenda-files org-agenda-files)))
+                                                 (todo "CANCELLED"
+                     ((org-agenda-overriding-header "Cancelled Projects")
+                      (org-agenda-files org-agenda-files))))))
+          org-capture-templates
+          `(("t" "Tasks / Projects")
+            ("tt" "Task" entry (file+olp "gtd.org" "Inbox")
+             "* TODO %?\n  %U\n  %a\n  %i" :empty-lines 1)
+            ("j" "Journal Entries")
+            ("jj" "Journal" entry
+             (file+olp+datetree "journal/daily.org")
+             "\n* %<%I:%M %p> - Journal :journal:\n\n%?\n\n"
+             ;; ,(dw/read-file-as-string "~/Notes/Templates/Daily.org")
+             :clock-in :clock-resume
+             :empty-lines 1)
+            ("jm" "Meeting" entry
+             (file+olp+datetree "journal/daily.org")
+             "* %<%I:%M %p> - %a :meetings:\n\n%?\n\n"
+             :clock-in :clock-resume
+             :empty-lines 1)
+            ("w" "Workflows")
+            ("we" "Checking Email" entry (file+olp+datetree "journal/daily.org")
+             "* Checking Email :email:\n\n%?" :clock-in :clock-resume :empty-lines 1)))
 
-  ;; Save Org buffers after refiling!
-  (advice-add 'org-refile :after 'org-save-all-org-buffers)
+    ;; Save Org buffers after refiling!
+    (advice-add 'org-refile :after 'org-save-all-org-buffers))
 
-
-  (setq org-todo-keywords             '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d!)")
-                                        (sequence "BACKLOG(b)" "PLAN(p)" "READY(r)" "ACTIVE(a)" "REVIEW(v)"  "WAIT(w@/!)" "HOLD(h)" "|" "COMPLETED(c)" "CANC(k@)"))
-        org-tag-alist                 '((:startgroup)
-                                        ;; Put mutually exclusive tags here
-                                        (:endgroup)
-                                        ("@errand" . ?E)
-                                        ("@home" . ?H)
-                                        ("@work" . ?W)
-                                        ("agenda" . ?a)
-                                        ("planning" . ?p)
-                                        ("publish" . ?P)
-                                        ("batch" . ?b)
-                                        ("note" . ?n)
-                                        ("idea" . ?i))
-        ;; Configure custom agenda views
-        org-agenda-custom-commands    '(("d" "Dashboard"
-                                         ((agenda "" ((org-deadline-warning-days 7)))
-                                          (todo "NEXT"
-                                                ((org-agenda-overriding-header "Next Tasks")))
-                                          (tags-todo "agenda/ACTIVE"
-                                                     ((org-agenda-overriding-header "Active Projects")))))
-                                        ("n" "Next Tasks"
-                                         ((todo "NEXT"
-                                                ((org-agenda-overriding-header "Next Tasks")))))
-                                        ("W" "Work Tasks" tags-todo "+work-email")
-                                        ;; Low-effort next actions
-                                        ("e" tags-todo "+TODO=\"NEXT\"+Effort<15&+Effort>0"
-                                         ((org-agenda-overriding-header "Low Effort Tasks")
-                                          (org-agenda-max-todos 20)
-                                          (org-agenda-files org-agenda-files)))
-                                        ("w" "Workflow Status"
-                                         ((todo "WAIT"
-                                                ((org-agenda-overriding-header "Waiting on External")
-                                                 (org-agenda-files org-agenda-files)))
-                                          (todo "REVIEW"
-                                                ((org-agenda-overriding-header "In Review")
-                                                 (org-agenda-files org-agenda-files)))
-                                          (todo "PLAN"
-                                                ((org-agenda-overriding-header "In Planning")
-                                                 (org-agenda-todo-list-sublevels nil)
-                                                 (org-agenda-files org-agenda-files)))
-                                          (todo "BACKLOG"
-                                                ((org-agenda-overriding-header "Project Backlog")
-                                                 (org-agenda-todo-list-sublevels nil)
-                                                 (org-agenda-files org-agenda-files)))
-                                          (todo "READY"
-                                                ((org-agenda-overriding-header "Ready for Work")
-                                                 (org-agenda-files org-agenda-files)))
-                                          (todo "ACTIVE"
-                                                ((org-agenda-overriding-header "Active Projects")
-                                                 (org-agenda-files org-agenda-files)))
-                                          (todo "COMPLETED"
-                                                ((org-agenda-overriding-header "Completed Projects")
-                                                 (org-agenda-files org-agenda-files)))
-                                          (todo "CANCELLED"
-                                                ((org-agenda-overriding-header "Cancelled Projects")
-                                                 (org-agenda-files org-agenda-files))))))
-        org-capture-templates         `(("t" "Tasks / Projects")
-                                        ("tt" "Task" entry (file+olp "~/Dropbox/pkb/org/GTD.org" "Inbox")
-                                         "* TODO %?\n  %U\n  %a\n  %i" :empty-lines 1)
-                                        ("j" "Journal Entries")
-                                        ("jj" "Journal" entry
-                                         (file+olp+datetree "~/Dropbox/pkb/org/Journal.org")
-                                         "\n* %<%I:%M %p> - Journal :journal:\n\n%?\n\n"
-                                         ;; ,(dw/read-file-as-string "~/Notes/Templates/Daily.org")
-                                         :clock-in :clock-resume
-                                         :empty-lines 1)
-                                        ("jm" "Meeting" entry
-                                         (file+olp+datetree "~/Dropbox/pkb/org/Journal.org")
-                                         "* %<%I:%M %p> - %a :meetings:\n\n%?\n\n"
-                                         :clock-in :clock-resume
-                                         :empty-lines 1)
-                                        ("w" "Workflows")
-                                        ("we" "Checking Email" entry (file+olp+datetree "~/Dropbox/pkb/org/Journal.org")
-                                         "* Checking Email :email:\n\n%?" :clock-in :clock-resume :empty-lines 1)))
-  ;; use UP or DOWN keys to re-prioritize
-  (define-key org-mode-map (kbd "C-c <up>")    'org-priority-up)
-  (define-key org-mode-map (kbd "C-c <down>")  'org-priority-down)
-  ;; change level of an item with Shift-Meta-Right
-  (define-key org-mode-map (kbd "C-c C-g C-r") 'org-shiftmetaright)
-
-  ;; Shortcuts for storing links, viewing agenda and starting a capture
-  (define-key global-map (kbd "C-c l")  'org-stor-link)
-  (define-key global-map (kbd "C-c a")  'org-agenda)
-  (define-key global-map (kbd "C-c c")  'org-capture)
-  (define-key global-map (kbd "C-c j")  (lambda ()
-                                          (interactive)
-                                          (org-capture nil "jj")))
   (my/org-font-setup)
 #+END_SRC
 
