@@ -57,7 +57,6 @@
 (use-package diminish
   :straight t)
 
-
 ;; set up latest version of org-mode
 (use-package org
   :straight (org
