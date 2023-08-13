@@ -1,9 +1,6 @@
 ;; Set gc really large when loading the config file
 (setq gc-cons-threshold (* 200 1024 1024))
 
-;; Unnecessary? 
-;;(run-with-idle-timer 5 t #'garbage-collect)
-
 ;; Disable package.el in favor of straight.el
 (setq package-enable-at-startup nil)
 
