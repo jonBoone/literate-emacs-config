@@ -941,8 +941,8 @@ The configuration of Org-Mode is augmented with some additional modules (see `(s
                                                org-notify org-toc)
           org-outline-path-complete-in-steps nil
           org-refile-targets                 '((("gtd.org") :maxlevel . 3)
-                                               (("personal-research.org") :maxlevel . 3)
-                                               (("projects.org") :maxlevel . 3))
+                                               (("future.org") :maxlevel . 3)
+                                               (("in-progress.org") :maxlevel . 3))
           org-refile-use-outline-path        t
           org-return-follows-link            t
           org-src-fontify-natively           t
@@ -1076,7 +1076,6 @@ The configuration of Org-Mode is augmented with some additional modules (see `(s
       (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
       (add-to-list 'org-structure-template-alist '("py" . "src python")))
   #+END_SRC
-
 
 ** Center Org Buffers
 
