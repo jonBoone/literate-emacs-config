@@ -926,7 +926,7 @@ The configuration of Org-Mode is augmented with some additional modules (see `(s
           org-agenda-include-diary           t
           org-agenda-start-with-log-mode     t
           org-cycle-separator-lines          2
-          org-default-notes-file             "inbox.org"
+          org-default-notes-file             "~/Dropbox/pkb/org/inbox.org"
           org-ellipsis                       " ▾"
           org-edit-src-content-indentation   2
           org-fontify-quote-and-verse-blocks t
@@ -940,9 +940,12 @@ The configuration of Org-Mode is augmented with some additional modules (see `(s
                                                org-mac-iCal org-magit
                                                org-notify org-toc)
           org-outline-path-complete-in-steps nil
-          org-refile-targets                 '((("gtd.org") :maxlevel . 3)
-                                               (("future.org") :maxlevel . 3)
-                                               (("in-progress.org") :maxlevel . 3))
+          org-refile-targets                 '((("~/Dropbox/pkb/org/gtd.org")
+                                                :maxlevel . 3)
+                                               (("~/Dropbox/pkb/org/future.org")
+                                                :maxlevel . 3)
+                                               (("~/Dropbpx/pkb/org/in-progress.org")
+                                                :maxlevel . 3))
           org-refile-use-outline-path        t
           org-return-follows-link            t
           org-src-fontify-natively           t
@@ -1004,25 +1007,24 @@ The configuration of Org-Mode is augmented with some additional modules (see `(s
                                                  (todo "CANCELLED"
                      ((org-agenda-overriding-header "Cancelled Projects")
                       (org-agenda-files org-agenda-files))))))
-          org-capture-templates
-          `(("t" "Tasks / Projects")
-            ("tt" "Task" entry (file+olp "gtd.org" "Inbox")
-             "* TODO %?\n  %U\n  %a\n  %i" :empty-lines 1)
-            ("j" "Journal Entries")
-            ("jj" "Journal" entry
-             (file+olp+datetree "journal/daily.org")
-             "\n* %<%I:%M %p> - Journal :journal:\n\n%?\n\n"
-             ;; ,(dw/read-file-as-string "~/Notes/Templates/Daily.org")
-             :clock-in :clock-resume
-             :empty-lines 1)
-            ("jm" "Meeting" entry
-             (file+olp+datetree "journal/daily.org")
-             "* %<%I:%M %p> - %a :meetings:\n\n%?\n\n"
-             :clock-in :clock-resume
-             :empty-lines 1)
-            ("w" "Workflows")
-            ("we" "Checking Email" entry (file+olp+datetree "journal/daily.org")
-             "* Checking Email :email:\n\n%?" :clock-in :clock-resume :empty-lines 1)))
+          org-capture-templates                  `(("t" "Tasks / Projects")
+                                                   ("tt" "Task" entry (file+olp "~/Dropbox/pkb/org/gtd.org" "Inbox")
+                                                    "* TODO %?\n  %U\n  %a\n  %i" :empty-lines 1)
+                                                   ("j" "Journal Entries")
+                                                   ("jj" "Journal" entry
+                                                    (file+olp+datetree "~/Dropbox/pkb/org/journal/daily.org")
+                                                    "\n* %<%I:%M %p> - Journal :journal:\n\n%?\n\n"
+                                                    ;; ,(dw/read-file-as-string "~/Notes/Templates/Daily.org")
+                                                    :clock-in :clock-resume
+                                                    :empty-lines 1)
+                                                   ("jm" "Meeting" entry
+                                                    (file+olp+datetree "~/Dropbox/pkb/org/journal/daily.org")
+                                                    "* %<%I:%M %p> - %a :meetings:\n\n%?\n\n"
+                                                    :clock-in :clock-resume
+                                                    :empty-lines 1)
+                                                   ("w" "Workflows")
+                                                   ("we" "Checking Email" entry (file+olp+datetree "~/Dropbox/pkb/org/journal/daily.org")
+                                                    "* Checking Email :email:\n\n%?" :clock-in :clock-resume :empty-lines 1)))
 
     ;; Save Org buffers after refiling!
     (advice-add 'org-refile :after 'org-save-all-org-buffers))
@@ -1312,66 +1314,67 @@ This section tracks the number of words in a buffer.
 
 This section extends the standard checklist feature in Org, which can track percentage completion of checklist items, to work with headlines as well.
 #+begin_src emacs-lisp
-  (defun my/org-update-checkbox-count (&optional all)
-    "Update the checkbox statistics in the current section.
-  This will find and update all statistic cookies like [57%] and [6/12] with
-  the current values. If the optional prefix argument all is provided, the
-  entire buffer is examined and the statistics are updated."
-    (interactive "P")
-    (save-excursion
-      (let* ((buffer-invisibility-spec (org-inhibit-invisibility))
-             (beg (condition-case nil
-                      (progn (outline-back-to-heading) (point))
-                    (error (point-min))))
-             (end (move-marker
-                   (make-marker)
-                   (progn (or (outline-get-next-sibling) ;; (1)
-                              (goto-char (point-max)))
-                          (point))))
-             (re "\\(\\[[0-9]*%\\]\\)\\|\\(\\[[0-9]*\\]\\)")
-             (re-box "^[ \t]*\\(*+\\|[-+*]\\|[0-9]+[.)]\\) +\\(\\[[- X]\\]\\)")
-             b1 e1 f1 c-on c-off lim (cstat 0))
-        (when all
-          (goto-char (point-min))
-          (or (outline-get-next-sibling) (goto-char (point-max))) ;; (2)
-          (setq beg (point) end (point-max)))
-        (goto-char beg)
-        (while (re-search-forward re end t)
-          (setq cstat (1+ cstat)
-                b1 (match-begining 0)
-                e1 (match-end 0)
-                f1 (match-beginning 1)
-                lim (cond
-                     ((org-on-heading-p)
-                      (or (outline-get-next-sibling) ;; (3)
-                          (goto-char (point-max)))
-                      (point))
-                     ((org-at-item-p) (org-end-of-item) (point))
-                     (t nil))
-                c-on 0
-                c-off 0)
-          (goto-char e1)
-          (when lim
-            (while (re-search-forward re-box lim t)
-              (if (number (match-string 2) '("[ ]" "[-]"))
-                  (setq c-off (1+ c-off))
-                (setq c-on (1+ c-on))))
-            (goto-char b1)
-            (insert (if f1
-                        (format "[%d%%]" (/ (* 100 c-on)
-                                            (max 1 (+ c-on c-off))))
-                      (format "[%d/%d]" c-on (+ c-on c-off))))
-            (and (looking-at "\\[.*?\\]")
-                 (replace-match ""))))
-        (when (interactive-p)
-          (message "Checkbox statistics updated %s (%d places)"
-                   (if all "in entire file" "in current outline entry")
-                   cstat)))))
+  ;; (defun my/org-update-checkbox-count (&optional all)
+  ;;     "Update the checkbox statistics in the current section.
+  ;;   This will find and update all statistic cookies lik
+  ;; e [57%] and [6/12] with
+  ;;   the current values. If the optional prefix argument all is provided, the
+  ;;   entire buffer is examined and the statistics are updated."
+  ;;     (interactive "P")
+  ;;     (save-excursion
+  ;;       (let* ((buffer-invisibility-spec (org-inhibit-invisibility))
+  ;;              (beg (condition-case nil
+  ;;                       (progn (outline-back-to-heading) (point))
+  ;;                     (error (point-min))))
+  ;;              (end (move-marker
+  ;;                    (make-marker)
+  ;;                    (progn (or (outline-get-next-sibling) ;; (1)
+  ;;                               (goto-char (point-max)))
+  ;;                           (point))))
+  ;;              (re "\\(\\[[0-9]*%\\]\\)\\|\\(\\[[0-9]*\\]\\)")
+  ;;              (re-box "^[ \t]*\\(*+\\|[-+*]\\|[0-9]+[.)]\\) +\\(\\[[- X]\\]\\)")
+  ;;              b1 e1 f1 c-on c-off lim (cstat 0))
+  ;;         (when all
+  ;;           (goto-char (point-min))
+  ;;           (or (outline-get-next-sibling) (goto-char (point-max))) ;; (2)
+  ;;           (setq beg (point) end (point-max)))
+  ;;         (goto-char beg)
+  ;;         (while (re-search-forward re end t)
+  ;;           (setq cstat (1+ cstat)
+  ;;                 b1 (match-begining 0)
+  ;;                 e1 (match-end 0)
+  ;;                 f1 (match-beginning 1)
+  ;;                 lim (cond
+  ;;                      ((org-on-heading-p)
+  ;;                       (or (outline-get-next-sibling) ;; (3)
+  ;;                           (goto-char (point-max)))
+  ;;                       (point))
+  ;;                      ((org-at-item-p) (org-end-of-item) (point))
+  ;;                      (t nil))
+  ;;                 c-on 0
+  ;;                 c-off 0)
+  ;;           (goto-char e1)
+  ;;           (when lim
+  ;;             (while (re-search-forward re-box lim t)
+  ;;               (if (number (match-string 2) '("[ ]" "[-]"))
+  ;;                   (setq c-off (1+ c-off))
+  ;;                 (setq c-on (1+ c-on))))
+  ;;             (goto-char b1)
+  ;;             (insert (if f1
+  ;;                         (format "[%d%%]" (/ (* 100 c-on)
+  ;;                                             (max 1 (+ c-on c-off))))
+  ;;                       (format "[%d/%d]" c-on (+ c-on c-off))))
+  ;;             (and (looking-at "\\[.*?\\]")
+  ;;                  (replace-match ""))))
+  ;;         (when (interactive-p)
+  ;;           (message "Checkbox statistics updated %s (%d places)"
+  ;;                    (if all "in entire file" "in current outline entry")
+  ;;                    cstat)))))
 
-  (defadvice org-update-checkbox-count (around my activate)
-    "Fix the built-in checkbox count to understand headlines."
-    (setq ad-return-value
-          (my/org-update-checkbox-count (ad-get-arg 1))))
+  ;;   (defadvice org-update-checkbox-count (around my activate)
+  ;;     "Fix the built-in checkbox count to understand headlines."
+  ;;     (setq ad-return-value
+  ;;           (my/org-update-checkbox-count (ad-get-arg 1))))
 #+end_src
 
 
