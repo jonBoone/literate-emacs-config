@@ -883,8 +883,22 @@ This section contains the basic configuration for =org-mode= plus the configurat
       (set-face-attribute 'org-meta-line nil :inherit '(font-lock-comment-face fixed-pitch))
       (set-face-attribute 'org-checkbox nil  :inherit 'fixed-pitch)
       (set-face-attribute 'line-number nil :inherit 'fixed-pitch)
-      (set-face-attribute 'line-number-current-line nil :inherit 'fixed-pitch))
+      (set-face-attribute 'line-number-current-line nil :inherit 'fixed-pitch)
+      (setq org-agenda-deadline-faces
+            '((1.0001 . org-warning)              ; late -- due yesterday or before
+              (0.0    . org-upcoming-deadline)))  ; due today or in the future
+      )
   #+END_SRC
+
+*** Org-Mode Agenda Style Configuration
+I want to customize my =org-mode= agenda style.
+#+begin_src emacs-lisp
+  (defun my/style-org-agenda ()
+    (my/buffer-face-mode-variable)
+    (set-face-attribute 'org-agenda-date nil :height 1.1)
+    (set-face-attribute 'org-agenda-date-today nil :height 1.1 :slant 'italic)
+    (set-face-attribute 'org-agenda-date-weekend nil :height 1.1))
+#+end_src
 
 *** Custom org-mode-setup function
 #+BEGIN_SRC emacs-lisp
@@ -896,25 +910,92 @@ This section contains the basic configuration for =org-mode= plus the configurat
     (diminish org-indent-mode))
 #+END_SRC
 
+*** Custom org-mode agenda diary fancy cleanup
+#+begin_src emacs-lisp
+  (defun my/org-agenda-cleanup-fancy-diary ()
+    (lambda ()
+      (goto-char (point-min))
+      (save-excursion
+        (while (re-search-forward "^[a-z]" nil t)
+          (goto-char (match-beginning 0))
+          (insert "00:00-24:00 ")))
+      (while (re-search-forward "^ [a-z]" nil t)
+        (goto-char (match-beginning 0))
+        (save-excursion
+          (re-search-backward "^[0-9]+[0-9]+:[0-9]+:[0-9]+ " nil t))
+        (insert (match-string 0)))))
+#+end_src
+
 *** Org-Mode package
 The configuration of Org-Mode is augmented with some additional modules (see `(setq org-modules ...)` line below.)
 #+BEGIN_SRC emacs-lisp
   (use-package org
     :defer t
-    :hook (org-mode . my/org-mode-setup)
+    :hook ((org-mode                       . my/org-mode-setup)
+           (org-agenda-mode                . my/style-org-agenda)
+           (org-agenda-cleanup-fancy-diary . my/org-agenda-cleanup-fancy-diary))
     :config
     (setq org-adapt-indentation              t
-          org-agenda-files                   '("~/Dropbox/pkb/org")
+          org-agenda-block-separator         "━"
+          org-agenda-breadcrumbs-separator   " ❱ "
+          org-agenda-category-icon-alist     '(("Work" ,(list (all-the-icons-faicon "cogs"))
+                                                nil nil :ascent center)
+                                               ("Personal" ,(list (all-the-icons-material
+                                                                   "person"))
+                                                nil nil :ascnet center)
+                                               ("Calendar" ,(list (all-the-icons-faicon
+                                                                   "calendar"))
+                                                nil nil :ascent center)
+                                               ("Reading" ,(list (all-the-icons-faicon
+                                                                  "book"))
+                                                nil nil :ascent center))
+
+          org-agenda-clockreport-parameter-plist '(:link t :maxlevel 5 :fileskip0 t
+                                                         :compact t :narrow 80)
+          org-agenda-compact-blocks          t
+          org-agenda-current-time-string     "⏰ ┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈ now"
+          org-agenda-files                   (directory-files-recursively
+                                              "~/Dropbox/pkb/org" "\.org$")
+          org-agenda-format-date             (lambda (date)
+                                               (concat "\n"
+                                                       (make-string (window-width) 9472)
+                                                       "\n"
+                                                       (org-agenda-format-date-aligned
+                                                        date)))
+          org-agenda-include-deadlines       t
           org-agenda-include-diary           t
+          org-agenda-prefix-format           '((agenda . "%i %-12:c%?-12t%b% s")
+                                               (todo   . "%i %-12:c")
+                                               (tags   . "%i %-12:c")
+                                               (search . " %i %-12:c"))
+          org-agenda-skip-deadline-if-done   t
+          org-agenda-skip-scheduled-if-done  t
+          org-agenda-skip-timestamp-if-done  t
+          org-agenda-skip-unavailable-fiels  t
+          org-agenda-start-on-weekday        nil ; starts on current day
           org-agenda-start-with-log-mode     t
+          org-agenda-time-grid               '((weekly today require-timed)
+                                               (0800 1000 1200 1400 1600 1800 2000)
+                                               "---" "┈┈┈┈┈┈┈┈┈┈┈┈┈┈")
+          org-agenda-todo-ignore-with-date   t
+          org-agenda-window-setup            'current-window
           org-cycle-separator-lines          2
           org-ellipsis                       " ▾"
           org-edit-src-content-indentation   2
+          org-fontify-done-headline          t
           org-fontify-quote-and-verse-blocks t
+          org-fontify-whole-heading-line     t
           org-habit-graph-column             60
           org-hide-block-startup             nil
           org-hide-emphasis-markers          t
           org-hide-leading-starts            t
+          org-icalendar-alarm-time           30
+          org-icalndar-combined-name         "Org Mode Agenda"
+          org-icalendar-include-todo         t
+          org-icalendar-store-UID            t
+          org-icalendar-timezome             "US/New_York"
+          org-icalendar-use-deadline         '(todo-due event-if-todo event-if-not-todo)
+          org-icalendar-use-scheduled        '(todo-start event-if-todo event-if-not-todo)
           org-log-done                       'time
           org-log-into-drawer                t
           org-modules                        '(org-crypt
@@ -925,106 +1006,93 @@ The configuration of Org-Mode is augmented with some additional modules (see `(s
                                                org-notify
                                                org-toc)
           org-outline-path-complete-in-steps nil
-          org-refile-targets                 '(("Archive.org" :maxlevel . 1)
-                                               ("GTD.org" :maxlevel . 1))
+          org-pretty-entities                t
+          org-refile-targets                 '(("future.org"  :maxlevel . 1)
+                                               ("gtd.org"     :maxlevel . 1)
+                                               ("in-progress" :maxlevel . 1))
           org-refile-use-outline-path        t
           org-return-follows-link            t
           org-src-fontify-natively           t
           org-src-tab-acts-natively          t
-          org-startup-folded                 'overview))
+          org-startup-indented               t
+          org-startup-folded                 'overview
+          org-tag-alist                      '((:startgroup)
+                                               ;; Put mutually exclusive tags here
+                                               (:endgroup)
+                                               ("@errand" . ?E)
+                                               ("@home" . ?H)
+                                               ("@work" . ?W)
+                                               ("agenda" . ?a)
+                                               ("planning" . ?p)
+                                               ("publish" . ?P)
+                                               ("batch" . ?b)
+                                               ("note" . ?n)
+                                               ("idea" . ?i))
+          org-todo-keywords                  '((sequence "FUTURE(f)" "TODO(t)" "ACTIVE(a)"
+                                                         "|" "DONE(d!)" "CANCELLED(k@)"
+                                                         "DEFERRED(f)")
+                                               (sequence "MEET(m)" "|" "MET(M)"))
+          org-agenda-custom-commands    '(("d" "Dashboard"
+                                           ((agenda "" ((org-deadline-warning-days 7)))))
+                                          ("w" "Workflow Status"
+                                           ((todo "FUTURE"
+                                                  ((org-agenda-overriding-header
+                                                    "To be handled in the future")
+                                                   (org-agenda-files org-agenda-files)))
+                                            (todo "ACTIVE"
+                                                  ((org-agenda-overriding-header
+                                                    "Active Projects")
+                                                   (org-agenda-files org-agenda-files)))
+                                            (todo "COMPLETED"
+                                                  ((org-agenda-overriding-header
+                                                    "Completed Projects")
+                                                   (org-agenda-files org-agenda-files)))
+                                            (todo "CANCELLED"
+                                                  ((org-agenda-overriding-header
+                                                    "Cancelled Projects")
+                                                   (org-agenda-files org-agenda-files)))
+                                            (todo "DEFERRED"
+                                                  ((org-agenda-overriding-header
+                                                    "Deferred Projects")
+                                                   (org-agenda-files org-agenda-files)))))
+                                          ("I" "Import diary from iCloud Calendar"
+                                           ((agenda "" ((org-agenda-mode-hook
+                                                         (lambda ()
+                                                           (org-mac-iCal))))))))
+          org-capture-templates         `(("t" "Tasks / Projects")
+                                          ("tt" "Task" entry (file+olp
+                                                              "~/Dropbox/pkb/org/GTD.org"
+                                                              "Inbox")
+                                           "* TODO %^{Description}\nAdded:\n%t\n%?\n\n%U\n%a\n%i"
+                                           :empty-lines 1)
+                                          ("j" "Journal Entries")
+                                          ("jj" "Journal" entry
+                                           (file+olp+datetree
+                                            "~/Dropbox/pkb/org/Journal.org")
+                                           "\n* %<%I:%M %p> - Journal :journal:\n\n%?\n\n"
+                                           "~/Notes/Templates/Daily.org"
+                                           :clock-in :clock-resume
+                                           :empty-lines 1)
+                                          ("jm" "Meeting" entry
+                                           (file+olp+datetree
+                                            "~/Dropbox/pkb/org/Journal.org")
+                                           "* %<%I:%M %p> - %a :meetings:\n\n%?\n\n"
+                                           :clock-in :clock-resume
+                                           :empty-lines 1)))
+    :bind (:map org-mode-map
+                (("C-c <up>"      . org-priority-up)
+                 ("C-c <down>"    . org-priority-down)
+                 ("C-c C-g C-r"   . org-shiftmetaright))
+                :map global-map
+                (("C-c l"         . org-store-link)
+                 ("C-c a"         . org-agenda)
+                 ("C-c c"         . org-capture)
+                 ("C-c j"         . (lambda ()
+                                      (interactive)
+                                      (org-caputre nil "jj"))))))
 
   ;; Save Org buffers after refiling!
   (advice-add 'org-refile :after 'org-save-all-org-buffers)
-
-
-  (setq org-todo-keywords             '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d!)")
-                                        (sequence "BACKLOG(b)" "PLAN(p)" "READY(r)" "ACTIVE(a)" "REVIEW(v)"  "WAIT(w@/!)" "HOLD(h)" "|" "COMPLETED(c)" "CANC(k@)"))
-        org-tag-alist                 '((:startgroup)
-                                        ;; Put mutually exclusive tags here
-                                        (:endgroup)
-                                        ("@errand" . ?E)
-                                        ("@home" . ?H)
-                                        ("@work" . ?W)
-                                        ("agenda" . ?a)
-                                        ("planning" . ?p)
-                                        ("publish" . ?P)
-                                        ("batch" . ?b)
-                                        ("note" . ?n)
-                                        ("idea" . ?i))
-        ;; Configure custom agenda views
-        org-agenda-custom-commands    '(("d" "Dashboard"
-                                         ((agenda "" ((org-deadline-warning-days 7)))
-                                          (todo "NEXT"
-                                                ((org-agenda-overriding-header "Next Tasks")))
-                                          (tags-todo "agenda/ACTIVE"
-                                                     ((org-agenda-overriding-header "Active Projects")))))
-                                        ("n" "Next Tasks"
-                                         ((todo "NEXT"
-                                                ((org-agenda-overriding-header "Next Tasks")))))
-                                        ("W" "Work Tasks" tags-todo "+work-email")
-                                        ;; Low-effort next actions
-                                        ("e" tags-todo "+TODO=\"NEXT\"+Effort<15&+Effort>0"
-                                         ((org-agenda-overriding-header "Low Effort Tasks")
-                                          (org-agenda-max-todos 20)
-                                          (org-agenda-files org-agenda-files)))
-                                        ("w" "Workflow Status"
-                                         ((todo "WAIT"
-                                                ((org-agenda-overriding-header "Waiting on External")
-                                                 (org-agenda-files org-agenda-files)))
-                                          (todo "REVIEW"
-                                                ((org-agenda-overriding-header "In Review")
-                                                 (org-agenda-files org-agenda-files)))
-                                          (todo "PLAN"
-                                                ((org-agenda-overriding-header "In Planning")
-                                                 (org-agenda-todo-list-sublevels nil)
-                                                 (org-agenda-files org-agenda-files)))
-                                          (todo "BACKLOG"
-                                                ((org-agenda-overriding-header "Project Backlog")
-                                                 (org-agenda-todo-list-sublevels nil)
-                                                 (org-agenda-files org-agenda-files)))
-                                          (todo "READY"
-                                                ((org-agenda-overriding-header "Ready for Work")
-                                                 (org-agenda-files org-agenda-files)))
-                                          (todo "ACTIVE"
-                                                ((org-agenda-overriding-header "Active Projects")
-                                                 (org-agenda-files org-agenda-files)))
-                                          (todo "COMPLETED"
-                                                ((org-agenda-overriding-header "Completed Projects")
-                                                 (org-agenda-files org-agenda-files)))
-                                          (todo "CANCELLED"
-                                                ((org-agenda-overriding-header "Cancelled Projects")
-                                                 (org-agenda-files org-agenda-files))))))
-        org-capture-templates         `(("t" "Tasks / Projects")
-                                        ("tt" "Task" entry (file+olp "~/Dropbox/pkb/org/GTD.org" "Inbox")
-                                         "* TODO %?\n  %U\n  %a\n  %i" :empty-lines 1)
-                                        ("j" "Journal Entries")
-                                        ("jj" "Journal" entry
-                                         (file+olp+datetree "~/Dropbox/pkb/org/Journal.org")
-                                         "\n* %<%I:%M %p> - Journal :journal:\n\n%?\n\n"
-                                         ;; ,(dw/read-file-as-string "~/Notes/Templates/Daily.org")
-                                         :clock-in :clock-resume
-                                         :empty-lines 1)
-                                        ("jm" "Meeting" entry
-                                         (file+olp+datetree "~/Dropbox/pkb/org/Journal.org")
-                                         "* %<%I:%M %p> - %a :meetings:\n\n%?\n\n"
-                                         :clock-in :clock-resume
-                                         :empty-lines 1)
-                                        ("w" "Workflows")
-                                        ("we" "Checking Email" entry (file+olp+datetree "~/Dropbox/pkb/org/Journal.org")
-                                         "* Checking Email :email:\n\n%?" :clock-in :clock-resume :empty-lines 1)))
-  ;; use UP or DOWN keys to re-prioritize
-  (define-key org-mode-map (kbd "C-c <up>")    'org-priority-up)
-  (define-key org-mode-map (kbd "C-c <down>")  'org-priority-down)
-  ;; change level of an item with Shift-Meta-Right
-  (define-key org-mode-map (kbd "C-c C-g C-r") 'org-shiftmetaright)
-
-  ;; Shortcuts for storing links, viewing agenda and starting a capture
-  (define-key global-map (kbd "C-c l")  'org-stor-link)
-  (define-key global-map (kbd "C-c a")  'org-agenda)
-  (define-key global-map (kbd "C-c c")  'org-capture)
-  (define-key global-map (kbd "C-c j")  (lambda ()
-                                          (interactive)
-                                          (org-capture nil "jj")))
   (my/org-font-setup)
 #+END_SRC
 
@@ -1047,6 +1115,14 @@ The configuration of Org-Mode is augmented with some additional modules (see `(s
       (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
   #+END_SRC
 
+*** org-journal
+Configure the daily journal features
+#+begin_src emacs-lisp
+  (use-package org-journal
+    :straight t
+    :bind :map org-journal-mode . (("C-tab" . 'yas-expand)))
+#+end_src
+
 *** org-make-toc - Update Table of Contents on Save
     It's nice to have a table of contents section for long literate configuration files (like this one!) so use  `org-make-toc` to automatically update the `ToC` in any header with a property named `TOC`.
     #+begin_src emacs-lisp
@@ -1058,10 +1134,11 @@ The configuration of Org-Mode is augmented with some additional modules (see `(s
     [[https://github.com/alphapapa/org-super-agenda][org-super-agenda]] adds additional functionality to daily/weekly agenda through grouping
     #+begin_src emacs-lisp
       (use-package org-super-agenda
-        :straight t)
+        :straight t
+        :hook org-agenda-mode)
     #+end_src
 
-*** org-tempo - Structure Templates
+**** org-tempo - Structure Templates
   Org Mode's [[https://orgmode.org/manual/Structure-Templates.html][structure templates]] feature enables you to quickly insert code blocks into your Org files in combination with =org-tempo= by typing =<= followed by the template name like =el= or =py= and then press =TAB=.  For example, to insert an empty =emacs-lisp= block below, you can type =<el= and press =TAB= to expand into such a block.
 
   You can add more =src= block templates below by copying one of the lines and changing the two strings at the end, the first to be the template name and the second to contain the name of the language [[https://orgmode.org/worg/org-contrib/babel/languages.html][as it is known by Org Babel]].
@@ -1074,7 +1151,6 @@ The configuration of Org-Mode is augmented with some additional modules (see `(s
       (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
       (add-to-list 'org-structure-template-alist '("py" . "src python")))
   #+END_SRC
-
 
 ** Center Org Buffers
 
