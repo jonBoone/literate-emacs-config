@@ -12,6 +12,8 @@ This is my literate emacs configuration, which leverages =org-mode= as a markup 
 * Files related to this configuration:
 My Emacs configuration leverages a directory (=${HOME}/.emacs.d=) that contains both an =early-init.el= and an =init.el= file.  The majority of the configuration is contained in the =Emacs.org= file in the same directory.
 
+# TODO: configure #+begin_src emacs-lisp / #+end_src blocks to include the contents of these two files in this document
+
 ** =early-init.el=
 This file sets the following types of configuration parameters prior to the initialization of the package system and the GUI components.
 
@@ -852,6 +854,7 @@ Emacs' default buffer placement algorithm is pretty disruptive if you like setti
 [[https://orgmode.org/][Org Mode]] is one of the hallmark features of Emacs.  It is a rich document editor, project planner, task and time tracker, blogging engine, and literate coding utility all wrapped up in one package.
 ** Essential Org Mode Config
 This section contains the basic configuration for =org-mode= plus the configuration for Org agendas and capture templates.
+
 *** Support for Better Font Faces
   The =my/org-font-setup= function configures various text faces to tweak the sizes of headings and use variable width fonts in most cases so that it looks more like we're editing a document in =org-mode=.  We switch back to fixed width (monospace) fonts for code blocks and tables so that they display correctly.  *Note:* This must appear prior to the `(use-package org-mode...)` invocation so that we can call `my/org-font-setup` during the call to `use-package`.
   #+BEGIN_SRC emacs-lisp
