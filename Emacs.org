@@ -170,35 +170,35 @@ Start the Emacs server to receive all `emacsclient` calls.
 
 * Emacs Lisp Libraries
 ** comment-tags
-   [[https://github.com/vincekd/comment-tags][comment-tags.el]] adds highlighting and listing capabilities to comment tags
-   #+begin_src emacs-lisp
-     (use-package comment-tags
-       :straight t)
-   #+end_src
+[[https://github.com/vincekd/comment-tags][comment-tags.el]] adds highlighting and listing capabilities to comment tags
+#+begin_src emacs-lisp
+  (use-package comment-tags
+    :straight t)
+#+end_src
 
 ** dash
-   [[https://github.com/magnars/dash.el][dash.el]] is a modern list library addition to Emacs Lisp
+[[https://github.com/magnars/dash.el][dash.el]] is a modern list library addition to Emacs Lisp
 #+begin_src emacs-lisp
   (use-package "dash"
     :straight t)
 #+end_src
 
 ** ht
-   [[https://github.com/Wilfred/ht.el][ht.el]] is a hash table library for Emacs Lisp
+[[https://github.com/Wilfred/ht.el][ht.el]] is a hash table library for Emacs Lisp
 #+begin_src emacs-lisp
   (use-package "ht"
     :straight t)
 #+end_src
 
 ** s
-   [[https://github.com/magnars/s.el][s.el]] is a string manipulation library for Emacs Lisp
+[[https://github.com/magnars/s.el][s.el]] is a string manipulation library for Emacs Lisp
 #+begin_src emacs-lisp
   (use-package "s"
     :straight t)
 #+end_src
 
 ** ts
-   [[https://github.com/alphapapa/ts.el][ts.el]] is a timestamp and date library for Emacs Lisp
+[[https://github.com/alphapapa/ts.el][ts.el]] is a timestamp and date library for Emacs Lisp
 #+begin_src emacs-lisp
   (use-package "ts"
     :straight t)
@@ -207,36 +207,35 @@ Start the Emacs server to receive all `emacsclient` calls.
 
 * Keybinding Configuration
 ** `ESC` Cancels All
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
-#+END_SRC
-
+#+end_src
 
 ** Keybinding Panel `(which-key)`
 `which-key` provides an overview of the available keybindings based on the prefix keys entered so far.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (use-package which-key
     :init (which-key-mode)
     :diminish which-key-mode
     :config
     (setq which-key-idle-delay 0.3))
-#+END_SRC
+#+end_src
 
 
 * Environment Variable Capture
 On some sytems Emacs may be launched without the benefit of the user's shell initialization files having been evaluated first.  So, we need to capture the state of the environment and store it in a file for later reference:
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (use-package exec-path-from-shell
     :init
     (setq exec-path-from-shell-check-startup-files nil)
     :config
     (when (memq window-system '(mac ns x))
       (exec-path-from-shell-initialize)))
-#+END_SRC
+#+end_src
 
 
 * Manage Popup Windows
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (use-package popper
     :straight t
     :disabled
@@ -264,12 +263,12 @@ On some sytems Emacs may be launched without the benefit of the user's shell ini
             compilation-mode)
           popper-display-control 'user)
     (popper-mode +1))
-#+END_SRC
+#+end_src
 
 
 * Keep Folders Clean
 We use the [[https://github.com/emacscollective/no-littering/blob/master/no-littering.el][no-littering]] package to keep folders where we edit files and the Emacs configuration folder clean!  It knows about a wide variety of variables for built in Emacs features as well as those from community packages so it can be much easier than finding and setting these variables yourself.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   ;; NOTE: If you want to move everything out of the ~/.emacs.d folder
   ;; reliably, set `user-emacs-directory` before loading no-littering!
                                           ;(setq user-emacs-directory "~/.cache/emacs")
@@ -281,15 +280,14 @@ We use the [[https://github.com/emacscollective/no-littering/blob/master/no-litt
     ;; auto save files in the same path as it uses for sessions
   (setq auto-save-file-name-transforms
         `((".*" ,(no-littering-expand-var-file-name "auto-save/") t)))
-#+END_SRC
+#+end_src
 
 
 * General Configuration
 ** User Interface
-
 This section configures UI settings that remove unneeded elements to make Emacs look a lot more minimal and modern.  If you're just getting started in Emacs, the menu bar might be helpful so you can remove the =(menu-bar-mode -1)= line if you'd like to still see that.
 *** Visual Configuration
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   ;; This may need to be adjusted from system to system
   ;; Initialize them to nil
   (defvar my/default-font-size nil)
@@ -381,21 +379,20 @@ This section configures UI settings that remove unneeded elements to make Emacs 
         vc-follow-symlinks           t        ;; Always follow symlinked files
         ad-redefinition-action       'accept  ;; add advice wihtout warning
         x-stretch-cursor             t)
-#+END_SRC
+#+end_src
 
 *** Eliminate having to type out `yes` or `no`
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (fset 'yes-or-no-p 'y-or-n-p)
-#+END_SRC
+#+end_src
 
 *** Font Configuration
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (use-package nerd-icons
     :straight t)
-#+END_SRC
+#+end_src
 
-
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (set-face-attribute 'default nil
                       :font "Source Code Pro" :height my/default-font-size)
   ;; Set the fixed pitch face
@@ -403,36 +400,36 @@ This section configures UI settings that remove unneeded elements to make Emacs 
                       :font "Source Code Pro" :height my/default-font-size)
   ;; Set the variable pitch face
   (set-face-attribute 'variable-pitch nil
-                      :font "Cantarell" :height my/default-variable-font-size :weight 'regular)
-#+END_SRC
+                      :font "Cantarell" :height my/default-variable-font-size :weight
+                      'regular)
+#+end_src
 
 *** Command Log Mode
 [[https://github.com/lewang/command-log-mode][command-log-mode]] is useful for displaying a panel showing each key binding you use in a panel on the right side of the frame.  Great for live streams and screencasts!
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (use-package command-log-mode
     :commands command-log-mode)
-#+END_SRC
+#+end_src
 
 *** Color Theme
 [[https://github.com/hlissner/emacs-doom-themes][doom-themes]] is a great set of themes with a lot of variety and support for many different Emacs modes.  Taking a look at the [[https://github.com/hlissner/emacs-doom-themes/tree/screenshots][screenshots]] might help you decide which one you like best.  You can also run =M-x counsel-load-theme= to choose between them easily.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (use-package doom-themes
     :init
     (load-theme 'doom-nord-light  t)
     (doom-themes-visual-bell-config))
-#+END_SRC
-
+#+end_src
 
 ** Mode Line
 *** Basic Customization
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (setq display-time-format "%l:%M %p %b %y"
         display-time-default-load-average nil)
-#+END_SRC
+#+end_src
 
 *** Smart Mode Line
 Prettify the mode line with `smart-mode-line`.  Really need to re-evaluate the ordering of `mode-line-format`.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (use-package smart-mode-line
     :config
     (setq sml/no-confirm-load-theme t)
@@ -456,12 +453,12 @@ Prettify the mode line with `smart-mode-line`.  Really need to re-evaluate the o
                     mode-line-modes
                     " "
                     mode-line-misc-info)))
-#+END_SRC
+#+end_src
 
 *** Doom Mode Line
 [[https://github.com/seagle0128/doom-modeline][doom-modeline]] is a very attractive and rich (yet still minimal) mode line configuration for Emacs.  The default configuration is quite good but you can check out the [[https://github.com/seagle0128/doom-modeline#customize][configuration options]] for more things you can enable or disable.
 *NOTE:* The first time you load your configuration on a new machine, you'll need to run `M-x all-the-icons-install-fonts` so that mode line icons display correctly.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (use-package minions
     :hook doom-modeline-mode)
 
@@ -486,10 +483,10 @@ Prettify the mode line with `smart-mode-line`.  Really need to re-evaluate the o
           doom-modeline-minor-mode-icon t
           doom-modeline-buffer-file-name-style 'relative-to-project
           doom-modeline-buffer-state-icon t))
-#+END_SRC
+#+end_src
 
 *** Workspaces
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (use-package perspective
     :straight t
     :disabled
@@ -501,55 +498,51 @@ Prettify the mode line with `smart-mode-line`.  Really need to re-evaluate the o
     (setq persp-initial-frame-name "Main")
     (unless (equal persp-mode t)
       (persp-mode)))
-#+END_SRC
+#+end_src
 
 *** Auto-Saving Changed Files
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (use-package super-save
     :defer t
     :diminish super-save-mode
     :config
     (super-save-mode +1)
     (setq super-save-auto-save-when-idle t))
-#+END_SRC
+#+end_src
 
 *** Auto-Reverting Changed Files
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (setq global-auto-revert-non-file-buffers t) ; Revert Dired and other buffers
   (global-auto-revert-mode 1) ; Revert buffers when the underlying file has changed
-#+END_SRC
+#+end_src
 
 *** Highlight Matching Braces
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (use-package paren
     :config
     (set-face-attribute 'show-paren-match-expression nil :background "#363e4a")
     (show-paren-mode 1))
-#+END_SRC
+#+end_src
 
 *** Display World Time
 `display-time-world` provides a nice display of the time at a specified list of timezones.  Nice for working in a team with remote members.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (setq display-time-world-list
         `(("Etc/UTC" "UTC")
           ("America/Los_Angeles" "Silicon Valley")
           ("America/New_York" "South Eastern PA"))
         display-time-world-time-format
         "%a, %d %b %I:%M %p %Z")
-#+END_SRC
+#+end_src
 
 *** TRAMP
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (setq tramp-default-method "ssh")
-#+END_SRC
-
+#+end_src
 
 ** Emacs Dashboard
-I like the idea of having emacs launch and present a dashboard as the
-default buffer in my primary frame.  This requires using the
-`dashboard` package:
-
-#+BEGIN_SRC emacs-lisp
+I like the idea of having emacs launch and present a dashboard as the default buffer in my primary frame.  This requires using the `dashboard` package:
+#+begin_src emacs-lisp
   (use-package dashboard
     :ensure t
     :config
@@ -562,42 +555,37 @@ default buffer in my primary frame.  This requires using the
      dashboard-display-icons-p   t
      dashboard-icon-type         'nerd-icons)
     (dashboard-setup-startup-hook))
-#+END_SRC
-
+#+end_src
 
 
 * Editing Configuration
 ** Tab Widths
 Default to an indentation size of 2 spaces since it's the norm for nearly all programming languages I use.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (setq-default tab-width 2)
-#+END_SRC
-
+#+end_src
 
 ** Spaces Instead of Tabs
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (setq-default indent-tabs-mode nil)
-#+END_SRC
-
+#+end_src
 
 ** Automatically Clean Whitespace
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (use-package ws-butler
     :hook (prog-mode text-mode))
-#+END_SRC
-
+#+end_src
 
 ** Expand Region
  This module is absolutely necessary for working inside of Emacs Lisp files, especially when trying to edit some parent of an expression (like a `setq`).  Makes tweaking Org agend views much less annoying.
- #+BEGIN_SRC emacs-lisp
+ #+begin_src emacs-lisp
    (use-package expand-region
      :bind (("M-[" . er/expand-region)
             ("C-(" . er/mark-outside-pairs)))
- #+END_SRC
-
+ #+end_src
 
 ** Use Parinfer for Lisp Languages
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (use-package parinfer
     :hook
     (clojure-mode emacs-lisp-mode common-lisp-mode scheme-mode lisp-mode)
@@ -607,23 +595,17 @@ Default to an indentation size of 2 spaces since it's the norm for nearly all pr
             pretty-parens    ; different paren styles for different modes
             smart-tab        ; C-b & C-f jump positions and smart shift with tab & S-tab
             smart-yank)))    ; Yank behavior depends on mode
-#+END_SRC
-
+#+end_src
 
 ** Ivy, Counsel and Swiper
-[[https://oremacs.com/swiper/][Ivy]] is an excellent completion framework for Emacs.  It provides a minimal yet powerful selection menu that appears when you open files, switch buffers, and for many other tasks in Emacs.  Counsel is a customized set of commands to replace `find-file` with `counsel-find-file`, etc which provide useful commands for each of the default completion commands.
-[[https://github.com/Yevgnen/ivy-rich][ivy-rich]] adds extra columns to a few of the Counsel commands to provide more information about each item.
+[[https://oremacs.com/swiper/][Ivy]] is an excellent completion framework for Emacs.  It provides a minimal yet powerful selection menu that appears when you open files, switch buffers, and for many other tasks in Emacs.  Counsel is a customized set of commands to replace `find-file` with `counsel-find-file`, etc which provide useful commands for each of the default completion commands. [[https://github.com/Yevgnen/ivy-rich][ivy-rich]] adds extra columns to a few of the Counsel commands to provide more information about each item.
 
 Here are some workflow notes on how to best use Ivy:
-
 *** While in an Ivy minibuffer, you can search within the current results by using `S-Space`.
-
 *** To quickly jump to an item in the minibuffer, use `C-'` to get Avy line jump keys.
-
 *** To see actions for the selected minibuffer item, use `M-o` then press the action's key.
-
 *** **Super useful:** Use `C-c C-o` to open `ivy-occur` to open the search results in a separate buffer. From there you can click any item to perform the Ivy action.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (use-package ivy
     :diminish
     :bind
@@ -730,28 +712,26 @@ Here are some workflow notes on how to best use Ivy:
     :after prescient
     :config
     (ivy-prescient-mode 1))
-#+END_SRC
-
+#+end_src
 
 ** Jumping with Avy
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (use-package avy
     :commands (avy-goto-char avy-goto-word-0 avy-goto-line))
-#+END_SRC
-
+#+end_src
 
 ** Window Management
 *** Frame Scaling / Zooming
 The keybindings for this are `C+M+-` and `C+M+=`.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (use-package default-text-scale
     :defer t
     :config
     (default-text-scale-mode))
-#+END_SRC
+#+end_src
 
 *** Window History with `winner-mode`
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (use-package winner
     :straight nil
     :bind
@@ -759,10 +739,10 @@ The keybindings for this are `C+M+-` and `C+M+=`.
      ("s-?" . winner-redo))
     :config
     (winner-mode))
-#+END_SRC
+#+end_src
 
 *** Set Margins for Modes
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (defun my/center-buffer-with-margins ()
     (let ((margin-size (/ (- (frame-width) 80) 3)))
       (set-window-margins nil margin-size margin-size)))
@@ -775,12 +755,11 @@ The keybindings for this are `C+M+-` and `C+M+=`.
   (use-package visual-fill-column
     :defer t
     :hook (org-mode . my/org-mode-visual-fill))
-#+END_SRC
+#+end_src
 
 *** Control Buffer Placement
 Emacs' default buffer placement algorithm is pretty disruptive if you like setting up window layouts a certain way in your workflow. The display-buffer-alist video controls this behavior and you can customize it to prevent Emacs from popping up new windows when you run commands.
-
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (setq display-buffer-base-action
         '(display-buffer-reuse-mode-window
           display-buffer-reuse-window
@@ -788,12 +767,12 @@ Emacs' default buffer placement algorithm is pretty disruptive if you like setti
 
   ;; If a popup does happen, don't resize windows to be equal-sized
   (setq even-window-sizes nil)
-#+END_SRC
+#+end_src
 
 
 * File Browsing
 ** Dired
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (use-package all-the-icons-dired)
 
   (use-package dired
@@ -847,51 +826,50 @@ Emacs' default buffer placement algorithm is pretty disruptive if you like setti
 
   (use-package dired-ranger
     :defer t)
-#+END_SRC
+#+end_src
 
 
 * Org Mode
 [[https://orgmode.org/][Org Mode]] is one of the hallmark features of Emacs.  It is a rich document editor, project planner, task and time tracker, blogging engine, and literate coding utility all wrapped up in one package.
 ** Essential Org Mode Config
 This section contains the basic configuration for =org-mode= plus the configuration for Org agendas and capture templates.
-
 *** Support for Better Font Faces
-  The =my/org-font-setup= function configures various text faces to tweak the sizes of headings and use variable width fonts in most cases so that it looks more like we're editing a document in =org-mode=.  We switch back to fixed width (monospace) fonts for code blocks and tables so that they display correctly.  *Note:* This must appear prior to the `(use-package org-mode...)` invocation so that we can call `my/org-font-setup` during the call to `use-package`.
-  #+BEGIN_SRC emacs-lisp
-    (defun my/org-font-setup ()
-      ;; Replace list hyphen with dot
-      (font-lock-add-keywords 'org-mode
-                              '(("^ *\\([-]\\) "
-                                 (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
+The =my/org-font-setup= function configures various text faces to tweak the sizes of headings and use variable width fonts in most cases so that it looks more like we're editing a document in =org-mode=.  We switch back to fixed width (monospace) fonts for code blocks and tables so that they display correctly.  *Note:* This must appear prior to the `(use-package org-mode...)` invocation so that we can call `my/org-font-setup` during the call to `use-package`.
+#+begin_src emacs-lisp
+  (defun my/org-font-setup ()
+    ;; Replace list hyphen with dot
+    (font-lock-add-keywords 'org-mode
+                            '(("^ *\\([-]\\) "
+                               (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
 
-      ;; Set faces for heading levels
-      (dolist (face '((org-level-1 . 1.25)
-                      (org-level-2 . 1.20)
-                      (org-level-3 . 1.15)
-                      (org-level-4 . 1.10)
-                      (org-level-5 . 1.05)
-                      (org-level-6 . 1.00)
-                      (org-level-7 . 0.95)
-                      (org-level-8 . 0.90)))
-        (set-face-attribute (car face) nil :font "Cantarell" :weight 'regular :height (cdr face)))
+    ;; Set faces for heading levels
+    (dolist (face '((org-level-1 . 1.25)
+                    (org-level-2 . 1.20)
+                    (org-level-3 . 1.15)
+                    (org-level-4 . 1.10)
+                    (org-level-5 . 1.05)
+                    (org-level-6 . 1.00)
+                    (org-level-7 . 0.95)
+                    (org-level-8 . 0.90)))
+      (set-face-attribute (car face) nil :font "Cantarell" :weight 'regular :height (cdr face)))
 
-      ;; Ensure that anything that should be fixed-pitch in Org files appears that way
-      (set-face-attribute 'org-block nil    :foreground 'unspecified :inherit 'fixed-pitch)
-      (set-face-attribute 'org-table nil    :inherit 'fixed-pitch)
-      (set-face-attribute 'org-formula nil  :inherit 'fixed-pitch)
-      (set-face-attribute 'org-code nil     :inherit '(shadow fixed-pitch))
-      (set-face-attribute 'org-table nil    :inherit '(shadow fixed-pitch))
-      (set-face-attribute 'org-verbatim nil :inherit '(shadow fixed-pitch))
-      (set-face-attribute 'org-special-keyword nil :inherit '(font-lock-comment-face fixed-pitch))
-      (set-face-attribute 'org-meta-line nil :inherit '(font-lock-comment-face fixed-pitch))
-      (set-face-attribute 'org-checkbox nil  :inherit 'fixed-pitch)
-      (set-face-attribute 'line-number nil :inherit 'fixed-pitch)
-      (set-face-attribute 'line-number-current-line nil :inherit 'fixed-pitch)
-      (setq org-agenda-deadline-faces
-            '((1.0001 . org-warning)              ; late -- due yesterday or before
-              (0.0    . org-upcoming-deadline)))  ; due today or in the future
-      )
-  #+END_SRC
+    ;; Ensure that anything that should be fixed-pitch in Org files appears that way
+    (set-face-attribute 'org-block nil    :foreground 'unspecified :inherit 'fixed-pitch)
+    (set-face-attribute 'org-table nil    :inherit 'fixed-pitch)
+    (set-face-attribute 'org-formula nil  :inherit 'fixed-pitch)
+    (set-face-attribute 'org-code nil     :inherit '(shadow fixed-pitch))
+    (set-face-attribute 'org-table nil    :inherit '(shadow fixed-pitch))
+    (set-face-attribute 'org-verbatim nil :inherit '(shadow fixed-pitch))
+    (set-face-attribute 'org-special-keyword nil :inherit '(font-lock-comment-face fixed-pitch))
+    (set-face-attribute 'org-meta-line nil :inherit '(font-lock-comment-face fixed-pitch))
+    (set-face-attribute 'org-checkbox nil  :inherit 'fixed-pitch)
+    (set-face-attribute 'line-number nil :inherit 'fixed-pitch)
+    (set-face-attribute 'line-number-current-line nil :inherit 'fixed-pitch)
+    (setq org-agenda-deadline-faces
+          '((1.0001 . org-warning)              ; late -- due yesterday or before
+            (0.0    . org-upcoming-deadline)))  ; due today or in the future
+    )
+#+end_src
 
 *** Org-Mode Agenda Style Configuration
 I want to customize my =org-mode= agenda style.
@@ -904,14 +882,14 @@ I want to customize my =org-mode= agenda style.
 #+end_src
 
 *** Custom org-mode-setup function
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   ;; Set a custom configuration for org-mode interaction with the other elisp packages.
   (defun my/org-mode-setup ()
     (org-indent-mode)
     (variable-pitch-mode 1)
     (visual-line-mode 1)
     (diminish org-indent-mode))
-#+END_SRC
+#+end_src
 
 *** Custom org-mode agenda diary fancy cleanup
 #+begin_src emacs-lisp
@@ -931,7 +909,7 @@ I want to customize my =org-mode= agenda style.
 
 *** Org-Mode package
 The configuration of Org-Mode is augmented with some additional modules (see `(setq org-modules ...)` line below.)
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (use-package org
     :defer t
     :hook ((org-mode                       . my/org-mode-setup)
@@ -1097,26 +1075,24 @@ The configuration of Org-Mode is augmented with some additional modules (see `(s
   ;; Save Org buffers after refiling!
   (advice-add 'org-refile :after 'org-save-all-org-buffers)
   (my/org-font-setup)
-#+END_SRC
-
-
+#+end_src
 
 ** Extra Packages that extend Org-Mode
 *** org-appear -  Auto-show Markup Symbols
-   This package makes it much easier to edit Org documents when`org-hide-emphasis-markers` is turned on. It temporarily shows the emphasis markers around certain markup elements when you place your cursor inside of them. No more fumbling around with `=` and `*` characters!
-  #+BEGIN_SRC emacs-lisp
-    (use-package org-appear
-      :hook org-mode)
-  #+END_SRC
+This package makes it much easier to edit Org documents when`org-hide-emphasis-markers` is turned on. It temporarily shows the emphasis markers around certain markup elements when you place your cursor inside of them. No more fumbling around with `=` and `*` characters!
+#+begin_src emacs-lisp
+  (use-package org-appear
+    :hook org-mode)
+#+end_src
 
 *** org-bullets - Nicer Heading Bullets
-   [[https://github.com/sabof/org-bullets][org-bullets]] replaces the heading stars in =org-mode= buffers with nicer looking characters that you can control.  Another option for this is [[https://github.com/integral-dw/org-superstar-mode][org-superstar-mode]] which we may cover in a later video.
-  #+BEGIN_SRC emacs-lisp
-    (use-package org-bullets
-      :hook org-mode
-      :custom
-      (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
-  #+END_SRC
+[[https://github.com/sabof/org-bullets][org-bullets]] replaces the heading stars in =org-mode= buffers with nicer looking characters that you can control.  Another option for this is [[https://github.com/integral-dw/org-superstar-mode][org-superstar-mode]] which we may cover in a later video.
+#+begin_src emacs-lisp
+  (use-package org-bullets
+    :hook org-mode
+    :custom
+    (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
+#+end_src
 
 *** org-journal
 Configure the daily journal features
@@ -1128,39 +1104,37 @@ Configure the daily journal features
 #+end_src
 
 *** org-make-toc - Update Table of Contents on Save
-    It's nice to have a table of contents section for long literate configuration files (like this one!) so use  `org-make-toc` to automatically update the `ToC` in any header with a property named `TOC`.
-    #+begin_src emacs-lisp
-    (use-package org-make-toc
-      :hook org-mode)
-    #+end_src
+It's nice to have a table of contents section for long literate configuration files (like this one!) so use  `org-make-toc` to automatically update the `ToC` in any header with a property named `TOC`.
+#+begin_src emacs-lisp
+  (use-package org-make-toc
+     :hook org-mode)
+#+end_src
 
 *** org-super-agenda
-    [[https://github.com/alphapapa/org-super-agenda][org-super-agenda]] adds additional functionality to daily/weekly agenda through grouping
-    #+begin_src emacs-lisp
-      (use-package org-super-agenda
-        :straight t
-        :hook org-agenda-mode)
-    #+end_src
+[[https://github.com/alphapapa/org-super-agenda][org-super-agenda]] adds additional functionality to daily/weekly agenda through grouping
+#+begin_src emacs-lisp
+  (use-package org-super-agenda
+    :straight t
+    :hook org-agenda-mode)
+#+end_src
 
 **** org-tempo - Structure Templates
-  Org Mode's [[https://orgmode.org/manual/Structure-Templates.html][structure templates]] feature enables you to quickly insert code blocks into your Org files in combination with =org-tempo= by typing =<= followed by the template name like =el= or =py= and then press =TAB=.  For example, to insert an empty =emacs-lisp= block below, you can type =<el= and press =TAB= to expand into such a block.
+Org Mode's [[https://orgmode.org/manual/Structure-Templates.html][structure templates]] feature enables you to quickly insert code blocks into your Org files in combination with =org-tempo= by typing =<= followed by the template name like =el= or =py= and then press =TAB=.  For example, to insert an empty =emacs-lisp= block below, you can type =<el= and press =TAB= to expand into such a block.
 
-  You can add more =src= block templates below by copying one of the lines and changing the two strings at the end, the first to be the template name and the second to contain the name of the language [[https://orgmode.org/worg/org-contrib/babel/languages.html][as it is known by Org Babel]].
-  #+BEGIN_SRC emacs-lisp
-    (with-eval-after-load 'org
-      ;; This is needed as of Org 9.2
-      (require 'org-tempo)
+You can add more =src= block templates below by copying one of the lines and changing the two strings at the end, the first to be the template name and the second to contain the name of the language [[https://orgmode.org/worg/org-contrib/babel/languages.html][as it is known by Org Babel]].
+#+begin_src emacs-lisp
+  (with-eval-after-load 'org
+    ;; This is needed as of Org 9.2
+    (require 'org-tempo)
 
-      (add-to-list 'org-structure-template-alist '("sh" . "src shell"))
-      (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
-      (add-to-list 'org-structure-template-alist '("py" . "src python")))
-  #+END_SRC
+    (add-to-list 'org-structure-template-alist '("sh" . "src shell"))
+    (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
+    (add-to-list 'org-structure-template-alist '("py" . "src python")))
+#+end_src
 
 ** Center Org Buffers
-
 We use [[https://github.com/joostkremers/visual-fill-column][visual-fill-column]] to center =org-mode= buffers for a more pleasing writing experience as it centers the contents of the buffer horizontally to seem more like you are editing a document.  This is really a matter of personal preference so you can remove the block below if you don't like the behavior.
-
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (defun my/org-mode-visual-fill ()
     (setq visual-fill-column-width 100
           visual-fill-column-center-text t)
@@ -1168,14 +1142,11 @@ We use [[https://github.com/joostkremers/visual-fill-column][visual-fill-column]
 
   (use-package visual-fill-column
     :hook (org-mode . my/org-mode-visual-fill))
-#+END_SRC
-
+#+end_src
 
 ** Configure Babel Languages
-
 To execute or export code in =org-mode= code blocks, you'll need to set up =org-babel-load-languages= for each language you'd like to use.  [[https://orgmode.org/worg/org-contrib/babel/languages.html][This page]] documents all of the languages that you can use with =org-babel=.
-
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (with-eval-after-load 'org
     (org-babel-do-load-languages
      'org-babel-load-languages
@@ -1183,11 +1154,10 @@ To execute or export code in =org-mode= code blocks, you'll need to set up =org-
        (python . t)))
 
     (push '("conf-unix" . conf-unix) org-src-lang-modes))
-#+END_SRC
-
+#+end_src
 
 ** Pomodoro
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (use-package org-pomodoro
     :after org
     :config
@@ -1195,13 +1165,11 @@ To execute or export code in =org-mode= code blocks, you'll need to set up =org-
           org-pomodoro-short-break-sound  "~/Dropbox/pkb/sounds/three_beeps.wav"
           org-pomodoro-long-break-sound   "~/Dropbox/pkb/sounds/three_beeps.wav"
           org-pomodoro-finished-sound     "~/Dropbox/pkb/sounds/meditation_bell.env"))
-#+END_SRC
-
+#+end_src
 
 ** Auto-tangle Configuration Files
 This snippet adds a hook to =org-mode= buffers so that =my/org-babel-tangle-config= gets executed each time such a buffer gets saved.  This function checks to see if the file being saved is the Emacs.org file you're looking at right now, and if so, automatically exports the configuration here to the associated output files.
-
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   ;; Automatically tangle our Emacs.org config file when we save it
   (defun my/org-babel-tangle-config ()
     (when (string-equal (file-name-directory (buffer-file-name))
@@ -1212,11 +1180,10 @@ This snippet adds a hook to =org-mode= buffers so that =my/org-babel-tangle-conf
 
   (add-hook 'org-mode-hook
             (lambda () (add-hook 'after-save-hook #'my/org-babel-tangle-config)))
-#+END_SRC
-
+#+end_src
 
 ** Org Roam
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (use-package org-roam
     :straight t
     ;; :hook after-init
@@ -1291,55 +1258,52 @@ This snippet adds a hook to =org-mode= buffers so that =my/org-babel-tangle-conf
                 :map org-mode-map
                 (("C-c n i" . org-roam-insert)
                  ("C-c n I" . org-roam-insert-immediate))))
-#+END_SRC
-
+#+end_src
 
 ** Deft
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (use-package deft
     :commands (deft)
     :config
     (setq deft-directory  "~/Dropbox/pkb/org"
           deft-recursive  t
           deft-extensions '("md" "org")))
-#+END_SRC
-
+#+end_src
 
 ** Tree-sitter
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (use-package tree-sitter
     :straight t)
 
   (use-package tree-sitter-langs
     :straight t
     :after tree-sitter)
-#+END_SRC
+#+end_src
 
 
 * LLMs
 ** ChatGPT
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   ;;  (use-package c3po
   ;;    :straight (:host github :repo "d1egoaz/c3po.el")
   ;;    :config
   ;;    (setq c3po-api-key custom-c3po-api-key))
-#+END_SRC
+#+end_src
 
 
 * Web Browsing
 I build my emacsen with xwidget-webkit support on darwin systems, so I want
 that to be the default browser function.
-
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   ;; configure xwidget-webkit-browse-url as default browser function
   (setq browse-url-browser-function 'xwidget-webkit-browse-url)
-#+END_SRC
+#+end_src
 
 
 * Writing
 ** Markdown Support
 *** Markdown Mode
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (use-package markdown-mode
     :straight t
     :mode
@@ -1347,9 +1311,7 @@ that to be the default browser function.
     :config
     (setq markdown-command '("pandoc" "-f" "gfm" "-t" "html5")
           markdown-live-preview-window-function #'xwidget-webkit-browse-url))
-#+END_SRC
-
-
+#+end_src
 
 ** Metrics
 This section comes from Sacha Chua's blog post [[https://sachachua.com/blog/2008/01/outlining-your-notes-with-org/][Outline Your Notes With Org]], part of a series of posts that were expected to be part of a book _Wicked Cool Emacs_ published by No Starch Press.
@@ -1456,145 +1418,134 @@ This section extends the standard checklist feature in Org, which can track perc
 
 * Development
 ** Magit
+[[https://magit.vc/][Magit]] is the best Git interface I've ever used.  Common Git operations are easy to execute quickly using Magit's command panel system.
+#+begin_src emacs-lisp
+  (use-package magit
+    :straight t
+    :bind (("C-M-;" . magit-status)
+           :map project-prefix-map
+           ("m" . project-magit))
+    :commands (magit-status magit-get-current-branch project-magit)
+    :custom
+    (add-to-list 'project-switch-commands
+                 '(project-magit "Magit" m))
+    (defun project-magit ()
+      (interactive)
+      (let ((dir (project-root (project-current t))))
+        (magit-status dir)))
 
-  [[https://magit.vc/][Magit]] is the best Git interface I've ever used.  Common Git operations are easy to execute quickly using Magit's command panel system.
+    (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
 
-  #+BEGIN_SRC emacs-lisp
-    (use-package magit
-      :straight t
-      :bind (("C-M-;" . magit-status)
-             :map project-prefix-map
-             ("m" . project-magit))
-      :commands (magit-status magit-get-current-branch project-magit)
-      :custom
-      (add-to-list 'project-switch-commands
-                   '(project-magit "Magit" m))
-      (defun project-magit ()
-        (interactive)
-        (let ((dir (project-root (project-current t))))
-          (magit-status dir)))
+  ;; NOTE: Make sure to configure a GitHub token before using this package!
+  ;; - https://magit.vc/manual/forge/Token-Creation.html#Token-Creation
+  ;; - https://magit.vc/manual/ghub/Getting-Started.html#Getting-Started
+  (use-package forge
+    :straight t
+    :after magit)
 
-      (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
+  (use-package magit-todos
+    :straight t
+    :defer t)
 
-    ;; NOTE: Make sure to configure a GitHub token before using this package!
-    ;; - https://magit.vc/manual/forge/Token-Creation.html#Token-Creation
-    ;; - https://magit.vc/manual/ghub/Getting-Started.html#Getting-Started
-    (use-package forge
-      :straight t
-      :after magit)
+  (use-package git-link
+    :commands git-link
+    :config
+    (setq git-link-open-in-browser-t))
+#+end_src
 
-    (use-package magit-todos
-      :straight t
-      :defer t)
+#+begin_src emacs-lisp
+  (use-package ediff
+    :after (magit vc)
+    :commands (ediff)
+    :init
+    (with-eval-after-load 'winner
+      (add-hook 'edif-quit-hook 'winner-undo))
+    (setq ediff-window-setup-function 'ediff-setup-windows-plain))
+#+end_src
 
-    (use-package git-link
-      :commands git-link
-      :config
-      (setq git-link-open-in-browser-t))
-  #+END_SRC
-
-  #+BEGIN_SRC emacs-lisp
-    (use-package ediff
-      :after (magit vc)
-      :commands (ediff)
-      :init
-      (with-eval-after-load 'winner
-        (add-hook 'edif-quit-hook 'winner-undo))
-      (setq ediff-window-setup-function 'ediff-setup-windows-plain))
-  #+END_SRC
-
-  #+BEGIN_SRC emacs-lisp
-    ;;  (use-package diff-hl
-    ;;    :straight t
-    ;;    :defer 5
-    ;;    :hook ((magit-pre-refresh . diff-hl-magit-pre-refresh)
-    ;;           (magit-pre-refresh . diff-hl-magit-post-refresh))
-    ;;    :init (global-diff-hl-mode)
-    ;;    :config (diff-hl-flydiff-mode))
-  #+END_SRC
-
-
-  *
-
-
+#+begin_src emacs-lisp
+  ;;  (use-package diff-hl
+  ;;    :straight t
+  ;;    :defer 5
+  ;;    :hook ((magit-pre-refresh . diff-hl-magit-pre-refresh)
+  ;;           (magit-pre-refresh . diff-hl-magit-post-refresh))
+  ;;    :init (global-diff-hl-mode)
+  ;;    :config (diff-hl-flydiff-mode))
+#+end_src
 
 ** Projectile
-  [[https://projectile.mx/][Projectile]] is a project management library for Emacs which makes it a lot easier to navigate around code projects for various languages.  Many packages integrate with Projectile so it's a good idea to have it installed even if you don't use its commands directly.
-  #+BEGIN_SRC emacs-lisp
-    (use-package projectile
-      :diminish projectile-mode
-      :config (projectile-mode)
-      :custom ((projectile-completion-system 'ivy))
-      :bind-keymap
-      ("C-c p" . projectile-command-map)
-      :init
-      ;; NOTE: Set this to the folder where you keep your Git repos!
-      (when (file-directory-p "~/Projects/Code")
-        (setq projectile-project-search-path '("~/Projects/Code")))
-      (setq projectile-switch-project-action #'projectile-dired))
+[[https://projectile.mx/][Projectile]] is a project management library for Emacs which makes it a lot easier to navigate around code projects for various languages.  Many packages integrate with Projectile so it's a good idea to have it installed even if you don't use its commands directly.
+#+begin_src emacs-lisp
+  (use-package projectile
+    :diminish projectile-mode
+    :config (projectile-mode)
+    :custom ((projectile-completion-system 'ivy))
+    :bind-keymap
+    ("C-c p" . projectile-command-map)
+    :init
+    ;; NOTE: Set this to the folder where you keep your Git repos!
+    (when (file-directory-p "~/Projects/Code")
+      (setq projectile-project-search-path '("~/Projects/Code")))
+    (setq projectile-switch-project-action #'projectile-dired))
 
-    (use-package counsel-projectile
-      :after projectile
-      :config (counsel-projectile-mode))
-  #+END_SRC
-
+  (use-package counsel-projectile
+    :after projectile
+    :config (counsel-projectile-mode))
+#+end_src
 
 ** Programming Language Support
 *** Colorful Delimiters
-  [[https://github.com/Fanael/rainbow-delimiters][rainbow-delimiters]] is useful in programming modes because it colorizes nested parentheses and brackets according to their nesting depth.  This makes it a lot easier to visually match parentheses in Emacs Lisp code without having to count them yourself.
-
-  #+BEGIN_SRC emacs-lisp
-    (use-package rainbow-delimiters
-      :straight t
-      :hook (prog-mode . rainbow-delimiters-mode))
-  #+END_SRC
+[[https://github.com/Fanael/rainbow-delimiters][rainbow-delimiters]] is useful in programming modes because it colorizes nested parentheses and brackets according to their nesting depth.  This makes it a lot easier to visually match parentheses in Emacs Lisp code without having to count them yourself.
+#+begin_src emacs-lisp
+  (use-package rainbow-delimiters
+    :straight t
+    :hook (prog-mode . rainbow-delimiters-mode))
+#+end_src
 
 *** Company Mode
-  [[http://company-mode.github.io/][Company Mode]] provides a nicer in-buffer completion interface than =completion-at-point= which is more reminiscent of what you would expect from an IDE.  We add a simple configuration to make the keybindings a little more useful (=TAB= now completes the selection and initiates completion at the current location if needed).
+[[http://company-mode.github.io/][Company Mode]] provides a nicer in-buffer completion interface than =completion-at-point= which is more reminiscent of what you would expect from an IDE.  We add a simple configuration to make the keybindings a little more useful (=TAB= now completes the selection and initiates completion at the current location if needed).
 
-  We also use [[https://github.com/sebastiencs/company-box][company-box]] to further enhance the look of the completions with icons and better overall presentation.
+We also use [[https://github.com/sebastiencs/company-box][company-box]] to further enhance the look of the completions with icons and better overall presentation.
+#+begin_src emacs-lisp
+  (use-package company
+    :after lsp-mode
+    :hook (lsp-mode . company-mode)
+    :bind (:map company-active-map
+                ("<tab>" . company-complete-selection))
+    (:map lsp-mode-map
+          ("<tab>" . company-indent-or-complete-common))
+    :custom
+    (company-minimum-prefix-length 1)
+    (company-idle-delay 0.0))
 
-  #+BEGIN_SRC emacs-lisp
-    (use-package company
-      :after lsp-mode
-      :hook (lsp-mode . company-mode)
-      :bind (:map company-active-map
-                  ("<tab>" . company-complete-selection))
-      (:map lsp-mode-map
-            ("<tab>" . company-indent-or-complete-common))
-      :custom
-      (company-minimum-prefix-length 1)
-      (company-idle-delay 0.0))
-
-    (use-package company-box
-      :hook (company-mode . company-box-mode))
-  #+END_SRC
+  (use-package company-box
+    :hook (company-mode . company-box-mode))
+#+end_src
 
 *** Debugging with dap-mode
-  [[https://emacs-lsp.github.io/dap-mode/][dap-mode]] is an excellent package for bringing rich debugging capabilities to Emacs via the [[https://microsoft.github.io/debug-adapter-protocol/][Debug Adapter Protocol]].  You should check out the [[https://emacs-lsp.github.io/dap-mode/page/configuration/][configuration docs]] to learn how to configure the debugger for your language.  Also make sure to check out the documentation for the debug adapter to see what configuration parameters are available to use for your debug templates!
+[[https://emacs-lsp.github.io/dap-mode/][dap-mode]] is an excellent package for bringing rich debugging capabilities to Emacs via the [[https://microsoft.github.io/debug-adapter-protocol/][Debug Adapter Protocol]].  You should check out the [[https://emacs-lsp.github.io/dap-mode/page/configuration/][configuration docs]] to learn how to configure the debugger for your language.  Also make sure to check out the documentation for the debug adapter to see what configuration parameters are available to use for your debug templates!
+#+begin_src emacs-lisp
+  (use-package dap-mode
+    :straight t
+    :defer t
+    :bind (:map dap-mode-map
+                ("C-x D D" . dap-debug)
+                ("C-x D d" . dap-debug-last))
+    ;; Uncomment the config below if you want all UI panes to be hidden by default!
+    ;; :custom
+    ;; (lsp-enable-dap-auto-configure nil)
+    ;; :config
+    ;; (dap-ui-mode 1)
+    :commands dap-debug
+    :config
+    (setq dap-auto-configure-features '(sessions locals controls tooltip))
 
-  #+BEGIN_SRC emacs-lisp
-    (use-package dap-mode
-      :straight t
-      :defer t
-      :bind (:map dap-mode-map
-                  ("C-x D D" . dap-debug)
-                  ("C-x D d" . dap-debug-last))
-      ;; Uncomment the config below if you want all UI panes to be hidden by default!
-      ;; :custom
-      ;; (lsp-enable-dap-auto-configure nil)
-      ;; :config
-      ;; (dap-ui-mode 1)
-      :commands dap-debug
-      :config
-      (setq dap-auto-configure-features '(sessions locals controls tooltip))
-
-      ;; Bind `C-c l d` to `dap-hydra` for easy access
-      (general-define-key
-       :keymaps 'lsp-mode-map
-       :prefix lsp-keymap-prefix
-       "d" '(dap-hydra t :wk "debugger")))
-  #+END_SRC
+    ;; Bind `C-c l d` to `dap-hydra` for easy access
+    (general-define-key
+     :keymaps 'lsp-mode-map
+     :prefix lsp-keymap-prefix
+     "d" '(dap-hydra t :wk "debugger")))
+#+end_src
 
 *** IDE Features with lsp-mode
 **** lsp-mode
@@ -1603,8 +1554,7 @@ We use the excellent [[https://emacs-lsp.github.io/lsp-mode/][lsp-mode]] to enab
 The =lsp-keymap-prefix= setting enables you to define a prefix for where =lsp-mode='s default keybindings will be added.  I *highly recommend* using the prefix to find out what you can do with =lsp-mode= in a buffer.
 
 The =which-key= integration adds helpful descriptions of the various keys so you should be able to learn a lot just by pressing =C-c l= in a =lsp-mode= buffer and trying different things that you find there.
-
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (defun my/lsp-mode-setup ()
     (setq lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols))
     (lsp-headerline-breadcrumb-mode))
@@ -1617,13 +1567,11 @@ The =which-key= integration adds helpful descriptions of the various keys so you
     (setq lsp-keymap-prefix "C-c l")  ;; Or 'C-l', 's-l'
     :config
     (lsp-enable-which-key-integration t))
-#+END_SRC
+#+end_src
 
 **** lsp-ui
-
 [[https://emacs-lsp.github.io/lsp-ui/][lsp-ui]] is a set of UI enhancements built on top of =lsp-mode= which make Emacs feel even more like an IDE.  Check out the screenshots on the =lsp-ui= homepage (linked at the beginning of this paragraph) to see examples of what it can do.
-
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (use-package lsp-ui
     :hook lsp-mode
     :config
@@ -1633,156 +1581,146 @@ The =which-key= integration adds helpful descriptions of the various keys so you
     :bind (("C-c A" . lsp-execute-code-action)
            ("C-c d" . lsp-ui-doc-show)
            ("C-c I" . lsp-ui-imenu)))
-#+END_SRC
+#+end_src
 
 **** lsp-treemacs
-
 [[https://github.com/emacs-lsp/lsp-treemacs][lsp-treemacs]] provides nice tree views for different aspects of your code like symbols in a file, references of a symbol, or diagnostic messages (errors and warnings) that are found in your code.
 
 Try these commands with =M-x=:
-
 - =lsp-treemacs-symbols= - Show a tree view of the symbols in the current file
 - =lsp-treemacs-references= - Show a tree view for the references of the symbol under the cursor
 - =lsp-treemacs-error-list= - Show a tree view for the diagnostic messages in the project
 
 This package is built on the [[https://github.com/Alexander-Miller/treemacs][treemacs]] package which might be of some interest to you if you like to have a file browser at the left side of your screen in your editor.
-
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (use-package lsp-treemacs
     :after lsp)
-#+END_SRC
+#+end_src
 
 **** lsp-ivy
-
 [[https://github.com/emacs-lsp/lsp-ivy][lsp-ivy]] integrates Ivy with =lsp-mode= to make it easy to search for things by name in your code.  When you run these commands, a prompt will appear in the minibuffer allowing you to type part of the name of a symbol in your code.  Results will be populated in the minibuffer so that you can find what you're looking for and jump to that location in the code upon selecting the result.
 
 Try these commands with =M-x=:
-
 - =lsp-ivy-workspace-symbol= - Search for a symbol name in the current project workspace
 - =lsp-ivy-global-workspace-symbol= - Search for a symbol name in all active project workspaces
-
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (use-package lsp-ivy
     :after lsp)
-#+END_SRC
+#+end_src
 
 **** lsp-pyright
 [[https://github.com/emacs-lsp/lsp-pyright][lsp-pyright]] intergrates =lsp-mode= with Microsoft's pyright language server protocol support for python.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (use-package lsp-pyright
     :straight t
     :hook (python-mode . (lambda ()
                            (require 'lsp-pyright)
                            (lsp))))
-#+END_SRC
+#+end_src
 
 *** Improved parenthesis
-  #+BEGIN_SRC emacs-lisp
-    (use-package smartparens
-      :straight t
-      :hook prog-mode)
-  #+END_SRC
+#+begin_src emacs-lisp
+  (use-package smartparens
+    :straight t
+    :hook prog-mode)
+#+end_src
+
 *** Lisp
 **** Lispy
-   #+BEGIN_SRC emacs-lisp
-     (use-package lispy
-       :straight t
-       :hook (emacs-lisp-mode lisp-mode scheme-mode))
-   #+END_SRC
+#+begin_src emacs-lisp
+  (use-package lispy
+    :straight t
+    :hook (emacs-lisp-mode lisp-mode scheme-mode))
+#+end_src
 
 **** Emacs Lisp
-   #+BEGIN_SRC emacs-lisp
-     ;;  (add-hook 'emacs-lisp-mode-hook #'flycheck-mode)
+#+begin_src emacs-lisp
+  ;;  (add-hook 'emacs-lisp-mode-hook #'flycheck-mode)
 
-     (use-package helpful
-       :commands (helpful-callable helpful-variable helpful-command helpful-key)
-       :bind
-       ([remap describe-function] . helpful-function)
-       ([remap describe-symbol] . helpful-symbol)
-       ([remap describe-variable] . helpful-variable)
-       ([remap describe-command] . helpful-command)
-       ([remap describe-key] . helpful-key)
-       :config
-       (setq counsel-describe-function-function #'helpful-callable
-             counsel-describe-variable-function #'helpful-variable))
-   #+END_SRC
+  (use-package helpful
+    :commands (helpful-callable helpful-variable helpful-command helpful-key)
+    :bind
+    ([remap describe-function] . helpful-function)
+    ([remap describe-symbol] . helpful-symbol)
+    ([remap describe-variable] . helpful-variable)
+    ([remap describe-command] . helpful-command)
+    ([remap describe-key] . helpful-key)
+    :config
+    (setq counsel-describe-function-function #'helpful-callable
+          counsel-describe-variable-function #'helpful-variable))
+#+end_src
 
 **** SLY
-   For Common Lisp development, I use sly to interact with the lisp instance.
-   #+BEGIN_SRC emacs-lisp
-     (defvar lisp-images-base-dir (concat default-directory ".local")
-       "This is the base directory in which to find various cl implementations.")
+For Common Lisp development, I use sly to interact with the lisp instance.
+#+begin_src emacs-lisp
+  (defvar lisp-images-base-dir (concat default-directory ".local")
+    "This is the base directory in which to find various cl implementations.")
 
-     (defvar sbcl-core-for-sly "/lib/sbcl/sbcl.core-for-sly"
-       "This is the relative path to the sly-specific core for sbcl.")
+  (defvar sbcl-core-for-sly "/lib/sbcl/sbcl.core-for-sly"
+    "This is the relative path to the sly-specific core for sbcl.")
 
-     (defvar sbcl-latest-sly-core-file
-       (concat lisp-images-base-dir "/sbcl/latest" sbcl-core-for-sly)
-       "This is where to find ")
+  (defvar sbcl-latest-sly-core-file
+    (concat lisp-images-base-dir "/sbcl/latest" sbcl-core-for-sly)
+    "This is where to find ")
 
-     (use-package sly
-       :straight t
-       :mode ("\\.lisp\\'" . lisp-mode)
-       :hook (lisp-mode . (lambda ()
-                            (unless (sly-connected-p)
-                              (save-excursion (sly)))))
-       :init
-       (setq sly-contribs              '(sly-fancy sly-retro sly-trace-dialog)
-             sly-lisp-implementations  '((sbcl-latest
-                                          ("sbcl" "--core"
-                                           sbcl-latest-sly-core-file))
-                                         (cmucl-latest ("lisp")))
-             sly-net-coding-system     'utf-8-unix)
-       :config
-       ;; setup sly-documentation-lookup
-       (eval-after-load 'sly
-         `(define-key sly-prefix-map (kbd "M-h") 'sly-documentation-lookup))
-       ;; setup sly-mrepl-clear-recent-output
-       (eval-after-load 'sly-mrepl
-         `(define-key sly-mrepl-mode-map (kbd "C-c C-k")
-                      `sly-mrepl-clear-recent-output))
-       :custom-face
-       (sly-mrepl-output-face ((t (:forground "sienna")))))
-   #+END_SRC
+  (use-package sly
+    :straight t
+    :mode ("\\.lisp\\'" . lisp-mode)
+    :hook (lisp-mode . (lambda ()
+                         (unless (sly-connected-p)
+                           (save-excursion (sly)))))
+    :init
+    (setq sly-contribs              '(sly-fancy sly-retro sly-trace-dialog)
+          sly-lisp-implementations  '((sbcl-latest
+                                       ("sbcl" "--core"
+                                        sbcl-latest-sly-core-file))
+                                      (cmucl-latest ("lisp")))
+          sly-net-coding-system     'utf-8-unix)
+    :config
+    ;; setup sly-documentation-lookup
+    (eval-after-load 'sly
+      `(define-key sly-prefix-map (kbd "M-h") 'sly-documentation-lookup))
+    ;; setup sly-mrepl-clear-recent-output
+    (eval-after-load 'sly-mrepl
+      `(define-key sly-mrepl-mode-map (kbd "C-c C-k")
+                   `sly-mrepl-clear-recent-output))
+    :custom-face
+    (sly-mrepl-output-face ((t (:forground "sienna")))))
+#+end_src
 
 *** Python
 We use =lsp-mode= and =dap-mode= to provide a more complete development environment for Python in Emacs.  Check out [[https://emacs-lsp.github.io/lsp-mode/page/lsp-pyls/][the =pyls= configuration]] in the =lsp-mode= documentation for more details.
 
-  Make sure you have the =pyls= language server installed before trying =lsp-mode=!
-
-  #+BEGIN_SRC sh :tangle no
-    pip install --user "python-language-server[all]"
-  #+END_SRC
+Make sure you have the =pyls= language server installed before trying =lsp-mode=!
+#+begin_src sh :tangle no
+  pip install --user "python-language-server[all]"
+#+end_src
 
   There are a number of other language servers for Python so if you find that =pyls= doesn't work for you, consult the =lsp-mode= [[https://emacs-lsp.github.io/lsp-mode/page/languages/][language configuration documentation]] to try the others!
+#+begin_src emacs-lisp
+  (use-package python-mode
+    :straight t
+    :hook (python-mode . lsp-deferred)
+    :custom
+    ;; NOTE: Set these if Python 3 is called "python3" on your system!
+    ;; (python-shell-interpreter "python3")
+    ;; (dap-python-executable "python3")
+    (dap-python-debugger 'debugpy)
+    :config
+    (require 'dap-python))
+#+end_src
 
-  #+BEGIN_SRC emacs-lisp
-    (use-package python-mode
-      :straight t
-      :hook (python-mode . lsp-deferred)
-      :custom
-      ;; NOTE: Set these if Python 3 is called "python3" on your system!
-      ;; (python-shell-interpreter "python3")
-      ;; (dap-python-executable "python3")
-      (dap-python-debugger 'debugpy)
-      :config
-      (require 'dap-python))
-  #+END_SRC
-
-  You can use the pyvenv package to use =virtualenv= environments in Emacs.  The =pyvenv-activate= command should configure Emacs to cause =lsp-mode= and =dap-mode= to use the virtual environment when they are loaded, just select the path to your virtual environment before loading your project.
-
-  #+BEGIN_SRC emacs-lisp
-    (use-package pyvenv
-      :after python-mode
-      :config
-      (pyvenv-mode 1))
-  #+END_SRC
-
-
+You can use the pyvenv package to use =virtualenv= environments in Emacs.  The =pyvenv-activate= command should configure Emacs to cause =lsp-mode= and =dap-mode= to use the virtual environment when they are loaded, just select the path to your virtual environment before loading your project.
+#+begin_src emacs-lisp
+  (use-package pyvenv
+    :after python-mode
+    :config
+    (pyvenv-mode 1))
+#+end_src
 
 ** Programming Practice
 *** Leetcode
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (use-package leetcode
     :straight t
     :commands leetcode-show
@@ -1790,12 +1728,11 @@ We use =lsp-mode= and =dap-mode= to provide a more complete development environm
     (setq leetcode-prefer-language  "python3"
           leetcode-save-solutions t
           leetcode-directory "~/Dropbox/leetcode"))
-#+END_SRC
+#+end_src
 
 
 * Terminals
 ** term-mode
-
 =term-mode= is a built-in terminal emulator in Emacs.  Because it is written in Emacs Lisp, you can start using it immediately with very little configuration.  If you are on Linux or macOS, =term-mode= is a great choice to get started because it supports fairly complex terminal applications (=htop=, =vim=, etc) and works pretty reliably.  However, because it is written in Emacs Lisp, it can be slower than other options like =vterm=.  The speed will only be an issue if you regularly run console apps with a lot of output.
 
 One important thing to understand is =line-mode= versus =char-mode=.  =line-mode= enables you to use normal Emacs keybindings while moving around in the terminal buffer while =char-mode= sends most of your keypresses to the underlying terminal.  While using =term-mode=, you will want to be in =char-mode= for any terminal applications that have their own keybindings.  If you're just in your usual shell, =line-mode= is sufficient and feels more integrated with Emacs.
@@ -1808,34 +1745,28 @@ Run a terminal with =M-x term!=
 - =C-c C-k= - Enter char-mode
 - =C-c C-j= - Return to line-mode
 ```
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (use-package term
     :commands term
     :config
     (setq explicit-shell-file-name "zsh") ;; Change this to zsh, etc
     ;;(setq explicit-zsh-args '())         ;; Use 'explicit-<shell>-args for shell-specific args
-
     ;; Match the default Bash shell prompt.  Update this if you have a custom prompt
     (setq term-prompt-regexp "^[^#$%>\n]*[#$%>] *"))
-#+END_SRC
+#+end_src
 
 *** Better term-mode colors
-
 The =eterm-256color= package enhances the output of =term-mode= to enable handling of a wider range of color codes so that many popular terminal applications look as you would expect them to.  Keep in mind that this package requires =ncurses= to be installed on your machine so that it has access to the =tic= program.  Most Linux distributions come with this program installed already so you may not have to do anything extra to use it.
-
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (use-package eterm-256color
     :hook term-mode)
-#+END_SRC
-
+#+end_src
 
 ** vterm
-
 [[https://github.com/akermu/emacs-libvterm/][vterm]] is an improved terminal emulator package which uses a compiled native module to interact with the underlying terminal applications.  This enables it to be much faster than =term-mode= and to also provide a more complete terminal emulation experience.
 
 Make sure that you have the [[https://github.com/akermu/emacs-libvterm/#requirements][necessary dependencies]] installed before trying to use =vterm= because there is a module that will need to be compiled before you can use it successfully.
-
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (use-package vterm
     :straight t
     :bind (("C-x t" . vterm)
@@ -1847,23 +1778,19 @@ Make sure that you have the [[https://github.com/akermu/emacs-libvterm/#requirem
     (setq term-prompt-regexp "^[^#$%>\n]*[#$%>] *")  ;; Set this to match your custom shell prompt
     (setq vterm-shell "zsh")                       ;; Set this to customize the shell to launch
     (setq vterm-max-scrollback 10000))
-#+END_SRC
-
+#+end_src
 
 ** multi-vterm
 [[https://github.com/suonlight/multi-vterm][multi-vterm mode]] allows running multiple =vterm= buffers simultaneously.
-
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (use-package multi-vterm
     :straight t
     :config
     (setq multi-vterm-dedicated-window-height-percent 10)
     :after vterm)
-#+END_SRC
-
+#+end_src
 
 ** shell-mode
-
 [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Interactive-Shell.html#Interactive-Shell][shell-mode]] is a middle ground between =term-mode= and Eshell.  It is *not* a terminal emulator so more complex terminal programs will not run inside of it.  It does have much better integration with Emacs because all command input in this mode is handled by Emacs and then sent to the underlying shell once you press Enter.
 
 *Useful key bindings:*
@@ -1875,16 +1802,13 @@ Make sure that you have the [[https://github.com/akermu/emacs-libvterm/#requirem
 ```
 
 One advantage of =shell-mode= on Windows is that it's the only way to run =cmd.exe=, PowerShell, Git Bash, etc from within Emacs.  Here's an example of how you would set up =shell-mode= to run PowerShell on Windows:
-
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (when (eq system-type 'windows-nt)
     (setq explicit-shell-file-name "powershell.exe")
     (setq explicit-powershell.exe-args '()))
-#+END_SRC
-
+#+end_src
 
 ** Eshell
-
 [[https://www.gnu.org/software/emacs/manual/html_mono/eshell.html#Contributors-to-Eshell][Eshell]] is Emacs' own shell implementation written in Emacs Lisp.  It provides you with a cross-platform implementation (even on Windows!) of the common GNU utilities you would find on Linux and macOS (=ls=, =rm=, =mv=, =grep=, etc).  It also allows you to call Emacs Lisp functions directly from the shell and you can even set up aliases (like aliasing =vim= to =find-file=).  Eshell is also an Emacs Lisp REPL which allows you to evaluate full expressions at the shell.
 
 The downsides to Eshell are that it can be harder to configure than other packages due to the particularity of where you need to set some options for them to go into effect, the lack of shell completions (by default) for some useful things like Git commands, and that REPL programs sometimes don't work as well.  However, many of these limitations can be dealt with by good configuration and installing external packages, so don't let that discourage you from trying it!
@@ -1902,8 +1826,7 @@ We will be covering Eshell more in future videos highlighting other things you c
 For more thoughts on Eshell, check out these articles by Pierre Neidhardt:
 - https://ambrevar.xyz/emacs-eshell/index.html
 - https://ambrevar.xyz/emacs-eshell-versus-shell/index.html
-
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (defun my/configure-eshell ()
     ;; Save command history when commands are entered
     (add-hook 'eshell-pre-command-hook 'eshell-save-some-history)
@@ -1933,12 +1856,11 @@ For more thoughts on Eshell, check out these articles by Pierre Neidhardt:
       (setq eshell-visual-commands '("htop" "zsh" "vim")))
 
     (eshell-git-prompt-use-theme 'powerline))
-#+END_SRC
+#+end_src
 
 
 * Compilation
-
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (use-package compile
     :straight t
     :defer t
@@ -1962,12 +1884,12 @@ For more thoughts on Eshell, check out these articles by Pierre Neidhardt:
       (let ((inhibit-read-only t))
         (ansi-color-apply-on-region (point-min) (point-max))))
     (add-hook 'compilation-filter-hook 'colorize-compilation-buffer))
-#+END_SRC
+#+end_src
 
 
 * Productivity
 ** Improve PDF handling
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (use-package pdf-tools
     :straight t
     :defer t
@@ -1981,19 +1903,17 @@ For more thoughts on Eshell, check out these articles by Pierre Neidhardt:
     (add-to-list 'org-file-apps
                  '("\\.pdf\\'" . (lambda (file link)
                                    (org-pdftools-open link)))))
-#+END_SRC
-
+#+end_src
 
 ** Syntax checking with Flycheck
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   ;; (use-package flycheck
   ;;   :defer t
   ;;   :hook lsp-mode)
-#+END_SRC
-
+#+end_src
 
 ** Snippets
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (use-package yasnippet
     :straight t
     :hook (prog-mode . yas-minor-mode)
@@ -2004,40 +1924,35 @@ For more thoughts on Eshell, check out these articles by Pierre Neidhardt:
   (use-package yasnippet-snippets
     :straight t
     :after yasnippet)
-#+END_SRC
-
+#+end_src
 
 ** ChatGPT
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   ;; replace with c3po.el
-#+END_SRC
+#+end_src
 
 
 * Applications
 ** Some App
-
 This is an example of configuring another non-Emacs application using org-mode.  Not only do we write out the configuration at =.config/some-app/config=, we also compute the value that gets stored in this configuration from the Emacs Lisp block above it.
-
-#+NAME: the-value
-#+BEGIN_SRC emacs-lisp :tangle no
+#+name: the-value
+#+begin_src emacs-lisp :tangle no
 
   (+ 55 100)
 
-#+END_SRC
+#+end_src
 
 *NOTE*: Set the =:tangle= parameter below to =.config/some-app/config= for this to work!
-
-#+BEGIN_SRC conf :tangle no :noweb yes
+#+begin_src conf :tangle no :noweb yes
 
   value=<<the-value()>>
 
-#+END_SRC
+#+end_src
 
 
 * Runtime Performance
 Dial the GC threshold back down so that garbage collection happens more frequently but in less time.
-
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   ;; Make gc pauses faster by decreasing the threshold.
   (setq gc-cons-threshold (* 2 1000 1000))
-#+END_SRC
+#+end_src
