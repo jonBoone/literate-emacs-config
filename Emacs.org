@@ -416,7 +416,7 @@ This section configures UI settings that remove unneeded elements to make Emacs 
 #+BEGIN_SRC emacs-lisp
   (use-package doom-themes
     :init
-    (load-theme 'doom-palenight t)
+    (load-theme 'doom-nord-light  t)
     (doom-themes-visual-bell-config))
 #+END_SRC
 
@@ -811,7 +811,7 @@ Emacs' default buffer placement algorithm is pretty disruptive if you like setti
       (setq dired-use-ls-dired                    t
             insert-directory-program              "gls"))
 
-    (setq dired-listing-switches                  "-aghoA --group-directories-first"
+    (setq dired-listing-switches                  "-alghoA --group-directories-first"
           dired-dwim-target                       t
           dired-deletion-confirmer                'y-or-n-p
           dired-hide-details-hide-symlink-targets nil))
@@ -823,7 +823,7 @@ Emacs' default buffer placement algorithm is pretty disruptive if you like setti
     (dired-rainbow-define html "#eb5286" ("css" "less" "sass" "scss" "htm" "html" "jhtm" "mht" "eml" "mustache" "xhtml"))
     (dired-rainbow-define xml "#f2d024" ("xml" "xsd" "xsl" "xslt" "wsdl" "bib" "json" "msg" "pgn" "rss" "yaml" "yml" "rdata"))
     (dired-rainbow-define document "#9561e2" ("docm" "doc" "docx" "odb" "odt" "pdb" "pdf" "ps" "rtf" "djvu" "epub" "odp" "ppt" "pptx"))
-    (dired-rainbow-define markdown "#ffed4a" ("org" "etx" "info" "markdown" "md" "mkd" "nfo" "pod" "rst" "tex" "textfile" "txt"))
+    (dired-rainbow-define markdown "#8530e6" ("org" "etx" "info" "markdown" "md" "mkd" "nfo" "pod" "rst" "tex" "textfile" "txt"))
     (dired-rainbow-define database "#6574cd" ("xlsx" "xls" "csv" "accdb" "db" "mdb" "sqlite" "nc"))
     (dired-rainbow-define media "#de751f" ("mp3" "mp4" "mkv" "MP3" "MP4" "avi" "mpeg" "mpg" "flv" "ogg" "mov" "mid" "midi" "wav" "aiff" "flac"))
     (dired-rainbow-define image "#f66d9b" ("tiff" "tif" "cdr" "gif" "ico" "jpeg" "jpg" "png" "psd" "eps" "svg"))
@@ -1120,7 +1120,8 @@ Configure the daily journal features
 #+begin_src emacs-lisp
   (use-package org-journal
     :straight t
-    :bind :map org-journal-mode . (("C-tab" . 'yas-expand)))
+    :bind (:map org-journal-mode-map
+                ("C-<tab>" . yas-expand)))
 #+end_src
 
 *** org-make-toc - Update Table of Contents on Save
