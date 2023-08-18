@@ -1356,37 +1356,37 @@ This section comes from Sacha Chua's blog post [[https://sachachua.com/blog/2008
 
 This section tracks the number of words in a buffer.
 #+begin_src emacs-lisp
-  ;; (defvar count-words-buffer
-  ;;   nil
-  ;;   "*Number of words in the buffer.")
+     (defvar count-words-buffer
+       nil
+       "*Number of words in the buffer.")
 
-  ;; (defun my/update-wc ()
-  ;;   (interactive)
-  ;;   (setq count-words-buffer (number-to-string (my/count-words-buffer)))
-  ;;   (force-mode-line-update))
+    (defun my/update-wc ()
+      (interactive)
+      (setq count-words-buffer (number-to-string (my/count-words-buffer)))
+      (force-mode-line-update))
 
-  ;; ; ensure counter is initialized only once
-  ;; (unless count-words-buffer
-  ;;   ;; seed count-words-paragraph
-  ;;   ;; create timer to keep count-words-paragraph updated
-  ;;   (run-with-idle-timer 1 t 'my/update-wc))
+    ;;;; ensure counter is initialized only once
+    (unless count-words-buffer
+      ;; seed count-words-paragraph
+      ;; create timer to keep count-words-paragraph updated
+      (run-with-idle-timer 1 t 'my/update-wc))
 
-  ;; ;; add count words paragraph to the mode line
-  ;; (unless (memq 'count-words-buffer global-mode-string)
-  ;;   (add-to-list 'global-mode-string "words: " t)
-  ;;   (add-to-list 'global-mode-string 'my/count-words-buffer t))
+    ;;; add count words paragraph to the mode line
+    (unless (memq 'count-words-buffer global-mode-string)
+      (add-to-list 'global-mode-string "words: " t)
+      (add-to-list 'global-mode-string 'my/count-words-buffer t))
 
-  ;; ;; count number of words in currrent paragraph
-  ;; (defun my/count-words-buffer ()
-  ;;   "Count the number of words in the current paragraph."
-  ;;   (interactive)
-  ;;   (save-excursion
-  ;;     (goto-char (point-min))
-  ;;     (let ((count 0))
-  ;;       (while (not (eobp))
-  ;;         (forward-word 1)
-  ;;         (setq count (1+ count)))
-  ;;       count)))
+  ;; count number of words in currrent paragraph
+  (defun my/count-words-buffer ()
+    "Count the number of words in the current paragraph."
+    (interactive)
+    (save-excursion
+      (goto-char (point-min))
+      (let ((count 0))
+        (while (not (eobp))
+          (forward-word 1)
+          (setq count (1+ count)))
+        count)))
 #+end_src
 
 This section extends the standard checklist feature in Org, which can track percentage completion of checklist items, to work with headlines as well.
