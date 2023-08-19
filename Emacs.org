@@ -848,15 +848,17 @@ The =my/org-font-setup= function configures various text faces to tweak the size
                                (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
 
     ;; Set faces for heading levels
-    (dolist (face '((org-level-1 . 1.25)
-                    (org-level-2 . 1.20)
-                    (org-level-3 . 1.15)
-                    (org-level-4 . 1.10)
-                    (org-level-5 . 1.05)
-                    (org-level-6 . 1.00)
-                    (org-level-7 . 0.95)
-                    (org-level-8 . 0.90)))
-      (set-face-attribute (car face) nil :font "Cantarell" :weight 'regular :height (cdr face)))
+    (dolist (face '((org-level-1 1.35 "#000706")
+                    (org-level-2 1.30 "#5a85a9")
+                    (org-level-3 1.25 "#455765")
+                    (org-level-4 1.20 "#bfbbcb")
+                    (org-level-5 1.15 "#b4bbcb")
+                    (org-level-6 1.10 "#b1cfeb")
+                    (org-level-7 1.05 "#9db6d3")
+                    (org-level-8 1.00 "#90a295")))
+      (set-face-attribute (car face) nil :font "Cantarell"
+                          :weight 'regular :height (cadr face)
+                          :foreground (caddr face)))
 
     ;; Ensure that anything that should be fixed-pitch in Org files appears that way
     (set-face-attribute 'org-block nil    :foreground 'unspecified :inherit 'fixed-pitch)
