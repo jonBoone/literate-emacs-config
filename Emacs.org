@@ -5,13 +5,15 @@
 #+options:  h:5 author:t timestamp:t tex:verbatim
 #+property: header-args :results silent :exports code :tangle Emacs.el
 
+#+toc: headlines 4
+
 * Introduction
 #+property: toc
 This is my literate emacs configuration, which leverages =org-mode= as a markup language.  This allows for prose describing the intention of the various sections of the configuration and code-blocks containing the actual configuration to co-exist in the same plain-text file.  One feature of my configuration is that I have the configuration sections tangled out of the .org file into the appropriate =Emacs Lisp= files every time I save the literate configuration file.
 
 
 * Files related to this configuration:
-#+property: IOtoc
+#+property: toc
 My Emacs configuration leverages a directory (=${HOME}/.emacs.d=) that contains both an =early-init.el= and an =init.el= file.  The majority of the configuration is contained in the =Emacs.org= file in the same directory.
 
 # TODO: configure #+begin_src emacs-lisp / #+end_src blocks to include the contents of these two files in this document
