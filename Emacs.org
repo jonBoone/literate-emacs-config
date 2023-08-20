@@ -1016,8 +1016,8 @@ The configuration of Org-Mode is augmented with some additional modules (see `(s
                                                ("note" . ?n)
                                                ("idea" . ?i))
           org-todo-keywords                  '((sequence
-                                                "FUTURE(f)" "TODO(t)" "ACTIVE(a)"
-                                                "|" "DONE(d!)" "CANCELLED(k@)"
+                                                "FUTURE(f)" "ACTIVE(a)"
+                                                "|" "COMPLETED(c!)" "CANCELLED(k@)"
                                                 "DEFERRED(f)")
                                                (sequence "MEET(m)" "|" "MET(M)"))
           org-agenda-custom-commands    '(("d" "Dashboard"
