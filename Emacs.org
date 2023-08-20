@@ -301,8 +301,8 @@ This section configures UI settings that remove unneeded elements to make Emacs 
     (setq my/default-font-size 280
           my/default-variable-font-size 280))
   (with-system gnu/linux
-    (setq my/default-font-size 130
-          my/default-variable-font-size 130))
+    (setq my/default-font-size 240
+          my/default-variable-font-size 240))
 
   ;; Make frame transparency overridable
   (defvar my/frame-transparency '(90 . 90))
