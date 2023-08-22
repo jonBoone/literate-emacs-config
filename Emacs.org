@@ -19,6 +19,7 @@ My Emacs configuration leverages a directory (=${HOME}/.emacs.d=) that contains 
 # TODO: configure #+begin_src emacs-lisp / #+end_src blocks to include the contents of these two files in this document
 
 ** =early-init.el=
+#+property: toc
 This file sets the following types of configuration parameters prior to the initialization of the package system and the GUI components.
 
 1. set the garbage collection threshold to 200 MBs while loading (and processing) the subsequent configuration files.
@@ -32,6 +33,7 @@ Here's the contents of =early-init.el=:
 #+include: early-init.el src emacs-lisp
 
 ** =init.el=
+#+property: toc
 This file provides the necessary configuration components to process the main configuration file =Emacs.org= (this file).  It has the following types of configuration settings:
 
 1. loading required =Emacs Lisp= ilbrarys (such as =cl-lib= for the Common Lisp subset implemented for =Emacs Lisp=).
@@ -994,9 +996,9 @@ The configuration of Org-Mode is augmented with some additional modules (see `(s
                                                org-toc)
           org-outline-path-complete-in-steps nil
           org-pretty-entities                t
-          org-refile-targets                 '(("future.org"  :maxlevel . 1)
-                                               ("gtd.org"     :maxlevel . 1)
-                                               ("in-progress" :maxlevel . 1))
+          org-refile-targets                 '(("future.org"  :maxlevel . 3)
+                                               ("gtd.org"     :maxlevel . 3)
+                                               ("in-progress" :maxlevel . 3))
           org-refile-use-outline-path        t
           org-return-follows-link            t
           org-src-fontify-natively           t
