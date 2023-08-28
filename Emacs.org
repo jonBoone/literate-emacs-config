@@ -843,48 +843,52 @@ This section contains the basic configuration for =org-mode= plus the configurat
 *** Support for Better Font Faces
 The =my/org-font-setup= function configures various text faces to tweak the sizes of headings and use variable width fonts in most cases so that it looks more like we're editing a document in =org-mode=.  We switch back to fixed width (monospace) fonts for code blocks and tables so that they display correctly.  *Note:* This must appear prior to the `(use-package org-mode...)` invocation so that we can call `my/org-font-setup` during the call to `use-package`.
 #+begin_src emacs-lisp
-  (defun my/org-font-setup ()
-    ;; Replace list hyphen with dot
-    (font-lock-add-keywords 'org-mode
-                            '(("^ *\\([-]\\) "
-                               (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
+   (defun my/org-font-setup ()
+     ;; Replace list hyphen with dot
+     (font-lock-add-keywords 'org-mode
+                             '(("^ *\\([-]\\) "
+                                (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
 
-    ;; Set faces for heading levels
-    (dolist (face '((org-level-1 1.35 "#000706")
-                    (org-level-2 1.30 "#5a85a9")
-                    (org-level-3 1.25 "#455765")
-                    (org-level-4 1.20 "#bfbbcb")
-                    (org-level-5 1.15 "#b4bbcb")
-                    (org-level-6 1.10 "#b1cfeb")
-                    (org-level-7 1.05 "#9db6d3")
-                    (org-level-8 1.00 "#90a295")))
-      (set-face-attribute (car face) nil :font "Cantarell"
-                          :weight 'regular :height (cadr face)
-                          :foreground (caddr face)))
+     ;; Set faces for heading levels
+     (dolist (face '((org-level-1 1.35 "#000706")
+                     (org-level-2 1.30 "#5a85a9")
+                     (org-level-3 1.25 "#455765")
+                     (org-level-4 1.20 "#bfbbcb")
+                     (org-level-5 1.15 "#b4bbcb")
+                     (org-level-6 1.10 "#b1cfeb")
+                     (org-level-7 1.05 "#9db6d3")
+                     (org-level-8 1.00 "#90a295")))
+       (set-face-attribute (car face) nil :font "Cantarell"
+                           :weight 'regular :height (cadr face)
+                           :foreground (caddr face)))
 
-    ;; Ensure that anything that should be fixed-pitch in Org files appears that way
-    (set-face-attribute 'org-block nil    :foreground 'unspecified :inherit 'fixed-pitch)
-    (set-face-attribute 'org-table nil    :inherit 'fixed-pitch)
-    (set-face-attribute 'org-formula nil  :inherit 'fixed-pitch)
-    (set-face-attribute 'org-code nil     :inherit '(shadow fixed-pitch))
-    (set-face-attribute 'org-table nil    :inherit '(shadow fixed-pitch))
-    (set-face-attribute 'org-verbatim nil :inherit '(shadow fixed-pitch))
-    (set-face-attribute 'org-special-keyword nil :inherit '(font-lock-comment-face fixed-pitch))
-    (set-face-attribute 'org-meta-line nil :inherit '(font-lock-comment-face fixed-pitch))
-    (set-face-attribute 'org-checkbox nil  :inherit 'fixed-pitch)
-    (set-face-attribute 'line-number nil :inherit 'fixed-pitch)
-    (set-face-attribute 'line-number-current-line nil :inherit 'fixed-pitch)
-    (setq org-agenda-deadline-faces
-          '((1.0001 . org-warning)              ; late -- due yesterday or before
-            (0.0    . org-upcoming-deadline)))  ; due today or in the future
-    )
+     ;; Ensure that anything that should be fixed-pitch in Org files appears that way
+     (set-face-attribute 'org-block nil    :foreground 'unspecified :inherit 'fixed-pitch)
+     (set-face-attribute 'org-table nil    :inherit 'fixed-pitch)
+     (set-face-attribute 'org-formula nil  :inherit 'fixed-pitch)
+     (set-face-attribute 'org-code nil     :inherit '(shadow fixed-pitch))
+     (set-face-attribute 'org-table nil    :inherit '(shadow fixed-pitch))
+     (set-face-attribute 'org-verbatim nil :inherit '(shadow fixed-pitch))
+     (set-face-attribute 'org-special-keyword nil :background 'unspecified :inherit
+                         '(font-lock-comment-face fixed-pitch))
+     (set-face-attribute 'org-meta-line nil :inherit '(font-lock-comment-face fixed-pitch))
+     (set-face-attribute 'org-checkbox nil  :inherit 'fixed-pitch)
+     (set-face-attribute 'line-number nil :inherit 'fixed-pitch)
+     (set-face-attribute 'line-number-current-line nil :inherit 'fixed-pitch)
+     (setq org-agenda-deadline-faces
+           '((1.0001 . org-warning)              ; late -- due yesterday or before
+             (0.0    . org-upcoming-deadline)))  ; due today or in the future
+     )
 #+end_src
 
 *** Org-Mode Agenda Style Configuration
 I want to customize my =org-mode= agenda style.
 #+begin_src emacs-lisp
   (defun my/style-org-agenda ()
+<<<<<<< HEAD
     ;;(my/buffer-face-mode-variable)
+=======
+>>>>>>> 67af178 (delete/comment-out troubleshome elisp expressions)
     (set-face-attribute 'org-agenda-date nil :height 1.1)
     (set-face-attribute 'org-agenda-date-today nil :height 1.1 :slant 'italic)
     (set-face-attribute 'org-agenda-date-weekend nil :height 1.1))
@@ -1365,66 +1369,66 @@ This section tracks the number of words in a buffer.
 
 This section extends the standard checklist feature in Org, which can track percentage completion of checklist items, to work with headlines as well.
 #+begin_src emacs-lisp
-  (defun my/org-update-checkbox-count (&optional all)
-    "Update the checkbox statistics in the current section.
-  This will find and update all statistic cookies like [57%] and [6/12] with
-  the current values. If the optional prefix argument all is provided, the
-  entire buffer is examined and the statistics are updated."
-    (interactive "P")
-    (save-excursion
-      (let* ((buffer-invisibility-spec (org-inhibit-invisibility))
-             (beg (condition-case nil
-                      (progn (outline-back-to-heading) (point))
-                    (error (point-min))))
-             (end (move-marker
-                   (make-marker)
-                   (progn (or (outline-get-next-sibling) ;; (1)
-                              (goto-char (point-max)))
-                          (point))))
-             (re "\\(\\[[0-9]*%\\]\\)\\|\\(\\[[0-9]*\\]\\)")
-             (re-box "^[ \t]*\\(*+\\|[-+*]\\|[0-9]+[.)]\\) +\\(\\[[- X]\\]\\)")
-             b1 e1 f1 c-on c-off lim (cstat 0))
-        (when all
-          (goto-char (point-min))
-          (or (outline-get-next-sibling) (goto-char (point-max))) ;; (2)
-          (setq beg (point) end (point-max)))
-        (goto-char beg)
-        (while (re-search-forward re end t)
-          (setq cstat (1+ cstat)
-                b1 (match-begining 0)
-                e1 (match-end 0)
-                f1 (match-beginning 1)
-                lim (cond
-                     ((org-on-heading-p)
-                      (or (outline-get-next-sibling) ;; (3)
-                          (goto-char (point-max)))
-                      (point))
-                     ((org-at-item-p) (org-end-of-item) (point))
-                     (t nil))
-                c-on 0
-                c-off 0)
-          (goto-char e1)
-          (when lim
-            (while (re-search-forward re-box lim t)
-              (if (number (match-string 2) '("[ ]" "[-]"))
-                  (setq c-off (1+ c-off))
-                (setq c-on (1+ c-on))))
-            (goto-char b1)
-            (insert (if f1
-                        (format "[%d%%]" (/ (* 100 c-on)
-                                            (max 1 (+ c-on c-off))))
-                      (format "[%d/%d]" c-on (+ c-on c-off))))
-            (and (looking-at "\\[.*?\\]")
-                 (replace-match ""))))
-        (when (interactive-p)
-          (message "Checkbox statistics updated %s (%d places)"
-                   (if all "in entire file" "in current outline entry")
-                   cstat)))))
+  ;; (defun my/org-update-checkbox-count (&optional all)
+  ;;   "Update the checkbox statistics in the current section.
+  ;; This will find and update all statistic cookies like [57%] and [6/12] with
+  ;; the current values. If the optional prefix argument all is provided, the
+  ;; entire buffer is examined and the statistics are updated."
+  ;;   (interactive "P")
+  ;;   (save-excursion
+  ;;     (let* ((buffer-invisibility-spec (org-inhibit-invisibility))
+  ;;            (beg (condition-case nil
+  ;;                     (progn (outline-back-to-heading) (point))
+  ;;                   (error (point-min))))
+  ;;            (end (move-marker
+  ;;                  (make-marker)
+  ;;                  (progn (or (outline-get-next-sibling) ;; (1)
+  ;;                             (goto-char (point-max)))
+  ;;                         (point))))
+  ;;            (re "\\(\\[[0-9]*%\\]\\)\\|\\(\\[[0-9]*\\]\\)")
+  ;;            (re-box "^[ \t]*\\(*+\\|[-+*]\\|[0-9]+[.)]\\) +\\(\\[[- X]\\]\\)")
+  ;;            b1 e1 f1 c-on c-off lim (cstat 0))
+  ;;       (when all
+  ;;         (goto-char (point-min))
+  ;;         (or (outline-get-next-sibling) (goto-char (point-max))) ;; (2)
+  ;;         (setq beg (point) end (point-max)))
+  ;;       (goto-char beg)
+  ;;       (while (re-search-forward re end t)
+  ;;         (setq cstat (1+ cstat)
+  ;;               b1 (match-begining 0)
+  ;;               e1 (match-end 0)
+  ;;               f1 (match-beginning 1)
+  ;;               lim (cond
+  ;;                    ((org-on-heading-p)
+  ;;                     (or (outline-get-next-sibling) ;; (3)
+  ;;                         (goto-char (point-max)))
+  ;;                     (point))
+  ;;                    ((org-at-item-p) (org-end-of-item) (point))
+  ;;                    (t nil))
+  ;;               c-on 0
+  ;;               c-off 0)
+  ;;         (goto-char e1)
+  ;;         (when lim
+  ;;           (while (re-search-forward re-box lim t)
+  ;;             (if (number (match-string 2) '("[ ]" "[-]"))
+  ;;                 (setq c-off (1+ c-off))
+  ;;               (setq c-on (1+ c-on))))
+  ;;           (goto-char b1)
+  ;;           (insert (if f1
+  ;;                       (format "[%d%%]" (/ (* 100 c-on)
+  ;;                                           (max 1 (+ c-on c-off))))
+  ;;                     (format "[%d/%d]" c-on (+ c-on c-off))))
+  ;;           (and (looking-at "\\[.*?\\]")
+  ;;                (replace-match ""))))
+  ;;       (when (interactive-p)
+  ;;         (message "Checkbox statistics updated %s (%d places)"
+  ;;                  (if all "in entire file" "in current outline entry")
+  ;;                  cstat)))))
 
-  (defadvice org-update-checkbox-count (around my activate)
-    "Fix the built-in checkbox count to understand headlines."
-    (setq ad-return-value
-          (my/org-update-checkbox-count (ad-get-arg 1))))
+  ;; (defadvice org-update-checkbox-count (around my activate)
+  ;;   "Fix the built-in checkbox count to understand headlines."
+  ;;   (setq ad-return-value
+  ;;         (my/org-update-checkbox-count (ad-get-arg 1))))
 #+end_src
 
 
