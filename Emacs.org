@@ -278,12 +278,13 @@ We use the [[https://github.com/emacscollective/no-littering/blob/master/no-litt
                                           ;(setq user-emacs-directory "~/.cache/emacs")
   ;; NOTE: this is handled via the profiles.el file that is used by chemacs2
 
-  (use-package no-littering)
-  ;;:config
+  (use-package no-littering
+    :straight t
+    :config
     ;; no-littering doesn't set this by default so we must place
     ;; auto save files in the same path as it uses for sessions
-  (setq auto-save-file-name-transforms
-        `((".*" ,(no-littering-expand-var-file-name "auto-save/") t)))
+    (setq auto-save-file-name-transforms
+          `((".*" ,(no-littering-expand-var-file-name "auto-save/") t))))
 #+end_src
 
 
@@ -298,8 +299,8 @@ This section configures UI settings that remove unneeded elements to make Emacs 
   (defvar my/default-variable-font-size nil)
 
   (with-system darwin
-    (setq my/default-font-size 280
-          my/default-variable-font-size 280))
+    (setq my/default-font-size 240
+          my/default-variable-font-size 240))
   (with-system gnu/linux
     (setq my/default-font-size 240
           my/default-variable-font-size 240))
@@ -474,7 +475,7 @@ Prettify the mode line with `smart-mode-line`.  Really need to re-evaluate the o
     :straight t
     :hook (after-init . doom-modeline-mode)
     :custom-face
-    (mode-line ((t (:height 0.85))))
+    (mode-line ((t (:height 0.90))))
     (mode-line-inactive ((t (:height 0.85))))
     :init (doom-modeline-mode 1)
     :config
@@ -1953,7 +1954,7 @@ This is an example of configuring another non-Emacs application using org-mode. 
   (+ 55 100)
 #+end_src
 
-*NOTE*: Set the =:tangle= parameter below to =.config/some-app/config= for this to work!
+*NOTE*:  Set the =:tangle= parameter below to =.config/some-app/config= for this to work!
 #+begin_src conf :tangle no :noweb yes
   value=<<the-value()>>
 #+end_src
