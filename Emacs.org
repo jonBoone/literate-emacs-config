@@ -1,4 +1,4 @@
-#+startup:  content indent hidestars
+#+startup:  showeverything indent hidestars
 #+title:    My Literate Emacs Configuration
 #+options:  h:5 author:t timestamp:t tex:verbatim
 #+property: header-args :results silent :exports code :tangle Emacs.el
