@@ -159,11 +159,15 @@
                               (org-roam-with-file . 2))
      (elisp-lint-ignored-validators "byte-compile" "package-lint")))
  '(org-agenda-files
-   '("/Users/iain/Dropbox/pkb/org/projects/proxmox-setup/2023-07-04-hardware-configuration.org"
+   '("/Users/iain/Dropbox/pkb/org/projects/home-lab/proxmox/2023-07-04-hardware-configuration.org"
+     "/Users/iain/Dropbox/pkb/org/projects/home-lab/proxmox/worklog.org"
+     "/Users/iain/Dropbox/pkb/org/projects/open-source/common-lisp/cmucl/worklog.org"
+     "/Users/iain/Dropbox/pkb/org/projects/org-mode/worklog.org"
+     "/Users/iain/Dropbox/pkb/org/active.org"
      "/Users/iain/Dropbox/pkb/org/future.org"
      "/Users/iain/Dropbox/pkb/org/gtd.org"
-     "/Users/iain/Dropbox/pkb/org/in-progress.org"
-     "/Users/iain/Dropbox/pkb/org/inbox.org")))
+     "/Users/iain/Dropbox/pkb/org/inbox.org"
+     "/Users/iain/Dropbox/pkb/org/projects.org")))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

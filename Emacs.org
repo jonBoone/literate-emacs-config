@@ -1704,6 +1704,7 @@ For Common Lisp development, I use sly to interact with the lisp instance.
 #+end_src
 
 *** Python
+**** Language Server Protocol Support
 We use =lsp-mode= and =dap-mode= to provide a more complete development environment for Python in Emacs.  Check out [[https://emacs-lsp.github.io/lsp-mode/page/lsp-pyls/][the =pyls= configuration]] in the =lsp-mode= documentation for more details.
 
 Make sure you have the =pyls= language server installed before trying =lsp-mode=!
@@ -1725,13 +1726,24 @@ Make sure you have the =pyls= language server installed before trying =lsp-mode=
     (require 'dap-python))
 #+end_src
 
+**** Virtual Env Support
+***** pyvenv
 You can use the pyvenv package to use =virtualenv= environments in Emacs.  The =pyvenv-activate= command should configure Emacs to cause =lsp-mode= and =dap-mode= to use the virtual environment when they are loaded, just select the path to your virtual environment before loading your project.
 #+begin_src emacs-lisp
   (use-package pyvenv
+    :straight t
     :after python-mode
     :config
     (pyvenv-mode 1))
 #+end_src
+***** anaconda-mode
+Another alternative is to use =anaconda-mode.el=, which depends on `setuptools` being installed in the default active conda environment.
+#+begin_src emacs-lisp
+  (use-package anaconda-mode
+    :straight t
+    :after python-mode)
+#+end_src
+
 
 ** Programming Practice
 *** Leetcode
