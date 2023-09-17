@@ -479,15 +479,20 @@ Prettify the mode line with `smart-mode-line`.  Really need to re-evaluate the o
     (mode-line-inactive ((t (:height 0.85))))
     :init (doom-modeline-mode 1)
     :config
-    (setq doom-modeline-height    15
-          doom-modeline-bar-width 6
-          doom-modeline-lsp       t
-          doom-mode-line-github   t
-          doom-modeline-major-mode-icon t
-          doom-modeline-major-mode-color-icon t
-          doom-modeline-minor-mode-icon t
+    (setq doom-modeline-height                 15
+          doom-modeline-bar-width              6
           doom-modeline-buffer-file-name-style 'relative-to-project
-          doom-modeline-buffer-state-icon t))
+          doom-modeline-buffer-state-icon      t
+          doom-modeline-github                 t
+          doom-modeline-hud                    t
+          doom-modeline-icon                   t
+          doom-modeline-lsp                    t
+          doom-modeline-major-mode-color-icon  t
+          doom-modeline-major-mode-icon        t
+          doom-modeline-minor-mode-icon        t
+          doom-modeline-minor-modes            t
+          doom-modeline-project-detection      nil
+          doom-modeline-unicode-fallback       t))
 #+end_src
 
 *** Workspaces
@@ -1977,6 +1982,8 @@ This is an example of configuring another non-Emacs application using org-mode. 
 * Runtime Performance
 Dial the GC threshold back down so that garbage collection happens more frequently but in less time.
 #+begin_src emacs-lisp
+  ;; ensure we don't compact font caches during gc
+  (setq inhibit-compacting-font-caches t)
   ;; Make gc pauses faster by decreasing the threshold.
   (setq gc-cons-threshold (* 2 1000 1000))
 #+end_src
