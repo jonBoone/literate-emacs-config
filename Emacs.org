@@ -299,8 +299,8 @@ This section configures UI settings that remove unneeded elements to make Emacs 
   (defvar my/default-variable-font-size nil)
 
   (with-system darwin
-    (setq my/default-font-size 240
-          my/default-variable-font-size 240))
+    (setq my/default-font-size 180
+          my/default-variable-font-size 180))
   (with-system gnu/linux
     (setq my/default-font-size 240
           my/default-variable-font-size 240))
@@ -1668,7 +1668,9 @@ Try these commands with =M-x=:
 **** SLY
 For Common Lisp development, I use sly to interact with the lisp instance.
 #+begin_src emacs-lisp
-  (defvar lisp-images-base-dir (concat default-directory ".local")
+  (defvar lisp-images-base-dir (concat
+                                (get 'abbreviated-home-dir 'home)
+                                "/.local")
     "This is the base directory in which to find various cl implementations.")
 
   (defvar sbcl-core-for-sly "/lib/sbcl/sbcl.core-for-sly"
