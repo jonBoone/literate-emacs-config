@@ -464,11 +464,6 @@ Prettify the mode line with `smart-mode-line`.  Really need to re-evaluate the o
 [[https://github.com/seagle0128/doom-modeline][doom-modeline]] is a very attractive and rich (yet still minimal) mode line configuration for Emacs.  The default configuration is quite good but you can check out the [[https://github.com/seagle0128/doom-modeline#customize][configuration options]] for more things you can enable or disable.
 *NOTE:* The first time you load your configuration on a new machine, you'll need to run `M-x all-the-icons-install-fonts` so that mode line icons display correctly.
 #+begin_src emacs-lisp
-
-  (use-package shrink-path
-    :straight t
-    :demand t)
-
   (use-package minions
     :hook doom-modeline-mode)
 
@@ -1673,17 +1668,30 @@ Try these commands with =M-x=:
 **** SLY
 For Common Lisp development, I use sly to interact with the lisp instance.
 #+begin_src emacs-lisp
+  (defvar lisp-images-base-dir (concat default-directory ".local")
+    "This is the base directory in which to find various cl implementations.")
+
+  (defvar sbcl-core-for-sly "/lib/sbcl/sbcl.core-for-sly"
+    "This is the relative path to the sly-specific core for sbcl.")
+
+  (defvar sbcl-latest-sly-core-file
+    (concat lisp-images-base-dir "/sbcl/latest" sbcl-core-for-sly)
+    "This is where to find ")
+
   (use-package sly
     :straight t
     :mode ("\\.lisp\\'" . lisp-mode)
     :hook (lisp-mode . (lambda ()
                          (unless (sly-connected-p)
                            (save-excursion (sly)))))
+    :init
+    (setq sly-contribs              '(sly-fancy sly-retro sly-trace-dialog)
+          sly-lisp-implementations  '((sbcl-latest
+                                       ("sbcl" "--core"
+                                        sbcl-latest-sly-core-file))
+                                      (cmucl-latest ("lisp")))
+          sly-net-coding-system     'utf-8-unix)
     :config
-    (setq sly-contribs             '(sly-fancy sly-retro sly-trace-dialog)
-          sly-lisp-implementations '((sbcl-latest ("sbcl" "--core" "/Users/iain/.local/sbcl/latest/lib/sbcl/sbcl.core-for-sly"))
-                                     (cmucl-latest ("lisp")))
-          sly-net-coding-system    'utf-8-unix)
     ;; setup sly-documentation-lookup
     (eval-after-load 'sly
       `(define-key sly-prefix-map (kbd "M-h") 'sly-documentation-lookup))
