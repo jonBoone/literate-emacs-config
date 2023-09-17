@@ -1686,9 +1686,9 @@ For Common Lisp development, I use sly to interact with the lisp instance.
                            (save-excursion (sly)))))
     :init
     (setq sly-contribs              '(sly-fancy sly-retro sly-trace-dialog)
-          sly-lisp-implementations  '((sbcl-latest
+          sly-lisp-implementations  `((sbcl-latest
                                        ("sbcl" "--core"
-                                        sbcl-latest-sly-core-file))
+                                        ,sbcl-latest-sly-core-file))
                                       (cmucl-latest ("lisp")))
           sly-net-coding-system     'utf-8-unix)
     :config
