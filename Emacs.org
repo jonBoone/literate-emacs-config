@@ -755,7 +755,7 @@ The keybindings for this are `C+M+-` and `C+M+=`.
 *** Set Margins for Modes
 #+begin_src emacs-lisp
   (defun my/center-buffer-with-margins ()
-    (let ((margin-size (/ (- (frame-width) 80) 3)))
+    (let ((margin-size (/ (- (frame-width) 110) 3)))
       (set-window-margins nil margin-size margin-size)))
 
   (defun my/org-mode-visual-fill ()
