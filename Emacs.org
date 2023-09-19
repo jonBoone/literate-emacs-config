@@ -495,6 +495,21 @@ Prettify the mode line with `smart-mode-line`.  Really need to re-evaluate the o
           doom-modeline-unicode-fallback       t))
 #+end_src
 
+*** Encrypt Files
+I want to encrypt file swith gpg by default.
+#+begin_src emacs-lisp
+  (with-system darwin
+    (setq epg-gpg-program "gpg"))
+
+  (with-system gnu/linux
+    (setq epg-gpg-program "gpg2"))
+
+  (setq auth-source-debug    t
+        auth-sources         '((:source "~/.authinfo.gpg"))
+        epa-file-encrypt-to  '("ipmonger@delamancha.org"))
+
+#+end_src
+
 *** Workspaces
 #+begin_src emacs-lisp
   (use-package perspective
@@ -1764,6 +1779,12 @@ Another alternative is to use =anaconda-mode.el=, which depends on `setuptools` 
           leetcode-directory "~/Dropbox/leetcode"))
 #+end_src
 
+*** Exercism
+Exercism allows you to solve community provided problems in a variety of languages.
+#+begin_src emacs-lisp
+  (use-package exercism
+    :straight t)
+#+end_src
 
 * Terminals
 ** term-mode
