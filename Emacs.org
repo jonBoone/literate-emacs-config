@@ -953,9 +953,11 @@ I want to customize my =org-mode= agenda style.
 #+begin_src emacs-lisp
   ;; Set a custom configuration for org-mode interaction with the other elisp packages.
   (defun my/org-mode-setup ()
-    (org-indent-mode)
+    (toggle-truncate-lines -1)
+    (auto-fill-mode 1)
     (variable-pitch-mode 1)
     (visual-line-mode 1)
+    (flyspell-mode 1)
     (diminish org-indent-mode))
 #+end_src
 
