@@ -1749,7 +1749,12 @@ This package is built on the [[https://github.com/Alexander-Miller/treemacs][tre
 #+begin_src emacs-lisp
   (use-package lsp-treemacs
     :after lsp)
+
+  (use-package treemacs-nerd-icons
+    :config
+    (treemacs-load-theme "nerd-icons"))
 #+end_src
+
 
 **** lsp-ivy
 [[https://github.com/emacs-lsp/lsp-ivy][lsp-ivy]] integrates Ivy with =lsp-mode= to make it easy to search for things by name in your code.  When you run these commands, a prompt will appear in the minibuffer allowing you to type part of the name of a symbol in your code.  Results will be populated in the minibuffer so that you can find what you're looking for and jump to that location in the code upon selecting the result.
