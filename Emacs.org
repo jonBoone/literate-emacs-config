@@ -1030,16 +1030,21 @@ The configuration of Org-Mode is augmented with some additional modules (see `(s
                                                "---" "┈┈┈┈┈┈┈┈┈┈┈┈┈┈")
           org-agenda-todo-ignore-with-date   t
           org-agenda-window-setup            'current-window
+          org-cite-global-bibliography       '("~/Dropbox/pkb/org/bib.bib")
           org-cycle-separator-lines          2
           org-ellipsis                       " ▾"
           org-edit-src-content-indentation   2
           org-fontify-done-headline          t
           org-fontify-quote-and-verse-blocks t
           org-fontify-whole-heading-line     t
+          org-format-latex-options           (plist-put org-format-latex-options :scale 1.5)
           org-habit-graph-column             60
           org-hide-block-startup             nil
           org-hide-emphasis-markers          t
-          org-hide-leading-starts            t
+          org-hide-leading-stars             t
+          org-highlight-latex-and-related    '(native)
+          org-html-postamble                 t
+          org-html-postamble-format          '(("en" "<p class=\"author\">Author: %a (%e)</p>\n<p class=\"date\">Date: %T</p>\n<p class=\"creator\">%c</p>"))
           org-icalendar-alarm-time           30
           org-icalendar-combined-name        "Org Mode Agenda"
           org-icalendar-include-todo         t
@@ -1047,6 +1052,8 @@ The configuration of Org-Mode is augmented with some additional modules (see `(s
           org-icalendar-timezome             "US/New_York"
           org-icalendar-use-deadline         '(todo-due event-if-todo event-if-not-todo)
           org-icalendar-use-scheduled        '(todo-start event-if-todo event-if-not-todo)
+          org-latex-create-formula-image-program 'dvisvgm
+          org-latex-default-class            "tuffte-handout"
           org-log-done                       'time
           org-log-into-drawer                t
           org-modules                        '(org-crypt
@@ -1057,6 +1064,7 @@ The configuration of Org-Mode is augmented with some additional modules (see `(s
                                                org-notify
                                                org-toc)
           org-outline-path-complete-in-steps nil
+          org-plantuml-jar-path              (expand-file-name "/opt/homebrew/Cellar/plantuml/1.2023.11/libexec/plantuml.jar")
           org-pretty-entities                t
           org-refile-targets                 '(("future.org"  :maxlevel . 3)
                                                ("gtd.org"     :maxlevel . 3)
@@ -1135,17 +1143,18 @@ The configuration of Org-Mode is augmented with some additional modules (see `(s
                                            "* %<%I:%M %p> - %a :meetings:\n\n%?\n\n"
                                            :clock-in :clock-resume
                                            :empty-lines 1)))
-    :bind (:map org-mode-map
-                (("C-c <up>"      . org-priority-up)
-                 ("C-c <down>"    . org-priority-down)
-                 ("C-c C-g C-r"   . org-shiftmetaright))
-                :map global-map
-                (("C-c l"         . org-store-link)
-                 ("C-c a"         . org-agenda)
-                 ("C-c c"         . org-capture)
-                 ("C-c j"         . (lambda ()
-                                      (interactive)
-                                      (org-caputre nil "jj"))))))
+    :bind
+    ((:map org-mode-map
+           (("C-c <up>"      . org-priority-up)
+            ("C-c <down>"    . org-priority-down)
+            ("C-c C-g C-r"   . org-shiftmetaright)))
+     (:map global-map
+           (("C-c l"         . org-store-link)
+            ("C-c a"         . org-agenda)
+            ("C-c c"         . org-capture)
+            ("C-c j"         . (lambda ()
+                                 (interactive)
+                                 (org-caputre nil "jj")))))))
 
   ;; Save Org buffers after refiling!
   (advice-add 'org-refile :after 'org-save-all-org-buffers)
@@ -1183,6 +1192,20 @@ It's nice to have a table of contents section for long literate configuration fi
 #+begin_src emacs-lisp
   (use-package org-make-toc
      :hook org-mode)
+#+end_src
+
+*** org-modern interface
+#+begin_src emacs-lisp
+  (use-package org-modern
+    :after org
+    :straight t
+    :hook
+    (org-mode . global-org-modern-mode)
+    :config
+    (setq org-modern-keyword     t
+          org-modern-checkbox    t
+          org-modern-block-name  t
+          org-modern-table       t))
 #+end_src
 
 *** org-super-agenda
