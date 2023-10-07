@@ -600,6 +600,29 @@ Default to an indentation size of 2 spaces since it's the norm for nearly all pr
   (setq-default indent-tabs-mode nil)
 #+end_src
 
+
+** Spell Check Settings
+#+begin_src emacs-lisp
+  (use-package flyspell
+    :straight t
+    :hook (text-mode . flyspell)
+    :diminish
+    :init
+    (add-hook 'prog-mode-hook #'flyspell-prog-mode)
+    :config
+    (setq ispell-program-name "aspell"   ; use aspell instead of ispell
+          ispell-extra-args   '("--sug-mode=ultra")))
+#+end_src
+
+
+#+begin_src emacs-lisp
+  (use-package flycheck
+    :straight t
+    :hook (after-init . global-flycheck)
+    :diminish)
+
+#+end_src
+
 ** Automatically Clean Whitespace
 #+begin_src emacs-lisp
   (use-package ws-butler
