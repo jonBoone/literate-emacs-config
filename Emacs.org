@@ -1708,29 +1708,30 @@ The =lsp-keymap-prefix= setting enables you to define a prefix for where =lsp-mo
 
 The =which-key= integration adds helpful descriptions of the various keys so you should be able to learn a lot just by pressing =C-c l= in a =lsp-mode= buffer and trying different things that you find there.
 #+begin_src emacs-lisp
-  (defun my/lsp-mode-setup ()
-    (setq lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols))
-    (lsp-headerline-breadcrumb-mode))
-
   (use-package lsp-mode
+    :straight t
     :commands (lsp lsp-deferred)
-    :hook ((lsp-mode . my/lsp-mode-setup)
-           ((python-mode emacs-lisp-mode) . lsp))
-    :init
-    (setq lsp-keymap-prefix "C-c l")  ;; Or 'C-l', 's-l'
+    :hook
+    ((python-mode emacs-lisp-mode c-mode c++-mode json-mode tex-mode) . lsp)
     :config
-    (lsp-enable-which-key-integration t))
+    (setq lsp-keymap-prefix                   "C-c l"   ;; Or 'C-l', 's-l'
+          lsp-headerline-breadcrumb-segments  '(path-up-to-project file symbols))
+    (lsp-enable-which-key-integration t)
+    (lsp-headerline-breadcrumb-mode))
 #+end_src
 
 **** lsp-ui
 [[https://emacs-lsp.github.io/lsp-ui/][lsp-ui]] is a set of UI enhancements built on top of =lsp-mode= which make Emacs feel even more like an IDE.  Check out the screenshots on the =lsp-ui= homepage (linked at the beginning of this paragraph) to see examples of what it can do.
 #+begin_src emacs-lisp
   (use-package lsp-ui
-    :hook lsp-mode
+    :straight t
+    :commands lsp-ui-mode
     :config
-    (setq lsp-ui-doc-position               'at-point
-          lsp-ui-doc-show-with-mouse         nil
-          lsp-ui-sideline-show-code-actions  t)
+    (setq lsp-ui-doc-position                 'bottom
+          lsp-ui-doc-show-with-mouse          nil
+          lsp-ui-peek-always-show             t
+          lsp-ui-sideline-show-code-actions   t
+          lsp-ui-sideline-show-hover          t)
     :bind (("C-c A" . lsp-execute-code-action)
            ("C-c d" . lsp-ui-doc-show)
            ("C-c I" . lsp-ui-imenu)))
