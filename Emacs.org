@@ -1767,16 +1767,6 @@ Try these commands with =M-x=:
     :after lsp)
 #+end_src
 
-**** lsp-pyright
-[[https://github.com/emacs-lsp/lsp-pyright][lsp-pyright]] intergrates =lsp-mode= with Microsoft's pyright language server protocol support for python.
-#+begin_src emacs-lisp
-  (use-package lsp-pyright
-    :straight t
-    :hook (python-mode . (lambda ()
-                           (require 'lsp-pyright)
-                           (lsp))))
-#+end_src
-
 *** Improved parenthesis
 #+begin_src emacs-lisp
   (use-package smartparens
@@ -1794,8 +1784,6 @@ Try these commands with =M-x=:
 
 **** Emacs Lisp
 #+begin_src emacs-lisp
-  ;;  (add-hook 'emacs-lisp-mode-hook #'flycheck-mode)
-
   (use-package helpful
     :commands (helpful-callable helpful-variable helpful-command helpful-key)
     :bind
@@ -1851,26 +1839,45 @@ For Common Lisp development, I use sly to interact with the lisp instance.
 
 *** Python
 **** Language Server Protocol Support
-We use =lsp-mode= and =dap-mode= to provide a more complete development environment for Python in Emacs.  Check out [[https://emacs-lsp.github.io/lsp-mode/page/lsp-pyls/][the =pyls= configuration]] in the =lsp-mode= documentation for more details.
+We use =lsp-mode= and =dap-mode= to provide a more complete development environment for Python in Emacs.
 
-Make sure you have the =pyls= language server installed before trying =lsp-mode=!
-#+begin_src sh :tangle no
-  pip install --user "python-language-server[all]"
-#+end_src
-
-  There are a number of other language servers for Python so if you find that =pyls= doesn't work for you, consult the =lsp-mode= [[https://emacs-lsp.github.io/lsp-mode/page/languages/][language configuration documentation]] to try the others!
+There are a number of other language servers for Python so if you find that =pyls= doesn't work for you, consult the =lsp-mode= [[https://emacs-lsp.github.io/lsp-mode/page/languages/][language configuration documentation]] to try the others!
 #+begin_src emacs-lisp
+  (use-package pylint)
+
+  (use-package python-docstring
+    :config
+    (python-docstring-install))
+
   (use-package python-mode
     :straight t
+    :bind
+    (:map python-mode-map
+          ("C-c C-p" . flycheck-previous-error)
+          ("C-c C-n" . flycheck-next-error))
     :hook (python-mode . lsp-deferred)
-    :custom
-    ;; NOTE: Set these if Python 3 is called "python3" on your system!
-    ;; (python-shell-interpreter "python3")
-    ;; (dap-python-executable "python3")
-    (dap-python-debugger 'debugpy)
+    :init (require 'dap-python)
     :config
-    (require 'dap-python))
+    (setq dap-python-debugger                         'debugpy
+          python-flymake-command                      '("flake8" "-")
+          python-indent-trigger-commands              '(yas-expand)
+          python-shell-interpreter                    "jupyter"
+          python-shell-interpreter-args               "console --simple-prompt"
+          python-shell-prompt-detect-failure-warning  nil
+          python-shell-prompt-output-regexp           "Out\\[0-9]+\\]: "
+          python-shell-prompt-regexp                  "In \\[0-9]+\\]: "))
 #+end_src
+
+**** lsp-pyright
+[[https://github.com/emacs-lsp/lsp-pyright][lsp-pyright]] intergrates =lsp-mode= with Microsoft's pyright language server protocol support for python.
+#+begin_src emacs-lisp
+  (use-package lsp-pyright
+    :straight t
+    :hook (python-mode . (lambda ()
+                           (require 'lsp-pyright)
+                           (lsp))))
+#+end_src
+
 
 **** Virtual Env Support
 ***** pyvenv
