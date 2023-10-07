@@ -399,7 +399,7 @@ This section configures UI settings that remove unneeded elements to make Emacs 
 
 #+begin_src emacs-lisp
   (set-face-attribute 'default nil
-                      :font "Source Code Pro" :height my/default-font-size)
+                      :font "MesloLGS Nerd Font" :height my/default-font-size)
   ;; Set the fixed pitch face
   (set-face-attribute 'fixed-pitch nil
                       :font "Source Code Pro" :height my/default-font-size)
