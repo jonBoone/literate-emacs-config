@@ -402,7 +402,7 @@ This section configures UI settings that remove unneeded elements to make Emacs 
                       :font "MesloLGS Nerd Font" :height my/default-font-size)
   ;; Set the fixed pitch face
   (set-face-attribute 'fixed-pitch nil
-                      :font "Source Code Pro" :height my/default-font-size)
+                      :font "MesloLGS Nerd Font Mono" :height my/default-font-size)
   ;; Set the variable pitch face
   (set-face-attribute 'variable-pitch nil
                       :font "Cantarell" :height my/default-variable-font-size :weight
