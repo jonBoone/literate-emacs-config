@@ -1273,6 +1273,29 @@ To execute or export code in =org-mode= code blocks, you'll need to set up =org-
           org-pomodoro-finished-sound     "~/Dropbox/pkb/sounds/meditation_bell.env"))
 #+end_src
 
+** Export LaTeX Source Blocks
+=ox-latex= is the go-to package here
+#+begin_src emacs-lisp
+;;  (use-package ox-latex
+;;    :straight t
+;;    :defer t
+;;    :config
+;;    (setq org-latex-listings 'minted
+;;          org-latex-pdf-process
+;;          '("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+;;            "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+;;            "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
+;;    (add-to-list 'org-latex-packages-alist '("" "minted"))
+;;    (add-to-list 'org-latex-classes
+;;                 '("tufte-handout"
+;;                   "\\documentclass{tufte-handout}"
+;;                   ("\\section{%s}" . "\\section*{%s}")
+;;                   ("\\subsection{%s}" . "\\subsection*{%s}")
+;;                   ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+;;                   ("\\paragraph{%s}" . "\\paragraph*{%s}")
+;;                   ("\\subparagraph{%s}" . "\\subparagraph*{%s}"))))
+#+end_src
+
 ** Auto-tangle Configuration Files
 This snippet adds a hook to =org-mode= buffers so that =my/org-babel-tangle-config= gets executed each time such a buffer gets saved.  This function checks to see if the file being saved is the Emacs.org file you're looking at right now, and if so, automatically exports the configuration here to the associated output files.
 #+begin_src emacs-lisp
