@@ -1574,9 +1574,10 @@ Most folks use =Auctex= for editing LaTeX in Emacs.
 #+begin_src emacs-lisp
   (use-package magit
     :straight t
-    :bind (("C-M-;" . magit-status)
-           :map project-prefix-map
-           ("m" . project-magit))
+    :bind
+    (("C-M-;" . magit-status)
+     (:map project-prefix-map
+           ("m" . project-magit)))
     :commands (magit-status magit-get-current-branch project-magit)
     :custom
     (add-to-list 'project-switch-commands
