@@ -1374,19 +1374,20 @@ This snippet adds a hook to =org-mode= buffers so that =my/org-babel-tangle-conf
     ;; ensure we autosync on save
     (org-roam-db-autosync-mode)
     (org-roam-setup)
-    :bind (:map org-roam-mode-map
-                (("C-c n l"   . org-roam)
-                 ("C-c n f"   . org-roam-find-file)
-                 ("C-c n d"   . org-roam-dailies-find-date)
-                 ("C-c n c"   . org-roam-dailies-capture-today)
-                 ("C-c n C r" . org-roam-dailies-capture-tomorrow)
-                 ("C-c n t"   . org-roam-dailies-find-today)
-                 ("C-c n y"   . org-roam-dailies-find-yesterday)
-                 ("C-c n r"   . org-roam-dailies-find-tomorrow)
-                 ("C-c n g"   . org-roam-graph))
-                :map org-mode-map
-                (("C-c n i" . org-roam-insert)
-                 ("C-c n I" . org-roam-insert-immediate))))
+    :bind
+    ((:map org-roam-mode-map
+           (("C-c n l"   . org-roam)
+            ("C-c n f"   . org-roam-find-file)
+            ("C-c n d"   . org-roam-dailies-find-date)
+            ("C-c n c"   . org-roam-dailies-capture-today)
+            ("C-c n C r" . org-roam-dailies-capture-tomorrow)
+            ("C-c n t"   . org-roam-dailies-find-today)
+            ("C-c n y"   . org-roam-dailies-find-yesterday)
+            ("C-c n r"   . org-roam-dailies-find-tomorrow)
+            ("C-c n g"   . org-roam-graph)))
+     (:map org-mode-map
+           (("C-c n i" . org-roam-insert)
+            ("C-c n I" . org-roam-insert-immediate)))))
 #+end_src
 
 ** Deft
@@ -1541,6 +1542,29 @@ This section extends the standard checklist feature in Org, which can track perc
   ;;   "Fix the built-in checkbox count to understand headlines."
   ;;   (setq ad-return-value
   ;;         (my/org-update-checkbox-count (ad-get-arg 1))))
+#+end_src
+
+** Latex
+Most folks use =Auctex= for editing LaTeX in Emacs.
+#+begin_src lisp
+  (use-package auctex
+      :defer    t
+      :straight t
+      :hook     (Tex-mode . #'turn-on-reftex)
+      :init
+      (progn
+        (setq TeX-auto-save                  t
+              TeX-parse-self                 t
+              TeX-PDF-mode                   t
+              LaTeX-fill-break-at-separators nil
+              TeX-view-program-list          '(("Preview.app" "open -a Preview.app %o")
+                                               ("displayline" "displayline -g -b %n %o %b")
+                                               ("open" "open %o"))
+              TeX-veiw-program-selection     '((output-dvi  "open")
+                                               (output-pdf  "Preview.app")
+                                               (output-html "open"))))
+      :config
+      (company-auctex-init))
 #+end_src
 
 
