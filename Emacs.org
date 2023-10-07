@@ -1897,6 +1897,14 @@ Another alternative is to use =anaconda-mode.el=, which depends on `setuptools` 
     :after python-mode)
 #+end_src
 
+**** Formatting Support
+=black= is the python formatter I prefer
+#+begin_src emacs-lisp
+  (use-package blacken
+    :straight t
+    :after python-mode
+    :hook python-mode)
+#+end_src
 
 ** Programming Practice
 *** Leetcode
