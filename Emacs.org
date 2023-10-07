@@ -1248,10 +1248,18 @@ To execute or export code in =org-mode= code blocks, you'll need to set up =org-
   (with-eval-after-load 'org
     (org-babel-do-load-languages
      'org-babel-load-languages
-     '((emacs-lisp . t)
-       (python . t)))
-
-    (push '("conf-unix" . conf-unix) org-src-lang-modes))
+     '((dot        . t)
+       (emacs-lisp . t)
+       (latex      . t)
+       (plantuml   . t)
+       (python     . t)
+       (shell      . t)))
+    (mapcar #'(lambda (element)
+                (push element org-src-lang-modes))
+            '(("conf-unix"  . conf-unix)
+              ("plantuml"   . platnuml)
+              ("python"     . python)
+              ("shell"      . shell))))
 #+end_src
 
 ** Pomodoro
