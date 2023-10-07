@@ -1682,9 +1682,13 @@ We also use [[https://github.com/sebastiencs/company-box][company-box]] to furth
   (use-package dap-mode
     :straight t
     :defer t
-    :bind (:map dap-mode-map
-                ("C-x D D" . dap-debug)
-                ("C-x D d" . dap-debug-last))
+    :bind
+    ((:map dap-mode-map
+           ("C-x D D" . dap-debug)
+           ("C-x D d" . dap-debug-last)))
+    ;; (:map lsp-mode-map
+    ;;       ("C-c l d" . (dap-hydra t :wk "debugger")))
+    ;;
     ;; Uncomment the config below if you want all UI panes to be hidden by default!
     ;; :custom
     ;; (lsp-enable-dap-auto-configure nil)
@@ -1692,13 +1696,8 @@ We also use [[https://github.com/sebastiencs/company-box][company-box]] to furth
     ;; (dap-ui-mode 1)
     :commands dap-debug
     :config
-    (setq dap-auto-configure-features '(sessions locals controls tooltip))
-
-    ;; Bind `C-c l d` to `dap-hydra` for easy access
-    (general-define-key
-     :keymaps 'lsp-mode-map
-     :prefix lsp-keymap-prefix
-     "d" '(dap-hydra t :wk "debugger")))
+    (setq dap-auto-configure-features '(sessions locals controls tooltip)
+          dap-ui-mode 1))
 #+end_src
 
 *** IDE Features with lsp-mode
