@@ -834,7 +834,9 @@ Emacs' default buffer placement algorithm is pretty disruptive if you like setti
 * File Browsing
 ** Dired
 #+begin_src emacs-lisp
-  (use-package all-the-icons-dired)
+  (use-package nerd-icons-dired
+    :straight t
+    :hook (dired-mode . nerd-icons-dired-mode))
 
   (use-package dired
     :straight nil
@@ -852,7 +854,6 @@ Emacs' default buffer placement algorithm is pretty disruptive if you like setti
       ;; assumes homebrew bin path is in ${PATH}
       (setq dired-use-ls-dired                    t
             insert-directory-program              "gls"))
-
     (setq dired-listing-switches                  "-alghoA --group-directories-first"
           dired-dwim-target                       t
           dired-deletion-confirmer                'y-or-n-p
