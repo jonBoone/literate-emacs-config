@@ -984,20 +984,21 @@ The configuration of Org-Mode is augmented with some additional modules (see `(s
     :defer t
     :hook ((org-mode                       . my/org-mode-setup)
            (org-agenda-mode                . my/style-org-agenda)
-           (org-agenda-cleanup-fancy-diary . my/org-agenda-cleanup-fancy-diary))
+           (org-agenda-cleanup-fancy-diary . my/org-agenda-cleanup-fancy-diary)
+           (org-babel-after-execute        . org-redisplay-inline-images))
     :config
     (setq org-adapt-indentation              t
           org-agenda-block-separator         "━"
           org-agenda-breadcrumbs-separator   " ❱ "
-          org-agenda-category-icon-alist     '(("Work" ,(list (all-the-icons-faicon "cogs"))
+          org-agenda-category-icon-alist     '(("Work" ,(list (nerd-icons-faicon "cogs"))
                                                 nil nil :ascent center)
-                                               ("Personal" ,(list (all-the-icons-material
+                                               ("Personal" ,(list (nerd-icons-mdicons
                                                                    "person"))
                                                 nil nil :ascnet center)
-                                               ("Calendar" ,(list (all-the-icons-faicon
+                                               ("Calendar" ,(list (nerd-icons-faicon
                                                                    "calendar"))
                                                 nil nil :ascent center)
-                                               ("Reading" ,(list (all-the-icons-faicon
+                                               ("Reading" ,(list (nerd-icons-faicon
                                                                   "book"))
                                                 nil nil :ascent center))
           org-agenda-clockreport-parameter-plist '(:link t :maxlevel 5 :fileskip0 t
