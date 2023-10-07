@@ -2081,6 +2081,13 @@ For more thoughts on Eshell, check out these articles by Pierre Neidhardt:
     (add-hook 'compilation-filter-hook 'colorize-compilation-buffer))
 #+end_src
 
+** Docker
+#+begin_src emacs-lisp
+  (use-package docker
+    :straight t
+    :bind
+    (("C-c d" . docker)))
+#+end_src
 
 * Productivity
 ** Improve PDF handling
@@ -2102,9 +2109,17 @@ For more thoughts on Eshell, check out these articles by Pierre Neidhardt:
 
 ** Syntax checking with Flycheck
 #+begin_src emacs-lisp
-  ;; (use-package flycheck
-  ;;   :defer t
-  ;;   :hook lsp-mode)
+  (use-package flycheck
+    :defer t
+    :hook ((lsp-mode emacs-lisp-mode python-mode) . flycheck-mode))
+
+#+end_src
+
+Add =python= checkers
+#+begin_src emacs-lisp
+  (use-package flycheck-prospector
+    :straight t
+    :defer t)
 #+end_src
 
 ** Snippets
