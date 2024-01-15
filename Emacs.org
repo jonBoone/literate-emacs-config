@@ -1021,7 +1021,7 @@ The configuration of Org-Mode is augmented with some additional modules (see `(s
           org-agenda-skip-deadline-if-done   t
           org-agenda-skip-scheduled-if-done  t
           org-agenda-skip-timestamp-if-done  t
-          org-agenda-skip-unavailable-fiels  t
+          org-agenda-skip-unavailable-files  t
           org-agenda-start-on-weekday        nil ; starts on current day
           org-agenda-start-with-log-mode     t
           org-agenda-time-grid               '((weekly today require-timed)
@@ -1991,7 +1991,7 @@ Make sure that you have the [[https://github.com/akermu/emacs-libvterm/#requirem
 
 *Useful key bindings:*
 ```
-- =C-c C-p= / =C-c C-n= - go back and forward in the buffer's prompts 
+- =C-c C-p= / =C-c C-n= - go back and forward in the buffer's prompts
 - =M-p= / =M-n= - go back and forward in the input history
 - =C-c C-u= - delete the current input string backwards up to the cursor
 - =counsel-shell-history= - A searchable history of commands typed into the shell
