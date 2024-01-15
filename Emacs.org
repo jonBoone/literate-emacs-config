@@ -1545,7 +1545,7 @@ This section extends the standard checklist feature in Org, which can track perc
 
 ** Latex
 Most folks use =Auctex= for editing LaTeX in Emacs.
-#+begin_src lisp
+#+begin_src emacs-lisp
   (use-package auctex
       :defer    t
       :straight t
