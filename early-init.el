@@ -1,4 +1,5 @@
-;; Set gc really large when loading the config file
+;;  -*- lexical-binding: t; -*-
+;; Set gc really large when loading the config file 
 (setq gc-cons-threshold (* 200 1024 1024))
 
 ;; Disable package.el in favor of straight.el
