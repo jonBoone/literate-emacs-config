@@ -422,7 +422,7 @@ This section configures UI settings that remove unneeded elements to make Emacs 
   (use-package doom-themes
     :straight t
     :config
-    (load-theme 'doom-nord-light t)
+    (load-theme 'doom-nord-aurora t)
     (doom-themes-visual-bell-config))
 #+end_src
 
