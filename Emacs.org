@@ -420,8 +420,9 @@ This section configures UI settings that remove unneeded elements to make Emacs 
 [[https://github.com/hlissner/emacs-doom-themes][doom-themes]] is a great set of themes with a lot of variety and support for many different Emacs modes.  Taking a look at the [[https://github.com/hlissner/emacs-doom-themes/tree/screenshots][screenshots]] might help you decide which one you like best.  You can also run =M-x counsel-load-theme= to choose between them easily.
 #+begin_src emacs-lisp
   (use-package doom-themes
-    :init
-    (load-theme 'doom-nord-light  t)
+    :straight t
+    :config
+    (load-theme 'doom-nord-light t)
     (doom-themes-visual-bell-config))
 #+end_src
 
@@ -612,15 +613,6 @@ Default to an indentation size of 2 spaces since it's the norm for nearly all pr
     :config
     (setq ispell-program-name "aspell"   ; use aspell instead of ispell
           ispell-extra-args   '("--sug-mode=ultra")))
-#+end_src
-
-
-#+begin_src emacs-lisp
-  (use-package flycheck
-    :straight t
-    :hook (after-init . global-flycheck)
-    :diminish)
-
 #+end_src
 
 ** Automatically Clean Whitespace
@@ -939,10 +931,7 @@ The =my/org-font-setup= function configures various text faces to tweak the size
 I want to customize my =org-mode= agenda style.
 #+begin_src emacs-lisp
   (defun my/style-org-agenda ()
-<<<<<<< HEAD
     ;;(my/buffer-face-mode-variable)
-=======
->>>>>>> 67af178 (delete/comment-out troubleshome elisp expressions)
     (set-face-attribute 'org-agenda-date nil :height 1.1)
     (set-face-attribute 'org-agenda-date-today nil :height 1.1 :slant 'italic)
     (set-face-attribute 'org-agenda-date-weekend nil :height 1.1))
@@ -2106,11 +2095,13 @@ For more thoughts on Eshell, check out these articles by Pierre Neidhardt:
                                    (org-pdftools-open link)))))
 #+end_src
 
-** Syntax checking with Flycheck
 #+begin_src emacs-lisp
   (use-package flycheck
+    :straight t
     :defer t
-    :hook ((lsp-mode emacs-lisp-mode python-mode) . flycheck-mode))
+    :hook ((after-init . global-flycheck)
+           ((lsp-mode emacs-lisp-mode python-mode) . flycheck-mode))
+    :diminish)
 
 #+end_src
 
