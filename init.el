@@ -63,10 +63,10 @@
 	     :includes (org-babel)))
 (add-to-list 'load-path "~/.emacs.d/straight/repos/org-mode/lisp")
 
-;; config-file var gets used in iain.el as well, not sure I like that
+;; config-file var gets used in Emacs.el as well, not sure I like that
 (setq config-file (expand-file-name "Emacs.org" user-emacs-directory))
 
-;; This produces iain.el which is then loaded. It checks datetime before tangling.
+;; This produces Emacs.el which is then loaded. It checks datetime before tangling.
 (org-babel-load-file config-file)
 
 (provide 'init)
