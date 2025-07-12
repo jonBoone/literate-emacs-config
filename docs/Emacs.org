@@ -1,0 +1,9 @@
+#+startup:  showeverything indent hidestars
+#+title:    My Literate Emacs Configuration
+#+options:  H:5 author:t timestamp:t tex:verbatim
+#+property: header-args :results silent :exports code
+
+#+toc: headlines 4
+
+* Introduction
+#+property: toc
