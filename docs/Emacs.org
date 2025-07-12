@@ -13,6 +13,21 @@ This is my main file for documenting my emacs configuration using the literate p
 #+property: toc
 As I write this, I am using a variant of Gnu Emacs 30.1, which anticipates the configuration files are stored in the (=user-emacs-directory=), which defaults to (=${HOME}/.emacs.d=).  This =org-mode= file will tangle their component code-blocks into those files at the root of the repo.
 
+#+name: emacs-initialize-header
+#+begin_src emacs-lisp :output silent
+  ;;;; Package --- Emacs initialization
+  ;;; Commentary:
+  ;; Emacs initialization file
+  ;;
+  ;; As a literate emacs configuration, we leverage org-babel.
+  ;; Our goal here is to load a proper subset of org-mode to
+  ;; enable the full configuration.
+
+  ;;; Code:
+  ;;  -*- lexical-binding: t; -*-
+
+#+end_src
+
 ** =early-init.el=
 #+property: toc
 This file sets the following types of configuration parameters prior to the initialization of the package system and the GUI components.
@@ -24,6 +39,7 @@ This file sets the following types of configuration parameters prior to the init
 5. disable =menu-bar-lines=, =tool-bar-lines=, and =vertical-scroll-bars= in the =default-frame-alist=
 6. we will leverage =native-comp= when available, so report on it's availability
 
-#+begin_src emacs-lisp :results none :exports code :tangle ../early-init.el
+#+begin_src emacs-lisp :results none :exports code :noweb yes :tangle ../early-init.el
+  <<emacs-initialize-header>>
 
 #+end_src
