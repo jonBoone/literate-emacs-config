@@ -7,3 +7,4 @@
 
 * Introduction
 #+property: toc
+This is my main file for documenting my emacs configuration using the literate programming style.  It uses =org-mode= as a markup language, allowing the =Emacs Lisp= code-blocks to reside in-line with the prose that describes the intention of the code-blocks. When I have prepared the essential configuration, then whenever I save this file, the code-blocks will be tangled into the appropriate =Emacs Lisp= file and the entire =org-mode= file, including the un-evaluated code-blocks, will be exported into the root of the repository as GitHub Flavored Markdown.  
